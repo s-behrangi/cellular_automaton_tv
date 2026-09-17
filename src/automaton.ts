@@ -1,5 +1,5 @@
 import { createProgramFromSource } from './utils/webglUtils';
-import { binomialArray, chooseWithRep, hslToRGB, stringifyRule, packRule, unpackRule, rulifyString, fmod, exportTwoState, importTwoState, importRuleDirect, exportRuleDirect } from './utils/mathUtils';
+import { binomialArray, chooseWithRep, hslToRGB, stringifyRule, packRule, unpackRule, rulifyString, fmod, importRuleDirect, exportRuleDirect } from './utils/mathUtils';
 import { DEFAULT_CPU_RULE_CONTROL, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, MAX_N, MIN_N, DEFAULT_SIM_FRAMERATE, DEFAULT_CRT, DEFAULT_BRUSH_SIZE } from './constants';
 
 const SIMWIDTH = 1024;
@@ -592,77 +592,7 @@ export class Automaton {
         }
     }
 
-    private projectCRT(): void {
-        this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
-
-        /* draws active simulation texture to screen */
-        this.gl.useProgram(this.programs.crtProjection1.prog);
-        this.gl.bindVertexArray(this.texVAO!);
-
-        /* Bind the right texture to read from */
-        this.gl.activeTexture(this.gl.TEXTURE0);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, (this.activeFrame ? this.texA : this.texB)!);
-        
-        /* Bind the colour scheme texture */
-        this.gl.activeTexture(this.gl.TEXTURE1);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.colourTex!);
-
-        /* Select the right framebuffer */
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, (this.activeScreen ? this.fbScreenA : this.fbScreenB)!);
-
-        this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
-        
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
-    }
-
-    private distortCRT(): void {
-        this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
-
-        /* draws active simulation texture to screen */
-        this.gl.useProgram(this.programs.crtProjection2.prog);
-        this.gl.bindVertexArray(this.texVAO!);
-
-        /* Bind the right texture to read from */
-        this.gl.activeTexture(this.gl.TEXTURE0);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, (this.activeScreen ? this.texScreenA : this.texScreenB)!);
-
-        /* Select the right framebuffer */
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, (this.activeScreen ? this.fbScreenB : this.fbScreenA)!);
-
-        this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
-        
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
-        this.activeScreen = ! this.activeScreen;
-    }
-
-    private drawCRT(): void {
-        this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
-
-        /* draws active simulation texture to screen */
-        this.gl.useProgram(this.programs.crtProjection.prog);
-        this.gl.bindVertexArray(this.texVAO!);
-
-        /* Bind the right texture to read from */
-        this.gl.activeTexture(this.gl.TEXTURE0);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, (this.activeFrame ? this.texA : this.texB)!);
-        
-        /* Bind the colour scheme texture */
-        this.gl.activeTexture(this.gl.TEXTURE1);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.colourTex!);
-
-        /* Bind the pixel structure */
-        this.gl.activeTexture(this.gl.TEXTURE2);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.crtPixelTex!);
-
-        /* Select the right framebuffer */
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, (this.activeScreen ? this.fbScreenA : this.fbScreenB)!);
-
-        this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
-        
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
-    }
-
-    private bloomScreen(): void {
+    public bloomScreen(): void {
         /* perform threshold pass */
         this.drawQuad(this.programs.bloomThreshold.prog, [(this.activeScreen ? this.texScreenA : this.texScreenB)!], this.fbBundles.threshold.fb);
         

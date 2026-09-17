@@ -15,7 +15,7 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const chunksRef = useRef<Blob[]>([]);
 
-    const [isRecording, setIsRecording] = useState<boolean>(false);
+    const [_isRecording, setIsRecording] = useState<boolean>(false);
 
     const useCRT = useAutomatonStore((s) => s.useCRT);
     const setUseCRT = useAutomatonStore((s) => s.setUseCRT);

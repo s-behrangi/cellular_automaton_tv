@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
-import { useAutomatonStore } from './automatonStore';
+import { useEffect, useRef } from 'react'
 import './App.css'
 import { useAutomaton } from './hooks/useAutomaton.ts';
 import RulePanel from './components/rulePanel.tsx';
@@ -37,7 +36,6 @@ function App() {
           exportRule={automaton.exportRule}
         />
         <ColourPanel
-          simulation={automaton.simulation}
         />
       </div>
       <MiscPanel

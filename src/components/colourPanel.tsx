@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
-import { Automaton } from '../automaton.ts';
+import React from 'react';
 import { useAutomatonStore } from '../automatonStore.ts';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { DEFAULT_COLOUR } from '../constants.ts';
 
 interface colourPanelProps{
-    simulation: Automaton,
+
 }
 
 const ColourPanel: React.FC<colourPanelProps> = ({
-    simulation,
+
 }) => {
     const primaryColour = useAutomatonStore((s) => s.primaryColour);
     const setPrimaryColour = useAutomatonStore((s) => s.setPrimaryColour);
