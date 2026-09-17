@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef, useMemo, type RefObject } from 'react';
+import { useEffect, useRef, useMemo, type RefObject } from 'react';
 import { shaders } from '../shaders/shaders.ts';
 import { Automaton } from '../automaton.ts';
 import { useAutomatonStore } from '../automatonStore.ts';

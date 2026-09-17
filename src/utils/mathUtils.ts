@@ -1,5 +1,4 @@
 import { inflate, deflate } from 'pako';
-import { xzAsync } from 'node-liblzma';
 
 const base64Dict = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/";
 
