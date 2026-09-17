@@ -109,3 +109,31 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+canvas {
+  width: 800px;
+  height: 600px;
+}
+
+.machine {
+  display: flex;
+  flex-direction: row;
+}
+
+.panel-horizontal {
+  display: flex;
+}
+
+.playback-column {
+  justify-content: center;
+}
+
+.control-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.control-row {
+  display: flex;
+  justify-content: space-evenly;
+}
