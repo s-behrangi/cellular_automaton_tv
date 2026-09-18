@@ -200,7 +200,8 @@ export class Automaton {
             const dir = Math.round(deltaY * -0.01);
 
             /* clamp function */
-            this.zoomIdx = Math.min(Math.max(0, this.zoomIdx + dir), this.zoomLevels.length - 1);
+            const minZoom = this.useCRT ? this.zoomLevels.findIndex(level => level == 4.0) : 0.0;
+            this.zoomIdx = Math.min(Math.max(minZoom, this.zoomIdx + dir), this.zoomLevels.length - 1);
             const newZoom = this.zoomLevels[this.zoomIdx];
             const dZoom = newZoom / this.camera.zoom;
 
@@ -962,7 +963,10 @@ export class Automaton {
         this.gl.uniform3f(this.uniforms.flatQuadrupleProjectionCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
     }
 
-    private handleZoomChange(simX = 0, simY = 0) {
+    private handleZoomChange(
+            simX = this.canvas.width / (2.0 * this.camera.zoom) + this.camera.x, 
+            simY = this.canvas.height/ (2.0 * this.camera.zoom) + this.camera.y                              
+        ) {
         const newZoom = this.zoomLevels[this.zoomIdx];
         const dZoom = newZoom / this.camera.zoom;
 
@@ -1013,6 +1017,10 @@ export class Automaton {
     
     public setUseCRT(val: boolean): void {
         this.useCRT = val;
+        if (this.useCRT && this.zoomLevels[this.zoomIdx] < 4) {
+            this.zoomIdx = this.zoomLevels.findIndex(level => level == 4.0);
+            this.handleZoomChange();
+        }
     }
 
     public setN(n: number): number {
@@ -1043,9 +1051,11 @@ export class Automaton {
 
     public changeZoom(diff: number): number {
         //const prevIdx = this.zoomIdx;
-        this.zoomIdx = Math.max(0, Math.min(this.zoomIdx + diff, this.zoomLevels.length - 1));
-        this.handleZoomChange(this.canvas.width / (2.0 * this.camera.zoom) + this.camera.x,
-                              this.canvas.height/ (2.0 * this.camera.zoom) + this.camera.y);
+        const minZoom = this.useCRT ? this.zoomLevels.findIndex(level => level == 4.0) : 0;
+        this.zoomIdx = Math.max(minZoom, Math.min(this.zoomIdx + diff, this.zoomLevels.length - 1));
+        // this.handleZoomChange(this.canvas.width / (2.0 * this.camera.zoom) + this.camera.x,
+        //                       this.canvas.height/ (2.0 * this.camera.zoom) + this.camera.y);
+        this.handleZoomChange();
         return this.zoomLevels[this.zoomIdx];
     }
 

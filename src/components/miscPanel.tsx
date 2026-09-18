@@ -21,7 +21,7 @@ const MiscPanel: React.FC<miscPanelProps> = ({
             <p>Toggle the CRT style between Aperture Grille and Shadow Mask:</p>
             <button onClick={() => simulation.toggleCRTStyle()}>TOGGLE</button>
             <span>{displayText}</span>
-            <p>Note that the CRT shader is not meant to be used at less than 4x zoom (two scrolls zoomed in from furthest zoom).</p>
+            <p>Note that the CRT shader forces a zoom of at least 4x</p>
         </fieldset>
     </div>
 };
