@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { FRAMERATES, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, DEFAULT_N, MAX_N, MIN_N, DEFAULT_CPU_RULE_CONTROL, DEFAULT_SIM_FRAMERATE_IDX } from './constants';
+import { FRAMERATES, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, DEFAULT_N, MAX_N, MIN_N, DEFAULT_CPU_RULE_CONTROL, DEFAULT_SIM_FRAMERATE_IDX, DEFAULT_RADIAL_SPREAD_DEGREES } from './constants';
+import { rgbToHSL } from './utils/mathUtils';
 
 interface AutomatonStore {
     n: number,
@@ -23,6 +24,12 @@ interface AutomatonStore {
 
     colouringStyle: string,
     setColouringStyle: (s: string) => void,
+
+    radialSpreadDegrees: number,
+    setSetRadialSpreadDegrees: (n: number) => void,
+
+    colours: Array<Array<number>>,
+    setColours: (scheme: Array<number>) => void,
 
     useCRT: boolean,
     setUseCRT: (val: boolean) => void,
@@ -66,6 +73,16 @@ export const useAutomatonStore = create<AutomatonStore>()(
     colouringStyle: DEFAULT_COLOURING_STYLE,
     setColouringStyle: (s: string) => set({colouringStyle: s}),
 
+    colours: [[0, 0, 0], [DEFAULT_COLOUR.h, DEFAULT_COLOUR.s, DEFAULT_COLOUR.l]],
+    setColours: (scheme: Array<number>) => set((_) => {
+            let arr = [];
+            for (let i = 0; i < scheme.length / 4; i++) {
+                let col = rgbToHSL([scheme[i * 4], scheme[i *4 + 1], scheme[i*4 + 2]]);
+                arr.push(col);
+            }
+            return {colours: arr}
+        }),
+
     useCRT: DEFAULT_CRT,
     setUseCRT: (val: boolean) => set({useCRT: val}),
 
@@ -83,4 +100,7 @@ export const useAutomatonStore = create<AutomatonStore>()(
 
     framerate: FRAMERATES[DEFAULT_SIM_FRAMERATE_IDX],
     setFramerate: (n: number) => set({framerate: n}),
+
+    radialSpreadDegrees: DEFAULT_RADIAL_SPREAD_DEGREES,
+    setSetRadialSpreadDegrees: (n: number) => set({radialSpreadDegrees: n}),
 })));

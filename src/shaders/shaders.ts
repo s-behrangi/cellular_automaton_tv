@@ -13,9 +13,6 @@ import ruleGenColourSource from './rule/ruleGenColour.glsl?raw';
 import ruleMutVertexSource from './rule/ruleMutVertex.glsl?raw';
 import ruleMutColourSource from './rule/ruleMutColour.glsl?raw';
 
-import crtProjectionColourSource from './crtProjectionColour.glsl?raw';
-import crtProjection1ColourSource from './crtProjectionColour1.glsl?raw';
-import crtProjection2ColourSource from './crtProjectionColour2.glsl?raw';
 import crtWithBloomColourSource from './crtWithBloomColour.glsl?raw';
 
 import bloomThresholdColourSource from './bloom/bloomThresholdColour.glsl?raw';
@@ -35,11 +32,7 @@ export const shaders = {
     ruleMutVertex: {shad: ruleMutVertexSource},
     ruleMutColour: {shad: ruleMutColourSource},
 
-    crtProjectionColour: {shad: crtProjectionColourSource},
     crtWithBloomColour: {shad: crtWithBloomColourSource},
-    crtProjectionColour1: {shad: crtProjection1ColourSource},
-    crtProjectionColour2: {shad: crtProjection2ColourSource},
-
 
     bloomThresholdColour: {shad: bloomThresholdColourSource},
     bloomDownsampleColour: {shad: bloomDownsampleColourSource},

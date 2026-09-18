@@ -21,11 +21,11 @@ const vec3 luminanceVec1 = vec3(0.2126, 0.7152, 0.0722);
 /* https://www.w3.org/TR/AERT/#color-contrast */
 const vec3 luminanceVec2 = vec3(0.299, 0.587, 0.114);
 
-const float vignetteIntensity = 0.9;
+const float vignetteIntensity = 0.7;
 const float cornerRadius = 50.0;
 const float bgGrey = 5.0;
 
-const float screenCurvature = 0.25;
+const float screenCurvature = 0.23;
 
 /* END CONSTANTS */
 
@@ -287,12 +287,12 @@ void main() {
     vec2 barrelledPos = barrelledCoord * uScreenSize;
 
     vec4 colour = bilinear(barrelledCoord);
-    //colour.rgb = colour.rgb * apertureGrille(pos.x, 0.5);
     colour.rgb = style ? colour.rgb * shadowMask(pos, 0.8) : colour.rgb * apertureGrille(pos, 0.8);
 
     /* LUMINANCE-ADJUSTED SCAN LINES */
     float baseBrightness = sin(barrelledPos.y * 2.0 * PI / scanLinePeriodicity) * 0.5 + 0.5;
     float luminosityFraction = 0.2*(1.0 - baseBrightness)*(cos(barrelledPos.y * 2.0 * PI / scanLinePeriodicity) * 0.5 + 0.5);
+    //float luminosityFraction = 0.4*(1.0 - baseBrightness)*(cos(barrelledPos.y * 2.0 * PI / scanLinePeriodicity) * 0.5 + 0.5);
     
     //float baseBrightness = dft4(barrelledPos.y, scanLineBrightness);
     //float luminosityFraction = dft4(barrelledPos.y, scanLineLumVariance);
@@ -308,8 +308,21 @@ void main() {
     luminosityAdjustment = rgbToLuminance(vec3(bloomColour.rgb)) * luminosityFraction;
     bloomColour = vec4(bloomColour.rgb * (baseBrightness + luminosityAdjustment), 1.0);
 
-    colour = vec4(exposure(colour.rgb + bloomColour.rgb * 0.6, 1.5), 1.0);
-    
+    vec3 hdrColour = colour.rgb + bloomColour.rgb * 0.6;
+    /* tone-mapping algorithms */
+    // colour.rgb = reinhardExtended(hdrColour, vec3(1.0, 1.0, 1.0));
+    // colour.rgb = ACES_Narkowicz(hdrColour);
+    // colour.rgb = filmic_reinhard2(hdrColour) * 1.2;
+     colour.rgb = exposure(hdrColour, 1.5);    
+    // colour.rgb = nativeTanh(hdrColour);
+    // colour.rgb = fastTanh(hdrColour);
+    // colour.rgb = superfastTanh(hdrColour);
+    // colour.rgb = uchimura(hdrColour);
+    // colour.rgb = fastApproxUchimura(hdrColour);
+
+    // Correct gamma (if needed)
+    //colour.rgb = pow(colour.rgb, vec3(1.0 / 1.6	));
+
 
     /* VIGNETTING & ROUNDED CORNERS*/
     float dist = length(vTexCoord - 0.5);
@@ -321,6 +334,7 @@ void main() {
     float cornerDist = sdRoundedBox(barrelledPos);
     float blackCornerFactor = 1.0 - smoothstep(0.0, 10.0, cornerDist);
     colour = vec4(colour.rgb * blackCornerFactor, colour.a);
-
+ 
+    
     fragColour = colour;
 }

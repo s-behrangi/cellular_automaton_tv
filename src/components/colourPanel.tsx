@@ -23,6 +23,11 @@ const ColourPanel: React.FC<colourPanelProps> = ({
     const colouringStyle = useAutomatonStore((s) => s.colouringStyle);
     const setColouringStyle = useAutomatonStore((s) => s.setColouringStyle);
 
+    const radialSpreadDegrees = useAutomatonStore((s) => s.radialSpreadDegrees);
+    const setRadialSpreadDegrees = useAutomatonStore((s) => s.setSetRadialSpreadDegrees);
+
+    const colours = useAutomatonStore((s) => s.colours);
+
     const handleColouringStyle = () => {
         if (colouringStyle == "radialSpread") {
             setColouringStyle("sameHue");
@@ -30,6 +35,7 @@ const ColourPanel: React.FC<colourPanelProps> = ({
             setColouringStyle("radialSpread");
         }
     }
+
 
     
     return <div className="panel-horizontal">
@@ -51,13 +57,33 @@ const ColourPanel: React.FC<colourPanelProps> = ({
                     >N</button>
                 </div>
                 <div className="control-row">
-                    <div 
-                      style={{
-                        height: `20px`,
-                        width: `100%`,
-                        backgroundColor: `hsl(${primaryColour.h}, ${primaryColour.s}%, ${primaryColour.l}%)`
-                      }}
+                    <Box sx={{ height: 30, width: '100%' }}>
+                    <Slider
+                        aria-label="Radial Spread"
+                        getAriaValueText={(n: number) => `Radial Spread: ${n}`}
+                        valueLabelDisplay="auto"
+                        defaultValue={DEFAULT_COLOUR.s}
+                        max={359}
+                        min={0}
+                        onChange={(_: Event, newValue: number) => setRadialSpreadDegrees(newValue)}
                     />
+                </Box>
+                </div>
+                <div className="control-row">
+                    {
+                        colours.map((colour, idx) => (
+                            <div
+                              className="colour-swatch-bar"
+                              key={idx}
+                              style={{
+                                height: `20px`,
+                                width: `${100 / colours.length}%`,
+                                backgroundColor: `hsl(${colour[0]}, ${colour[1]}%, ${colour[2]}%)`
+                              }}
+                            >
+
+                            </div>
+                    ))}
                 </div>
                 <div className="control-row">
                     <span>H</span>
@@ -67,7 +93,7 @@ const ColourPanel: React.FC<colourPanelProps> = ({
                 <div className="control-row">
                 <Box sx={{ height: 150 }}>
                     <Slider
-                        aria-label="Brush Size"
+                        aria-label="Hue"
                         orientation="vertical"
                         getAriaValueText={(n: number) => `Hue: ${n}`}
                         valueLabelDisplay="auto"
@@ -79,7 +105,7 @@ const ColourPanel: React.FC<colourPanelProps> = ({
                 </Box>
                 <Box sx={{ height: 150 }}>
                     <Slider
-                        aria-label="Brush Size"
+                        aria-label="Saturation"
                         orientation="vertical"
                         getAriaValueText={(n: number) => `Saturation: ${n}`}
                         valueLabelDisplay="auto"
@@ -91,7 +117,7 @@ const ColourPanel: React.FC<colourPanelProps> = ({
                 </Box>
                 <Box sx={{ height: 150 }}>
                     <Slider
-                        aria-label="Brush Size"
+                        aria-label="Luminance"
                         orientation="vertical"
                         getAriaValueText={(n: number) => `Luminance: ${n}`}
                         valueLabelDisplay="auto"

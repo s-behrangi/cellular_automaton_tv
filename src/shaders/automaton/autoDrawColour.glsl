@@ -24,11 +24,9 @@ void main() {
     }
 
     /* add cells accordingly */
-    float inRange = step(floor(pMouseDist), uMouse.z - 1.0);
-    state = int(float(state) * (1.0 - inRange) + inRange * uMouse.w);
-    // if (floor(pMouseDist) < uMouse.z) {
-    //     state = max(state, int(uMouse.w));
-    // }
+    if (floor(pMouseDist) < uMouse.z) {
+        state = int(uMouse.w);
+    }
 
     fragColour = uvec3(state, 0, 0);
 }

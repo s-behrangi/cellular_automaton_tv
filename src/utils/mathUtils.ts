@@ -82,7 +82,7 @@ export function rgbToHSL(rgb: number[]) {
     /* hue */
     const h = (delta === 0) ? 0 : (
               (max == r) ? (60 * (((g - b) / delta) % 6)) : 
-              (max == r) ? (60 * (((b - r) / delta) + 2)) : (60 * (((r - g) / delta) + 4)));
+              (max == g) ? (60 * (((b - r) / delta) + 2)) : (60 * (((r - g) / delta) + 4)));
     
     /* final conversion */
     return [h, s * 100, l * 100];

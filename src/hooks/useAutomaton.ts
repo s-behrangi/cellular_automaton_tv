@@ -9,6 +9,7 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
     const setN = useAutomatonStore((s) => s.setN);
     const setDisplayText = useAutomatonStore((s) => s.setDisplayText);
     const setBrushState = useAutomatonStore((s) => s.setBrushState);    
+    const setColours = useAutomatonStore((s) => s.setColours);
 
     const simulation = useMemo<Automaton>(() => {
         return new Proxy({} as Automaton, {
@@ -51,6 +52,7 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
             (n) => {
                 autoRef.current!.setN(n);
                 setBrushState(n - 1);
+                setColours(autoRef.current!.getColours());
             },
         );
 
@@ -69,7 +71,10 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
     useEffect(() => {
         const unsubscribe = useAutomatonStore.subscribe(
             (s) => s.primaryColour,
-            (primaryColour) => autoRef.current!.setPrimaryColour(primaryColour),
+            (primaryColour) => {
+                autoRef.current!.setPrimaryColour(primaryColour);
+                setColours(autoRef.current!.getColours());
+            },
         );
 
         return unsubscribe;
@@ -78,7 +83,10 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
     useEffect(() => {
         const unsubscribe = useAutomatonStore.subscribe(
             (s) => s.distinguishZeroColour,
-            (distinguishZeroColour) => autoRef.current!.setDistinguishZeroColour(distinguishZeroColour),
+            (distinguishZeroColour) => {
+                autoRef.current!.setDistinguishZeroColour(distinguishZeroColour);
+                setColours(autoRef.current!.getColours());
+            },
         );
 
         return unsubscribe;
@@ -87,7 +95,10 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
     useEffect(() => {
         const unsubscribe = useAutomatonStore.subscribe(
             (s) => s.distinguishMaxColour,
-            (distinguishMaxColour) => autoRef.current!.setDistinguishMaxColour(distinguishMaxColour),
+            (distinguishMaxColour) => {
+                autoRef.current!.setDistinguishMaxColour(distinguishMaxColour);
+                setColours(autoRef.current!.getColours());
+            },
         );
 
         return unsubscribe;
@@ -96,7 +107,10 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
     useEffect(() => {
         const unsubscribe = useAutomatonStore.subscribe(
             (s) => s.colouringStyle,
-            (colouringStyle) => autoRef.current!.setColouringStyle(colouringStyle),
+            (colouringStyle) => {
+                autoRef.current!.setColouringStyle(colouringStyle);
+                setColours(autoRef.current!.getColours());
+            },
         );
 
         return unsubscribe;
@@ -115,6 +129,18 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
         const unsubscribe = useAutomatonStore.subscribe(
             (s) => s.brushState,
             (brushState) => autoRef.current!.setBrushState(brushState),
+        );
+
+        return unsubscribe;
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = useAutomatonStore.subscribe(
+            (s) => s.radialSpreadDegrees,
+            (radialSpreadDegrees) => {
+                autoRef.current!.setRadialSpreadDegrees(radialSpreadDegrees);
+                setColours(autoRef.current!.getColours());
+            },
         );
 
         return unsubscribe;

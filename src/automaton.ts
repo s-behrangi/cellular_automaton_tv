@@ -96,8 +96,8 @@ export class Automaton {
     /* COLOUR PARAMETERS */
     private colourScheme: Uint8Array = new Uint8Array(NUMCOLOURS * COLOURWIDTH).fill(255);
     colouringStyle = "radialSpread";    // radialSpread, sameHue
-    minColourLuminance = 50;            //clamps sameHue
-    radialSpreadDegrees = 360;          //Up to 360 (degrees)
+    minColourLuminance = 20;            //clamps sameHue
+    private radialSpreadDegrees = 360;          //Up to 360 (degrees)
     distinguishZeroColour = true;
     distinguishMaxColour = false;
     primaryColour = [70, 80, 60];
@@ -120,11 +120,8 @@ export class Automaton {
             ruleGen: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.ruleGenColour.shad)!},
             ruleMut: {prog: createProgramFromSource(this.gl, shaders.ruleMutVertex.shad, shaders.ruleMutColour.shad)!},
             
-            crtProjection: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.crtProjectionColour.shad)!},
             crtWithBloom: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.crtWithBloomColour.shad)!},
-            crtProjection1: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.crtProjectionColour1.shad)!},
-            crtProjection2: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.crtProjectionColour2.shad)!},
-
+    
             bloomThreshold: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.bloomThresholdColour.shad)!},
             bloomDownsample: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.bloomDownsampleColour.shad)!},
             bloomUpsample: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.bloomUpsampleColour.shad)!},
@@ -146,6 +143,8 @@ export class Automaton {
         this.frameRateIdx = DEFAULT_SIM_FRAMERATE_IDX;
 
         this.useCRT = DEFAULT_CRT;
+        
+        this.zoomIdx = this.useCRT ? this.zoomLevels.findIndex(level => level == 4.0) : 0;
 
         this.init();
     }
@@ -166,6 +165,7 @@ export class Automaton {
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         
         //this.drawToCanvas();
+        this.handleZoomChange();
         this.animSim(performance.now());
     }
 
@@ -396,13 +396,6 @@ export class Automaton {
 
             ruleMutColourN: {loc: this.gl.getUniformLocation(this.programs.ruleMut.prog, "n")!},
             ruleMutColourSeed: {loc: this.gl.getUniformLocation(this.programs.ruleMut.prog, "colourSeed")!},
-            
-            crtProjectionStartTexture: {loc: this.gl.getUniformLocation(this.programs.crtProjection.prog, "uSampler")!},
-            crtProjectionColours: {loc: this.gl.getUniformLocation(this.programs.crtProjection.prog, "uColours")!},
-            crtProjectionScreenSize: {loc: this.gl.getUniformLocation(this.programs.crtProjection.prog, "uScreenSize")!},
-            crtProjectionSimSize: {loc: this.gl.getUniformLocation(this.programs.crtProjection.prog, "uSimSize")!},
-            crtProjectionCamera: {loc: this.gl.getUniformLocation(this.programs.crtProjection.prog, "camera")!},
-            
             crtWithBloomStartTexture: {loc: this.gl.getUniformLocation(this.programs.crtWithBloom.prog, "uSampler")!},
             crtWithBloomColours: {loc: this.gl.getUniformLocation(this.programs.crtWithBloom.prog, "uColours")!},
             crtWithBloomBloomTexture: {loc: this.gl.getUniformLocation(this.programs.crtWithBloom.prog, "uBloom")!},
@@ -411,21 +404,11 @@ export class Automaton {
             crtWithBloomCamera: {loc: this.gl.getUniformLocation(this.programs.crtWithBloom.prog, "camera")!},
             crtWithBloomStyle: {loc: this.gl.getUniformLocation(this.programs.crtWithBloom.prog, "style")!},
 
-
             flatQuadrupleProjectionStartTexture: {loc: this.gl.getUniformLocation(this.programs.flatQuadrupleProjection.prog, "uSampler")!},
             flatQuadrupleProjectionColours: {loc: this.gl.getUniformLocation(this.programs.flatQuadrupleProjection.prog, "uColours")!},
             flatQuadrupleProjectionScreenSize: {loc: this.gl.getUniformLocation(this.programs.flatQuadrupleProjection.prog, "uScreenSize")!},
             flatQuadrupleProjectionSimSize: {loc: this.gl.getUniformLocation(this.programs.flatQuadrupleProjection.prog, "uSimSize")!},
             flatQuadrupleProjectionCamera: {loc: this.gl.getUniformLocation(this.programs.flatQuadrupleProjection.prog, "camera")!},
-
-            crtProjection1StartTexture: {loc: this.gl.getUniformLocation(this.programs.crtProjection1.prog, "uSampler")!},
-            crtProjection1Colours: {loc: this.gl.getUniformLocation(this.programs.crtProjection1.prog, "uColours")!},
-            crtProjection1ScreenSize: {loc: this.gl.getUniformLocation(this.programs.crtProjection1.prog, "uScreenSize")!},
-            crtProjection1SimSize: {loc: this.gl.getUniformLocation(this.programs.crtProjection1.prog, "uSimSize")!},
-            crtProjection1Camera: {loc: this.gl.getUniformLocation(this.programs.crtProjection1.prog, "camera")!},
-        
-            crtProjection2StartTexture: {loc: this.gl.getUniformLocation(this.programs.crtProjection2.prog, "uSampler")!},
-            crtProjection2ScreenSize: {loc: this.gl.getUniformLocation(this.programs.crtProjection2.prog, "uScreenSize")!},
 
             bloomUpsamplerSmaller: {loc: this.gl.getUniformLocation(this.programs.bloomUpsample.prog, "smallerSampler")!},
             bloomUpsamplerLarger: {loc: this.gl.getUniformLocation(this.programs.bloomUpsample.prog, "largerSampler")!},
@@ -482,15 +465,6 @@ export class Automaton {
         this.gl.uniform2f(this.uniforms.colourSimSize.loc, this.autoWidth, this.autoHeight);
         this.gl.uniform3f(this.uniforms.colourCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
 
-        /* CRT PROJECTOR */
-        this.gl.useProgram(this.programs.crtProjection.prog);
-
-        this.gl.uniform1i(this.uniforms.crtProjectionStartTexture.loc, 0);
-        this.gl.uniform1i(this.uniforms.crtProjectionColours.loc, 1);
-        this.gl.uniform2f(this.uniforms.crtProjectionScreenSize.loc, this.screenWidth, this.screenHeight);
-        this.gl.uniform2f(this.uniforms.crtProjectionSimSize.loc, this.autoWidth, this.autoHeight);
-        this.gl.uniform3f(this.uniforms.crtProjectionCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
-        
         /* CRT WITH BLOOM */
         this.gl.useProgram(this.programs.crtWithBloom.prog);
 
@@ -501,21 +475,6 @@ export class Automaton {
         this.gl.uniform2f(this.uniforms.crtWithBloomSimSize.loc, this.autoWidth, this.autoHeight);
         this.gl.uniform3f(this.uniforms.crtWithBloomCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
         this.gl.uniform1i(this.uniforms.crtWithBloomStyle.loc, 1);
-
-        /* CRT PROJECTOR 1 */
-        this.gl.useProgram(this.programs.crtProjection1.prog);
-
-        this.gl.uniform1i(this.uniforms.crtProjection1StartTexture.loc, 0);
-        this.gl.uniform1i(this.uniforms.crtProjection1Colours.loc, 1);
-        this.gl.uniform2f(this.uniforms.crtProjection1ScreenSize.loc, this.screenWidth, this.screenHeight);
-        this.gl.uniform2f(this.uniforms.crtProjection1SimSize.loc, this.autoWidth, this.autoHeight);
-        this.gl.uniform3f(this.uniforms.crtProjection1Camera.loc, this.camera.x, this.camera.y, this.camera.zoom);
-
-        /* CRT PROJECTOR 2 */
-        this.gl.useProgram(this.programs.crtProjection2.prog);
-
-        this.gl.uniform1i(this.uniforms.crtProjection2StartTexture.loc, 0);
-        this.gl.uniform2f(this.uniforms.crtProjection2ScreenSize.loc, this.screenWidth, this.screenHeight);
 
         /* FLAT QUADRUPLE PROJECTOR */
         this.gl.useProgram(this.programs.flatQuadrupleProjection.prog);
@@ -953,12 +912,8 @@ export class Automaton {
     private updateCamera(): void {
         this.gl.useProgram(this.programs.autoColour.prog);
         this.gl.uniform3f(this.uniforms.colourCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
-        this.gl.useProgram(this.programs.crtProjection.prog);
-        this.gl.uniform3f(this.uniforms.crtProjectionCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
         this.gl.useProgram(this.programs.crtWithBloom.prog);
         this.gl.uniform3f(this.uniforms.crtWithBloomCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
-        this.gl.useProgram(this.programs.crtProjection1.prog);
-        this.gl.uniform3f(this.uniforms.crtProjection1Camera.loc, this.camera.x, this.camera.y, this.camera.zoom);
         this.gl.useProgram(this.programs.flatQuadrupleProjection.prog);
         this.gl.uniform3f(this.uniforms.flatQuadrupleProjectionCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
     }
@@ -1000,6 +955,10 @@ export class Automaton {
         }
         this.cpuRuleControl = ! this.cpuRuleControl;
         return this.cpuRuleControl;
+    }
+
+    public getColours(): Array<number> {
+        return Array.from(this.colourScheme.subarray(0, this.states * 4));
     }
 
     public setCPU(val: boolean): void {
@@ -1070,6 +1029,15 @@ export class Automaton {
 
         this.genColourArray();
         this.regenColourTex();
+    }
+
+    public setRadialSpreadDegrees(n: number): void {
+        this.radialSpreadDegrees = n;
+        
+        if (this.colouringStyle == "radialSpread") {
+            this.genColourArray();
+            this.regenColourTex();
+        }
     }
 
     public setBrushSize(n: number): number {

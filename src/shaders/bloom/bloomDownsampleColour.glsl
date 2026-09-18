@@ -31,13 +31,18 @@ void main() {
             -1   0   1
             + ----------
         1 |  A   B   C
-            |    D   E
+          |    D   E
         0 |  F   G   H   ←  [0,0] = G
-            |    I   J
-        -1 |  K   L   M
+          |    I   J
+       -1 |  K   L   M
     */
 
     // Corner samples
+    // vec3 quad_NW = (D + F + G) / 3.0;
+    // vec3 quad_NE = (E + G + H) / 3.0;
+    // vec3 quad_SW = (G + I + F) / 3.0;
+    // vec3 quad_SE = (H + J + G) / 3.0;
+
     vec3 quad_NW  = (A + B + F + G) * 0.25;  // average of ABGF
     vec3 quad_NE  = (B + C + G + H) * 0.25;  // average of BCGH
     vec3 quad_SW  = (F + G + K + L) * 0.25;  // average of FGLK
@@ -51,6 +56,13 @@ void main() {
                 + 0.5   * quad_C;
                 // .125 + .125 + .125 + .125 + .5 = 1.0
                 // The combined sample weights sum to exactly 1.0, so no change in brightness
+    
+    // vec3 A = texture(uSampler, vTexCoord + uTexelSize * vec2(0.0,  0.5)).rgb;
+    // vec3 B = texture(uSampler, vTexCoord                                       ).rgb;
+    // vec3 C = texture(uSampler, vTexCoord + uTexelSize * vec2(0.0,  -0.5)).rgb;
+
+    // vec3 sum = A * 0.125 + B * 0.75 + C * 0.125;
+
 
     fragColour = vec4(sum, 1.0);
 }
