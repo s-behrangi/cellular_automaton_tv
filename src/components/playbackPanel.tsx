@@ -20,6 +20,9 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
     const useCRT = useAutomatonStore((s) => s.useCRT);
     const setUseCRT = useAutomatonStore((s) => s.setUseCRT);
 
+    const framerate = useAutomatonStore((s) => s.framerate);
+    const setFramerate = useAutomatonStore((s) => s.setFramerate);
+
     const toggleRecording = () => {
         setIsRecording((recording: boolean) => {
             if (recording) {
@@ -81,6 +84,9 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
             <button onClick={() => simulation.togglePlay()}>&#9199;</button>
             <button onClick={screenshot}>&#x1F4F7;</button>
             <button onClick={() => setUseCRT(!useCRT)}>CRT</button>
+            <button onClick={() => setFramerate(simulation.changeFramerate(1))}>&#9650;</button>
+            <span>{framerate}</span>
+            <button onClick={() => setFramerate(simulation.changeFramerate(-1))}>&#9660;</button>
         </div>
     </div>
 };

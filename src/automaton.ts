@@ -1,6 +1,6 @@
 import { createProgramFromSource } from './utils/webglUtils';
 import { binomialArray, chooseWithRep, hslToRGB, stringifyRule, packRule, unpackRule, rulifyString, fmod, importRuleDirect, exportRuleDirect } from './utils/mathUtils';
-import { DEFAULT_CPU_RULE_CONTROL, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, MAX_N, MIN_N, DEFAULT_SIM_FRAMERATE, DEFAULT_CRT, DEFAULT_BRUSH_SIZE } from './constants';
+import { DEFAULT_CPU_RULE_CONTROL, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, MAX_N, MIN_N, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_SIM_FRAMERATE_IDX, FRAMERATES } from './constants';
 
 const SIMWIDTH = 1024;
 const SIMHEIGHT = 1024;
@@ -76,12 +76,13 @@ export class Automaton {
     private lastSimFrame = performance.now();
     useCRT = true;
     private CRTstyle = true;
-    simFrameRate = 24;
+    private framerates = [1, 6, 12, 24, 60, 120];
+    private frameRateIdx = 3;
+    private panDir = "";
     fade = 0;   //fade ratio
     
     /* CAMERA & DRAWING */
     camera = {x: 0, y: 0, rot: 0, zoom: 1}; //rot doesn't do anything atm
-    zoomBounds = [1, 32];
     private zoomLevels = [1, 2, 4, 8, 16, 32];
     private zoomIdx = 0;
     private pan = false;
@@ -141,7 +142,8 @@ export class Automaton {
 
         this.cpuRuleControl = DEFAULT_CPU_RULE_CONTROL;
         
-        this.simFrameRate = DEFAULT_SIM_FRAMERATE;
+        this.framerates = FRAMERATES;
+        this.frameRateIdx = DEFAULT_SIM_FRAMERATE_IDX;
 
         this.useCRT = DEFAULT_CRT;
 
@@ -154,8 +156,6 @@ export class Automaton {
 
     private init(): void {
         this.setConway();
-
-        
 
         this.initListeners();
         this.initTex();
@@ -788,12 +788,29 @@ export class Automaton {
         /* one cycle per call */
         this.fadeScreen();
 
+        const panSpeed = 4.0 / this.zoomLevels[this.zoomIdx];
+        switch (this.panDir) {
+            case 'up':
+                this.camera.y += panSpeed;
+                break;
+            case 'down':
+                this.camera.y -= panSpeed;
+                break;
+            case 'left':
+                this.camera.x -= panSpeed;
+                break;
+            case 'right':
+                this.camera.x += panSpeed;
+        }
+
+        this.updateCamera();
+
         /* handle any drawing that needs to be done */
         if (this.draw) {
             this.stepDraw();
         }
 
-        if (this.playing && now - this.lastSimFrame >= 1000 / this.simFrameRate) {
+        if (this.playing && now - this.lastSimFrame >= 1000 / this.framerates[this.frameRateIdx]) {
             this.lastSimFrame = now;
             this.stepSim();
         }
@@ -945,6 +962,22 @@ export class Automaton {
         this.gl.uniform3f(this.uniforms.flatQuadrupleProjectionCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
     }
 
+    private handleZoomChange(simX = 0, simY = 0) {
+        const newZoom = this.zoomLevels[this.zoomIdx];
+        const dZoom = newZoom / this.camera.zoom;
+
+        const newX = Math.floor(simX + (this.camera.x - simX) / dZoom);
+        const newY = Math.floor(simY + (this.camera.y - simY) / dZoom);
+
+        this.camera.x = newX;
+        this.camera.y = newY;
+        this.camera.zoom = newZoom;
+        
+        this.updateCamera();
+
+        this.drawToCanvas();
+    }
+
     /* --------------- GETTERS & SETTERS ---------------- */
     /* -------------------------------------------------- */
     /* -------------------------------------------------- */
@@ -1001,6 +1034,23 @@ export class Automaton {
         }
         
         return this.states;
+    }
+
+    public changeFramerate(diff: number): number {
+        this.frameRateIdx = Math.max(0, Math.min(this.frameRateIdx + diff, this.framerates.length - 1));
+        return this.framerates[this.frameRateIdx];
+    }
+
+    public changeZoom(diff: number): number {
+        //const prevIdx = this.zoomIdx;
+        this.zoomIdx = Math.max(0, Math.min(this.zoomIdx + diff, this.zoomLevels.length - 1));
+        this.handleZoomChange(this.canvas.width / (2.0 * this.camera.zoom) + this.camera.x,
+                              this.canvas.height/ (2.0 * this.camera.zoom) + this.camera.y);
+        return this.zoomLevels[this.zoomIdx];
+    }
+
+    public setPanDir(s: string): void {
+        this.panDir = s;
     }
 
     public setPrimaryColour(colour: Record<'h' | 's' | 'l', number>): void {

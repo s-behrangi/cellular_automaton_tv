@@ -7,7 +7,8 @@ export const MIN_N = 2;
 export const MAX_N = 21;
 export const DEFAULT_N = 2;
 
-export const DEFAULT_SIM_FRAMERATE = 24;
+export const FRAMERATES = [1, 2, 6, 12, 24, 30, 60, 120];
+export const DEFAULT_SIM_FRAMERATE_IDX = 4;
 
 export const DEFAULT_CRT = true;
 

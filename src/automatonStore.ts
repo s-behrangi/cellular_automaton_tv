@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, DEFAULT_N, MAX_N, MIN_N, DEFAULT_CPU_RULE_CONTROL } from './constants';
+import { FRAMERATES, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, DEFAULT_N, MAX_N, MIN_N, DEFAULT_CPU_RULE_CONTROL, DEFAULT_SIM_FRAMERATE_IDX } from './constants';
 
 interface AutomatonStore {
     n: number,
@@ -32,6 +32,9 @@ interface AutomatonStore {
 
     cpuRuleControl: boolean,
     setCpuRuleControl: (val: boolean) => void,
+
+    framerate: number,
+    setFramerate: (n: number) => void,
 }
 
 export const useAutomatonStore = create<AutomatonStore>()(
@@ -77,4 +80,7 @@ export const useAutomatonStore = create<AutomatonStore>()(
 
     cpuRuleControl: DEFAULT_CPU_RULE_CONTROL,
     setCpuRuleControl: (val: boolean) => set({cpuRuleControl: val}),
+
+    framerate: FRAMERATES[DEFAULT_SIM_FRAMERATE_IDX],
+    setFramerate: (n: number) => set({framerate: n}),
 })));

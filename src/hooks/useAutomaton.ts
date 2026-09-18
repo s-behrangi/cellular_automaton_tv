@@ -43,12 +43,6 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
       );
     }
 
-    useEffect(() => {
-        if (canvasRef.current) {
-        //newAutomaton();
-        }
-    }, []);
-
     /* ZUSTAND SUBSCRIPTIONS */
 
     useEffect(() => {
