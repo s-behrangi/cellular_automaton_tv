@@ -196,7 +196,8 @@ export class Automaton {
         this.canvas.addEventListener('wheel', (e) => {
             e.preventDefault();
             const [simX, simY] = this.getSimSpaceMousePosition(e);
-            const dir = e.deltaY * -0.01;
+            const deltaY = e.deltaMode === 1 ? e.deltaY * 16.8 : (e.deltaMode === 2 ? e.deltaY * window.innerHeight : e.deltaY);
+            const dir = Math.round(deltaY * -0.01);
 
             /* clamp function */
             this.zoomIdx = Math.min(Math.max(0, this.zoomIdx + dir), this.zoomLevels.length - 1);
@@ -212,12 +213,8 @@ export class Automaton {
             
             this.updateCamera();
 
-            // this.gl.useProgram(this.programs.crtProjection.prog);
-            // this.gl.uniform3f(this.uniforms.crtProjectionCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
-            // this.gl.useProgram(this.programs.autoColour.prog);
-            // this.gl.uniform3f(this.uniforms.colourCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
             this.drawToCanvas();
-        });
+        }, { passive: false });
 
         this.canvas.addEventListener('mousedown', (e) => {
             e.preventDefault()
