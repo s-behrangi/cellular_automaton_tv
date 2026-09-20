@@ -1,6 +1,6 @@
 import { createProgramFromSource } from './utils/webglUtils';
 import { binomialArray, chooseWithRep, hslToRGB, stringifyRule, packRule, unpackRule, rulifyString, fmod, importRuleDirect, exportRuleDirect } from './utils/mathUtils';
-import { DEFAULT_CPU_RULE_CONTROL, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, MAX_N, MIN_N, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_SIM_FRAMERATE_IDX, FRAMERATES } from './constants';
+import { DEFAULT_CPU_RULE_CONTROL, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, MAX_N, MIN_N, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_SIM_FRAMERATE_IDX, FRAMERATES, COLOURING_STYLES, DEFAULT_COLOURING_STYLE_VARIABLE } from './constants';
 
 const SIMWIDTH = 1024;
 const SIMHEIGHT = 1024;
@@ -95,8 +95,8 @@ export class Automaton {
 
     /* COLOUR PARAMETERS */
     private colourScheme: Uint8Array = new Uint8Array(NUMCOLOURS * COLOURWIDTH).fill(255);
-    colouringStyle = "radialSpread";    // radialSpread, sameHue
-    minColourLuminance = 20;            //clamps sameHue
+    colouringStyle = "radialSpread";    // radialSpread, sameHue, threshold
+    minColourLuminance = 100;            //clamps sameHue and sets threshold
     private radialSpreadDegrees = 360;          //Up to 360 (degrees)
     distinguishZeroColour = true;
     distinguishMaxColour = false;
@@ -132,8 +132,10 @@ export class Automaton {
         /* override with app constants as necessary */
         this.distinguishZeroColour = DEFAULT_DISTINGUISH_ZERO;
         this.distinguishMaxColour = DEFAULT_DISTINGUISH_MAX;
-        this.colouringStyle = DEFAULT_COLOURING_STYLE;
+        this.colouringStyle = COLOURING_STYLES[DEFAULT_COLOURING_STYLE];
         this.primaryColour = [DEFAULT_COLOUR.h, DEFAULT_COLOUR.s, DEFAULT_COLOUR.l];
+        this.radialSpreadDegrees = 360 * DEFAULT_COLOURING_STYLE_VARIABLE / 100;
+        this.minColourLuminance = DEFAULT_COLOURING_STYLE_VARIABLE;
         
         this.brushSize = DEFAULT_BRUSH_SIZE;
 
@@ -1040,6 +1042,13 @@ export class Automaton {
         }
     }
 
+    public setColouringStyleVariable(x: number): void {
+        this.radialSpreadDegrees = 360 * x / 100;
+        this.minColourLuminance = x;
+        this.genColourArray();
+        this.regenColourTex();
+    }
+
     public setBrushSize(n: number): number {
         this.brushSize = n;
         this.gl.useProgram(this.programs.autoDraw.prog);
@@ -1314,6 +1323,9 @@ export class Automaton {
             case "sameHue":
                 this.sameHueColouring(start, end);
                 break;
+            case "threshold":
+                this.thresholdColouring(end);
+                break;
         }
     }
 
@@ -1338,11 +1350,21 @@ export class Automaton {
     private sameHueColouring(start: number, end: number): void {
         /* fills the residual colour space (outside edges and primary colour) */
         /* with darker version of the primary colour in a linear scale        */
-        const delta = (this.primaryColour[2] - this.minColourLuminance) / (end - start + 1);
+        const delta = (this.primaryColour[2] - this.minColourLuminance) / (end - start);
         for (let i = 1; i <= end - start; i++) {
             const curRGB = hslToRGB([this.primaryColour[0], this.primaryColour[1], this.primaryColour[2] - delta * i]);
             for (let j = 0; j < 3; j++) {
                 this.colourScheme[(end - i) * 4 + j] = curRGB[j];
+            }
+        }
+    }
+
+    private thresholdColouring(end: number): void {
+        const boundary = (this.minColourLuminance / 100.0) * end;
+        const colour = hslToRGB(this.primaryColour.slice(0, 3));
+        for (let i = 0; i < end; i++) {
+            for (let j = 0; j < 3; j++) {
+                this.colourScheme[(i * 4) + j] = (i > boundary) ? colour[j] : 0;
             }
         }
     }

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { FRAMERATES, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, DEFAULT_N, MAX_N, MIN_N, DEFAULT_CPU_RULE_CONTROL, DEFAULT_SIM_FRAMERATE_IDX, DEFAULT_RADIAL_SPREAD_DEGREES } from './constants';
+import { FRAMERATES, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, DEFAULT_N, MAX_N, MIN_N, DEFAULT_CPU_RULE_CONTROL, DEFAULT_SIM_FRAMERATE_IDX, DEFAULT_COLOURING_STYLE_VARIABLE, COLOURING_STYLES } from './constants';
 import { rgbToHSL } from './utils/mathUtils';
 
 interface AutomatonStore {
@@ -23,10 +23,11 @@ interface AutomatonStore {
     setDistinguishMaxColour: (val: boolean) => void,
 
     colouringStyle: string,
-    setColouringStyle: (s: string) => void,
+    colouringStyleIdx: number,
+    setColouringStyle: (n: number) => void,
 
-    radialSpreadDegrees: number,
-    setSetRadialSpreadDegrees: (n: number) => void,
+    colouringStyleVariable: number,
+    setColouringStyleVariable: (n: number) => void,
 
     colours: Array<Array<number>>,
     setColours: (scheme: Array<number>) => void,
@@ -70,8 +71,9 @@ export const useAutomatonStore = create<AutomatonStore>()(
     distinguishMaxColour: DEFAULT_DISTINGUISH_MAX,
     setDistinguishMaxColour: (val: boolean) => set({distinguishMaxColour: val}),
     
-    colouringStyle: DEFAULT_COLOURING_STYLE,
-    setColouringStyle: (s: string) => set({colouringStyle: s}),
+    colouringStyle: COLOURING_STYLES[DEFAULT_COLOURING_STYLE],
+    colouringStyleIdx: DEFAULT_COLOURING_STYLE,
+    setColouringStyle: (i: number) => set({colouringStyle: COLOURING_STYLES[i], colouringStyleIdx: i}),
 
     colours: [[0, 0, 0], [DEFAULT_COLOUR.h, DEFAULT_COLOUR.s, DEFAULT_COLOUR.l]],
     setColours: (scheme: Array<number>) => set((_) => {
@@ -101,6 +103,6 @@ export const useAutomatonStore = create<AutomatonStore>()(
     framerate: FRAMERATES[DEFAULT_SIM_FRAMERATE_IDX],
     setFramerate: (n: number) => set({framerate: n}),
 
-    radialSpreadDegrees: DEFAULT_RADIAL_SPREAD_DEGREES,
-    setSetRadialSpreadDegrees: (n: number) => set({radialSpreadDegrees: n}),
+    colouringStyleVariable: DEFAULT_COLOURING_STYLE_VARIABLE,
+    setColouringStyleVariable: (n: number) => set({colouringStyleVariable: n}),
 })));

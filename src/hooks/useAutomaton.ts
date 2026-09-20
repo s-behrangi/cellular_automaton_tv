@@ -136,9 +136,9 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
 
     useEffect(() => {
         const unsubscribe = useAutomatonStore.subscribe(
-            (s) => s.radialSpreadDegrees,
-            (radialSpreadDegrees) => {
-                autoRef.current!.setRadialSpreadDegrees(radialSpreadDegrees);
+            (s) => s.colouringStyleVariable,
+            (colouringStyleVariable) => {
+                autoRef.current!.setColouringStyleVariable(colouringStyleVariable);
                 setColours(autoRef.current!.getColours());
             },
         );

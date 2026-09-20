@@ -2,8 +2,8 @@ import React from 'react';
 import { useAutomatonStore } from '../automatonStore.ts';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
-import { DEFAULT_COLOUR } from '../constants.ts';
-
+import { DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE_VARIABLE } from '../constants.ts';
+import WingedSelector from './inputDevices/wingedSelector.tsx';
 interface colourPanelProps{
 
 }
@@ -20,41 +20,38 @@ const ColourPanel: React.FC<colourPanelProps> = ({
     const distinguishMaxColour = useAutomatonStore((s) => s.distinguishMaxColour);
     const setDistinguishMaxColour = useAutomatonStore((s) => s.setDistinguishMaxColour);
 
-    const colouringStyle = useAutomatonStore((s) => s.colouringStyle);
+    const colouringStyleIdx = useAutomatonStore((s) => s.colouringStyleIdx);
     const setColouringStyle = useAutomatonStore((s) => s.setColouringStyle);
 
-    const radialSpreadDegrees = useAutomatonStore((s) => s.radialSpreadDegrees);
-    const setRadialSpreadDegrees = useAutomatonStore((s) => s.setSetRadialSpreadDegrees);
+    const setColouringStyleVariable = useAutomatonStore((s) => s.setColouringStyleVariable);
 
     const colours = useAutomatonStore((s) => s.colours);
 
-    const handleColouringStyle = () => {
-        if (colouringStyle == "radialSpread") {
-            setColouringStyle("sameHue");
-        } else {
-            setColouringStyle("radialSpread");
-        }
+    const handleDistinguishChange = (i: number) => {
+        setDistinguishMaxColour((i & 2) >> 1 === 1);
+        setDistinguishZeroColour((i & 1) === 1);
     }
 
-
-    
     return <div className="panel-horizontal">
         <fieldset>
             <legend>COLOUR</legend>
             <div className="control-column">
                 <div className="control-row">
-                    <button
-                      aria-pressed = {distinguishZeroColour}
-                      onClick={() => setDistinguishZeroColour(!distinguishZeroColour)}
-                    >1</button>
-                    <button
-                      aria-pressed = {colouringStyle=="radialSpread"}
-                      onClick={handleColouringStyle}
-                    >STYLE</button>
-                    <button
-                      aria-pressed = {distinguishMaxColour}
-                      onClick={() => setDistinguishMaxColour(!distinguishMaxColour)}
-                    >N</button>
+                    <WingedSelector
+                        options={["⋅⋅", "|⋅", "⋅|", "||"]}
+                        value={
+                            (distinguishZeroColour ? 1 : 0) +
+                            (distinguishMaxColour ? 2 : 0)
+                        }
+                        onChange={(i) => handleDistinguishChange(i)}
+                        size={100}
+                    />
+                    <WingedSelector
+                        options={["R", "H", "T"]}
+                        value={colouringStyleIdx}
+                        onChange={(i) => setColouringStyle(i)}
+                        size={100}
+                    />
                 </div>
                 <div className="control-row">
                     <Box sx={{ height: 30, width: '100%' }}>
@@ -62,10 +59,10 @@ const ColourPanel: React.FC<colourPanelProps> = ({
                         aria-label="Radial Spread"
                         getAriaValueText={(n: number) => `Radial Spread: ${n}`}
                         valueLabelDisplay="auto"
-                        defaultValue={DEFAULT_COLOUR.s}
-                        max={359}
+                        defaultValue={DEFAULT_COLOURING_STYLE_VARIABLE}
+                        max={100}
                         min={0}
-                        onChange={(_: Event, newValue: number) => setRadialSpreadDegrees(newValue)}
+                        onChange={(_: Event, newValue: number) => setColouringStyleVariable(newValue)}
                     />
                 </Box>
                 </div>
