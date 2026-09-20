@@ -1,6 +1,6 @@
 import React, { type PointerEvent } from 'react';
 import { useRef, type CSSProperties } from 'react';
-import "./WingedSelector.css";
+import "./wingedSelector.css";
 
 const DIAL_SIZE = 0.7;
 
