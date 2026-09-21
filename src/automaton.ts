@@ -80,6 +80,9 @@ export class Automaton {
     private frameRateIdx = 3;
     private panDir = "";
     fade = 0;   //fade ratio
+    private flashing = false;
+    private dotting = false;
+    private clearing = false;
     
     /* CAMERA & DRAWING */
     camera = {x: 0, y: 0, rot: 0, zoom: 1}; //rot doesn't do anything atm
@@ -767,6 +770,14 @@ export class Automaton {
 
         this.updateCamera();
 
+        if (this.flashing) {
+            this.flash();
+        } else if (this.dotting) {
+            this.circle();
+        } else if (this.clearing) {
+            this.clear();
+        }
+
         /* handle any drawing that needs to be done */
         if (this.draw) {
             this.stepDraw();
@@ -821,7 +832,7 @@ export class Automaton {
         this.loadFrameFromBuffer();
     }
 
-    public circle(size = 50) {
+    public circle(size = this.brushSize) {
         /* uses Pythagoras */
         const xMid = this.screenWidth / 2;
         const yMid = this.screenHeight / 2;
@@ -967,6 +978,18 @@ export class Automaton {
         if (val != this.cpuRuleControl) {
             this.toggleCPU();
         }
+    }
+
+    public setFlash(val: boolean): void {
+        this.flashing = val;
+    }
+
+    public setDot(val: boolean): void {
+        this.dotting = val;
+    }
+
+    public setClear(val: boolean): void {
+        this.clearing = val;
     }
 
     public toggleCRTStyle(): boolean {

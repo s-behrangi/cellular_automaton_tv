@@ -1,9 +1,7 @@
 import React from 'react';
 import { useAutomatonStore } from '../automatonStore.ts';
-import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
-import { DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE_VARIABLE } from '../constants.ts';
 import WingedSelector from './inputDevices/wingedSelector.tsx';
+import JackalSlider from './inputDevices/jackalSlider.tsx';
 interface colourPanelProps{
 
 }
@@ -23,6 +21,7 @@ const ColourPanel: React.FC<colourPanelProps> = ({
     const colouringStyleIdx = useAutomatonStore((s) => s.colouringStyleIdx);
     const setColouringStyle = useAutomatonStore((s) => s.setColouringStyle);
 
+    const colouringStyleVariable = useAutomatonStore((s) => s.colouringStyleVariable);
     const setColouringStyleVariable = useAutomatonStore((s) => s.setColouringStyleVariable);
 
     const colours = useAutomatonStore((s) => s.colours);
@@ -53,18 +52,16 @@ const ColourPanel: React.FC<colourPanelProps> = ({
                         size={100}
                     />
                 </div>
-                <div className="control-row">
-                    <Box sx={{ height: 30, width: '100%' }}>
-                    <Slider
-                        aria-label="Radial Spread"
-                        getAriaValueText={(n: number) => `Radial Spread: ${n}`}
-                        valueLabelDisplay="auto"
-                        defaultValue={DEFAULT_COLOURING_STYLE_VARIABLE}
+                <div 
+                    className="gutter"
+                    style={{height: '40px', width: '100%'}}
+                    >
+                    <JackalSlider 
+                        value={colouringStyleVariable}
+                        onChange={(x: number) => setColouringStyleVariable(x)}
                         max={100}
                         min={0}
-                        onChange={(_: Event, newValue: number) => setColouringStyleVariable(newValue)}
                     />
-                </Box>
                 </div>
                 <div className="control-row">
                     {
@@ -82,53 +79,39 @@ const ColourPanel: React.FC<colourPanelProps> = ({
                             </div>
                     ))}
                 </div>
-                <div className="control-row">
-                    <span>H</span>
-                    <span>S</span>
-                    <span>L</span>
-                </div>
-                <div className="control-row">
-                <Box sx={{ height: 150 }}>
-                    <Slider
-                        aria-label="Hue"
-                        orientation="vertical"
-                        getAriaValueText={(n: number) => `Hue: ${n}`}
-                        valueLabelDisplay="auto"
-                        defaultValue={DEFAULT_COLOUR.h}
-                        max={360}
-                        min={0}
-                        onChange={(_: Event, newValue: number) => setPrimaryColour('h', newValue)}
-                    />
-                </Box>
-                <Box sx={{ height: 150 }}>
-                    <Slider
-                        aria-label="Saturation"
-                        orientation="vertical"
-                        getAriaValueText={(n: number) => `Saturation: ${n}`}
-                        valueLabelDisplay="auto"
-                        defaultValue={DEFAULT_COLOUR.s}
-                        max={100}
-                        min={0}
-                        onChange={(_: Event, newValue: number) => setPrimaryColour('s', newValue)}
-                    />
-                </Box>
-                <Box sx={{ height: 150 }}>
-                    <Slider
-                        aria-label="Luminance"
-                        orientation="vertical"
-                        getAriaValueText={(n: number) => `Luminance: ${n}`}
-                        valueLabelDisplay="auto"
-                        defaultValue={DEFAULT_COLOUR.l}
-                        max={100}
-                        min={0}
-                        onChange={(_: Event, newValue: number) => setPrimaryColour('l', newValue)}
-                    />
-                </Box>
-                </div>
-                <div className="control-row">
-                    <span>{primaryColour.h}</span>
-                    <span>{primaryColour.s}</span>
-                    <span>{primaryColour.l}</span>
+                <div 
+                    className="gutter"
+                    style={{height: '100%', width: '100%'}}
+                >
+                    <div className="control-column">
+                        <div className="control-row">
+                            <JackalSlider 
+                                value={primaryColour.h}
+                                onChange={(newValue: number) => setPrimaryColour('h', newValue)}
+                                min={0}
+                                max={359}
+                            />
+                            <span>H</span>
+                        </div>
+                        <div className="control-row">
+                            <JackalSlider 
+                                value={primaryColour.s}
+                                onChange={(newValue: number) => setPrimaryColour('s', newValue)}
+                                min={0}
+                                max={100}
+                            />
+                            <span>S</span>
+                        </div>
+                        <div className="control-row">
+                            <JackalSlider 
+                                value={primaryColour.l}
+                                onChange={(newValue: number) => setPrimaryColour('l', newValue)}
+                                min={0}
+                                max={100}
+                            />
+                            <span>L</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </fieldset>

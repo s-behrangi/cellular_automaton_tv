@@ -38,6 +38,13 @@
   --winged-selector-wing-low: #505358;
   --winged-selector-wing-med: #bcc0c2;
   --winged-selector-wing-high: #b7babe;
+
+  /* JACKAL SLIDER */
+  --jackal-slider-thumb-dark: rgb(24, 24, 24);
+  --jackal-slider-thumb-light: rgb(44, 44, 44);
+  --jackal-slider-thumb-highlight: rgb(54, 53, 53);
+  --jackal-slider-thumb-shadow: rgb(22, 22, 22);
+  --jackal-slider-rail: black;
 }
 
 body {
@@ -67,11 +74,27 @@ canvas {
 }
 
 .control-column {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
 
 .control-row {
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: space-evenly;
+}
+
+.gutter {
+  height: 250px;
+  width: 140px;
+  border-radius: 5% 5% 5% 5%;
+  background-color: var(--machine-colour);
+  box-shadow: inset -2px 3px 4px 4px rgba(0, 0, 0, 0.829),
+              inset 4px 4px 10px 0px rgba(255, 255, 255, 0.096);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

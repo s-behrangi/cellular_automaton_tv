@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Automaton } from '../automaton.ts';
 import { useAutomatonStore } from '../automatonStore.ts';
+import BinarySwitch from './inputDevices/binarySwitch.tsx';
 
 interface rulePanelProps{
     simulation: Automaton,
@@ -16,7 +17,6 @@ const RulePanel: React.FC<rulePanelProps> = ({
     const n = useAutomatonStore((s) => s.n);
     const setN = useAutomatonStore((s) => s.setN);
 
-    const cpuRuleControl = useAutomatonStore((s) => s.cpuRuleControl);
     const setCpuRuleControl = useAutomatonStore((s) => s.setCpuRuleControl);
 
     const [importString, setImportString] = useState<string>("");
@@ -39,7 +39,10 @@ const RulePanel: React.FC<rulePanelProps> = ({
                         <button onClick={() => simulation.mutateRule()}>MUT</button>
                     </div>
                     <div className="control-column">
-                        <button onClick={() => setCpuRuleControl(!cpuRuleControl)}>CPU</button>
+                        <BinarySwitch 
+                            onChange={(val: boolean) => setCpuRuleControl(!val)}
+                            toggle={true}
+                        />
                         <button onClick={() => importRule(importString)}>IN</button>
                         <button onClick={() => exportRule()}>OUT</button>
                     </div>

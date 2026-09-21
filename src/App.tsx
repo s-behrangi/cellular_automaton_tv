@@ -11,7 +11,6 @@ import ControlCluster from './components/controlCluster.tsx';
 function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
-  
   const automaton = useAutomaton(canvasRef);
 
   useEffect(() => {
@@ -34,20 +33,26 @@ function App() {
           />
         </div>
         
-        <DrawPanel
-          simulation={automaton.simulation}
-        />
+        
         <RulePanel
           simulation={automaton.simulation}
           importRule={automaton.importRule}
           exportRule={automaton.exportRule}
         />
-        <ColourPanel
-        />
+        <div className="control-column">
+          <DrawPanel
+            simulation={automaton.simulation}
+          />
+          <ColourPanel
+          />
+        </div>
+        
       </div>
+      <div className="control-row">
       <MiscPanel
         simulation={automaton.simulation}
       />
+      </div>
     </>
   )
 }
