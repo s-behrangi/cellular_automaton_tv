@@ -32,6 +32,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
 
                     <Knob 
                         options={dialOptions}
+                        defaultValue={n - 2}
                         onChange={handleDialChange}
                     />
 

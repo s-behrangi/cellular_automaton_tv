@@ -13,7 +13,6 @@ const DiagonalSwitch: React.FC<diagonalSwitchProps> = ({
     defaultValue = false,
     toggle = true,
 }) => {
-    const value = defaultValue;
     const [active, setActive] = useState<boolean>(defaultValue);
     
     useEffect(() => {
@@ -45,9 +44,6 @@ const DiagonalSwitch: React.FC<diagonalSwitchProps> = ({
         <div className="diagonal-switch-base">
             <div className="diagonal-switch-grip"/>
         </div>}
-        
-
-        
         
     </div>
     );
