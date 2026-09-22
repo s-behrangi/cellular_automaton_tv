@@ -28,7 +28,7 @@
   background: var(--machine-colour);
 
   /* --------- MACHINE SURFACE --------- */
-  --machine-colour: rgb(44, 44, 44);
+  --machine-colour: rgb(19, 19, 19);
   --machine-text: rgb(253, 143, 0);
 
   /* -------- CONTROL DEVICES --------- */

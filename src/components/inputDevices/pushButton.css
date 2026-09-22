@@ -1,0 +1,81 @@
+.push-button {
+    cursor: pointer;
+    width: 70px;
+    height: 40px;
+    background: radial-gradient(circle at 80% 19%, #c1c1c1, rgb(173 171 171) 70%);
+    border-radius: 4%;
+    border-style: none;
+    box-shadow: inset 2px -3px 2px 0px #060606c7, 
+                inset -3px 2px 4px -1px #e9e5e5, 
+                inset 4px -4px 8px 2px #2d2c2c61, 
+                0px 0px 1px 3px #000000e3, 
+                -2px 4px 4px 2px #000000;
+}
+
+
+.push-button.active, .push-button:active {
+    background: radial-gradient(circle at 77% 26%, #b6b6b6, rgb(117, 116, 116) 70%);
+    box-shadow: inset -2px 2px 2px 0px #000000, 
+                inset 2px -3px 2px -1px #a3a3a32b, 
+                inset 2px -3px 4px 0px #00000045, 
+                inset -2px 2px 18px 0px #1e1e1ec7, 
+                0px 0px 1px 3px #000000e0;
+}
+
+.push-button.active span, .push-button:active span {
+    left: -1px;
+    top: 2px;
+    position: relative;
+}
+
+
+/* -------- CONTROL CLUSTER -------------- */
+.up-button .push-button {
+    width: 42px;
+    height: 30px;
+    border-radius: 50% 50% 2px 2px;
+    margin-bottom: -2px;
+}
+
+.left-button .push-button {
+    position: relative;
+    margin-top: 5px;
+    margin-right: -6px;
+    width: 30px;
+    height: 42px;
+    border-radius: 50% 2px 2px 50%;
+}
+
+.right-button .push-button {
+    margin-top: 5px;
+    margin-left: 3px;
+    width: 30px;
+    height: 42px;
+    border-radius: 2px 50% 50% 2px;
+}
+
+.down-button .push-button {
+    position: relative;
+    top: -4px;
+    width: 42px;
+    height: 30px;
+    border-radius: 2px 2px 50% 50%;
+}
+
+.zoom-button .push-button {
+    margin-left: 4px;
+    margin-right: 4px;
+    width: 42px;
+    height: 20px;
+}
+
+.zoom-in-button .push-button {
+    margin-bottom: -2px;
+}
+
+.zoom-out-button .push-button {
+    position: relative;
+    top: -3px;
+    padding-top: -5px;
+    border-top: 1px;
+}

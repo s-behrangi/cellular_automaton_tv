@@ -57,7 +57,6 @@ export class Automaton {
     private crtPixelTex?: WebGLTexture;
     /* [bloom] */
     private bloomDepth = 1; //how many times to downsample [both dimension of screensize should be divisible by 2^bloomDepth]
-    useBloom = true;
 
     /* RULE */
     private rule: Uint8Array = new Uint8Array(RULEWIDTH * RULEWIDTH).fill(0);
@@ -539,15 +538,6 @@ export class Automaton {
             this.prepareBloom();
             this.drawCRTWithBloom();
             this.drawActiveScreen();
-
-            // this.drawCRT();
-            // this.useBloom ? this.bloomScreen() : null;
-            // this.drawActiveScreen();
-
-            // this.projectCRT();
-            // this.useBloom ? this.bloomScreen() : null;
-            // this.distortCRT();
-            // this.drawActiveScreen();
         } else {
             this.drawFrametoScreen();
             this.drawActiveScreen();
@@ -960,6 +950,14 @@ export class Automaton {
             this.animSim(performance.now());
         }
         return this.playing;
+    }
+
+    public setPlay(val: boolean): void {
+        this.playing = val;
+        if (this.playing) {
+            this.animSim(performance.now());
+        }
+        console.log("set");
     }
 
     public toggleCPU(): boolean {

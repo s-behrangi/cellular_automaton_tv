@@ -7,6 +7,9 @@ interface AutomatonStore {
     n: number,
     setN: (n: number) => void,
 
+    isPlaying: boolean,
+    setIsPlaying: (val: boolean) => void,
+
     displayText: string,
     setDisplayText: (text: string) => void,
 
@@ -55,6 +58,9 @@ export const useAutomatonStore = create<AutomatonStore>()(
             return {n: s.n}
         }
     }),
+
+    isPlaying: false,
+    setIsPlaying: (val: boolean) => set({isPlaying: val}),
 
     displayText: "",
     setDisplayText: (text: string) => set({displayText: text}),

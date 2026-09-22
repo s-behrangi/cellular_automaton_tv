@@ -36,7 +36,7 @@ const JackalSlider: React.FC<jackalSliderProps> = ({
 
     const thumbBoxShadow = 'inset 1px -1px 1px 0px #080808,' +
                             'inset -1px 1px 1px 0px #535151,' + 
-                            '-1px 1px 2px 1px #141414';
+                            '-2px 2px 2px 1px #080808';
 
     
     return (

@@ -2,6 +2,7 @@ import React from 'react';
 import { useRef, useState, type RefObject } from 'react';
 import { Automaton } from '../automaton.ts';
 import { useAutomatonStore } from '../automatonStore.ts';
+import DiagonalSwitch from './inputDevices/diagonalSwitch.tsx';
 
 interface playbackPanelProps{
     simulation: Automaton,
@@ -15,7 +16,7 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const chunksRef = useRef<Blob[]>([]);
 
-    const [_isRecording, setIsRecording] = useState<boolean>(false);
+    const [isRecording, setIsRecording] = useState<boolean>(false);
 
     const useCRT = useAutomatonStore((s) => s.useCRT);
     const setUseCRT = useAutomatonStore((s) => s.setUseCRT);
@@ -23,12 +24,27 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
     const framerate = useAutomatonStore((s) => s.framerate);
     const setFramerate = useAutomatonStore((s) => s.setFramerate);
 
-    const toggleRecording = () => {
+    const isPlaying = useAutomatonStore((s) => s.isPlaying);
+    const setIsPlaying = useAutomatonStore((s) => s.setIsPlaying);
+
+    const handleStep = () => {
+        console.log("handling it");
+        setIsPlaying(false);
+        simulation.stepSim();
+    }
+
+    const toggleRecording = (val: boolean) => {
         setIsRecording((recording: boolean) => {
-            if (recording) {
+            console.log(val, recording);
+            if (!val) {
+                console.log("stopped")
+                if (!mediaRecorderRef.current) {
+                    return false;
+                }
                 mediaRecorderRef.current?.stop()!;
-                setIsRecording(false);
-            } else {
+                //setIsRecording(false);
+            } else if (val){
+                console.log("started")
                 chunksRef.current = [];
 
                 const stream = cRef.current?.captureStream(30)!;
@@ -79,9 +95,31 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
     
     return <div className="panel-horizontal">
         <div className="control-column playback-column">
-            <button onClick={() => toggleRecording()}>&#128308;</button>
-            <button onClick={() => simulation.stepSim()}>&#8658;</button>
-            <button onClick={() => simulation.togglePlay()}>&#9199;</button>
+            <div className="control-row">
+                <span>&#128308;</span>
+                <DiagonalSwitch 
+                    onChange={(val: boolean) => toggleRecording(val)}
+                    defaultValue={isRecording}
+                    toggle={true}
+                />
+            </div>
+            <div className="control-row">
+                <span>&#8658;</span>
+                <DiagonalSwitch 
+                    onChange={(val: boolean) => val ? handleStep() : null}
+                    defaultValue={false}
+                    toggle={false}
+                />
+            </div>
+            <div className="control-row">
+                <span>&#9199;</span>
+                <DiagonalSwitch 
+                    key={isPlaying ? "a" : "b"}
+                    onChange={setIsPlaying}
+                    defaultValue={isPlaying}
+                    toggle={true}
+                />
+            </div>
             <button onClick={screenshot}>&#x1F4F7;</button>
             <button onClick={() => setUseCRT(!useCRT)}>CRT</button>
             <button onClick={() => setFramerate(simulation.changeFramerate(1))}>&#9650;</button>

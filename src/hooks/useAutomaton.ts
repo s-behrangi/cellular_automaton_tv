@@ -61,6 +61,15 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
 
     useEffect(() => {
         const unsubscribe = useAutomatonStore.subscribe(
+            (s) => s.isPlaying,
+            (isPlaying) => {console.log("here"); autoRef.current!.setPlay(isPlaying);}
+        );
+
+        return unsubscribe;
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = useAutomatonStore.subscribe(
             (s) => s.brushSize,
             (brushSize) => autoRef.current!.setBrushSize(brushSize),
         );

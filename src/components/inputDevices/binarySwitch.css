@@ -5,19 +5,15 @@
 }
 
 .binary-switch-housing {
-    cursor:pointer;
+    cursor: pointer;
     width: 100%;
     height: 100%;
     border-color: #141414;
     border-radius: 8px;
     border-style: solid;
     border-width: 2px;
-    box-shadow: 1px -1px 1px 1px #0000008c, 
-                -1px 1px 1px 1px #000000c4, 
-                inset 2px -2px 13px 6px #ffffff0d, 
-                inset -2px 2px 1px 0px #000000b8, 
-                inset 1px -1px 2px 1px black;
-    background-color: #080808;
+    box-shadow: 1px -1px 1px 1px #0000008c, -1px 1px 1px 1px #000000c4, inset 2px -2px 6px 4px #7372720a, inset -2px 2px 1px 0px #000000b8, inset 1px -1px 2px 1px black;
+    background-color: #040404;
 }
 
 .binary-switch-switch {

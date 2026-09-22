@@ -17,15 +17,11 @@ const BinarySwitch: React.FC<binarySwitchProps> = ({
         onChange(active);
     }, [active])
 
-    const handleClick = () => {
-        if (toggle) {
-            setActive((state) => !state);
-        }
-    }
-
     const handleDown = () => {
         if (!toggle) {
             setActive(true);
+        } else {
+            setActive((state) => !state);
         }
     }
 
@@ -38,7 +34,6 @@ const BinarySwitch: React.FC<binarySwitchProps> = ({
     return (
     <div className="binary-switch" >
         <div className="binary-switch-housing" 
-            onClick={() => handleClick()}
             onPointerDown={() => handleDown()}
             onPointerUp={() => handleUp()}
         >
