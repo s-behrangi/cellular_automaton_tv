@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { FRAMERATES, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, DEFAULT_N, MAX_N, MIN_N, DEFAULT_CPU_RULE_CONTROL, DEFAULT_SIM_FRAMERATE_IDX, DEFAULT_COLOURING_STYLE_VARIABLE, COLOURING_STYLES } from './constants';
+import { DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, DEFAULT_N, MAX_N, MIN_N, DEFAULT_CPU_RULE_CONTROL, DEFAULT_SIM_FRAMERATE_IDX, DEFAULT_COLOURING_STYLE_VARIABLE, COLOURING_STYLES } from './constants';
 import { rgbToHSL } from './utils/mathUtils';
 
 interface AutomatonStore {
@@ -41,11 +41,17 @@ interface AutomatonStore {
     brushState: number,
     setBrushState: (n: number) => void,
 
+    brushStateKnobState: number,
+    setBrushStateKnobState: (n: number) => void,
+
+    brushErase: boolean,
+    setBrushErase: (val: boolean) => void,
+
     cpuRuleControl: boolean,
     setCpuRuleControl: (val: boolean) => void,
 
-    framerate: number,
-    setFramerate: (n: number) => void,
+    framerateIdx: number,
+    setFramerateIdx: (n: number) => void,
 }
 
 export const useAutomatonStore = create<AutomatonStore>()(
@@ -97,17 +103,29 @@ export const useAutomatonStore = create<AutomatonStore>()(
     brushState: DEFAULT_N - 1,
     setBrushState: (n: number) => set((s) => {
         if (n >= 0 && n <= s.n - 1) {
-            return {brushState: n};
+            return {brushState: n, brushStateKnobState: n, brushErase: n == 0 ? true : false};
         } else {
             return {brushState: s.brushState};
+        }
+    }),
+
+    brushStateKnobState: DEFAULT_N - 1,
+    setBrushStateKnobState: (n: number) => set((s) => ({brushStateKnobState: n, brushErase: false, brushState: Math.min(n, s.n - 1)})),
+
+    brushErase: false,
+    setBrushErase: (val: boolean) => set((s) => {
+        if (val) {
+            return {brushErase: true, brushState: 0}
+        } else {
+            return {brushErase: false, brushState: Math.min(s.brushStateKnobState, s.n - 1)}
         }
     }),
 
     cpuRuleControl: DEFAULT_CPU_RULE_CONTROL,
     setCpuRuleControl: (val: boolean) => set({cpuRuleControl: val}),
 
-    framerate: FRAMERATES[DEFAULT_SIM_FRAMERATE_IDX],
-    setFramerate: (n: number) => set({framerate: n}),
+    framerateIdx: DEFAULT_SIM_FRAMERATE_IDX,
+    setFramerateIdx: (n: number) => set({framerateIdx: n}),
 
     colouringStyleVariable: DEFAULT_COLOURING_STYLE_VARIABLE,
     setColouringStyleVariable: (n: number) => set({colouringStyleVariable: n}),

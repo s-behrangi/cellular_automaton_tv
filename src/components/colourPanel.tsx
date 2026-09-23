@@ -2,6 +2,7 @@ import React from 'react';
 import { useAutomatonStore } from '../automatonStore.ts';
 import WingedSelector from './inputDevices/wingedSelector.tsx';
 import JackalSlider from './inputDevices/jackalSlider.tsx';
+import ColourSwatch from './colourSwatch.tsx';
 interface colourPanelProps{
 
 }
@@ -24,12 +25,14 @@ const ColourPanel: React.FC<colourPanelProps> = ({
     const colouringStyleVariable = useAutomatonStore((s) => s.colouringStyleVariable);
     const setColouringStyleVariable = useAutomatonStore((s) => s.setColouringStyleVariable);
 
-    const colours = useAutomatonStore((s) => s.colours);
-
     const handleDistinguishChange = (i: number) => {
         setDistinguishMaxColour((i & 2) >> 1 === 1);
         setDistinguishZeroColour((i & 1) === 1);
     }
+
+    const hueTicks = Array.from({length: 19}, (_, idx) => idx * (1 / 18.0));
+
+    const satLumVarTicks = Array.from({length: 11}, (_, idx) => idx * 0.1);
 
     return <div className="panel-horizontal">
         <fieldset>
@@ -61,23 +64,15 @@ const ColourPanel: React.FC<colourPanelProps> = ({
                         onChange={(x: number) => setColouringStyleVariable(x)}
                         max={100}
                         min={0}
+                        ticks={true}
+                        tickList={satLumVarTicks}
+                        emphasize={5}
                     />
                 </div>
                 <div className="control-row">
-                    {
-                        colours.map((colour, idx) => (
-                            <div
-                              className="colour-swatch-bar"
-                              key={idx}
-                              style={{
-                                height: `20px`,
-                                width: `${100 / colours.length}%`,
-                                backgroundColor: `hsl(${colour[0]}, ${colour[1]}%, ${colour[2]}%)`
-                              }}
-                            >
-
-                            </div>
-                    ))}
+                    <div className="control-column">
+                        <ColourSwatch />
+                    </div>
                 </div>
                 <div 
                     className="gutter"
@@ -90,6 +85,9 @@ const ColourPanel: React.FC<colourPanelProps> = ({
                                 onChange={(newValue: number) => setPrimaryColour('h', newValue)}
                                 min={0}
                                 max={359}
+                                ticks={true}
+                                tickList={hueTicks}
+                                emphasize={6}
                             />
                             <span>H</span>
                         </div>
@@ -99,6 +97,9 @@ const ColourPanel: React.FC<colourPanelProps> = ({
                                 onChange={(newValue: number) => setPrimaryColour('s', newValue)}
                                 min={0}
                                 max={100}
+                                ticks={true}
+                                tickList={satLumVarTicks}
+                                emphasize={5}
                             />
                             <span>S</span>
                         </div>
@@ -108,6 +109,9 @@ const ColourPanel: React.FC<colourPanelProps> = ({
                                 onChange={(newValue: number) => setPrimaryColour('l', newValue)}
                                 min={0}
                                 max={100}
+                                ticks={true}
+                                tickList={satLumVarTicks}
+                                emphasize={5}
                             />
                             <span>L</span>
                         </div>

@@ -1031,6 +1031,10 @@ export class Automaton {
         return this.framerates[this.frameRateIdx];
     }
 
+    public setFramerateIdx(idx: number) {
+        this.frameRateIdx = idx;
+    }
+
     public changeZoom(diff: number): number {
         //const prevIdx = this.zoomIdx;
         const minZoom = this.useCRT ? this.zoomLevels.findIndex(level => level == 4.0) : 0;

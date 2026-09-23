@@ -6,7 +6,6 @@ import DrawPanel from './components/drawPanel.tsx';
 import PlaybackPanel from './components/playbackPanel.tsx';
 import ColourPanel from './components/colourPanel.tsx';
 import MiscPanel from './components/miscPanel.tsx';
-import ControlCluster from './components/controlCluster.tsx';
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -27,9 +26,6 @@ function App() {
           <PlaybackPanel
             simulation={automaton.simulation}
             cRef = {canvasRef}
-          />
-          <ControlCluster
-            simulation={automaton.simulation}
           />
         </div>
         

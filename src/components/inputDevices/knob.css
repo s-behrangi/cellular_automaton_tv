@@ -44,7 +44,7 @@
     left: 50%;
     top: 8%;                            
     width:  4px;
-    height: 20px;     
+    height: calc(var(--knob-size) * 0.15);     
     transform: translateX(-50%);
 
     background: var(--machine-text);

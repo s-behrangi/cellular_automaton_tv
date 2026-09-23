@@ -16,7 +16,7 @@ const Knob: React.FC<knobProps> = ({
     options = [],
     onChange = (_: number) => (null),
     defaultValue = 0,
-    size = 100,
+    size = 90,
     emphasize = 5,
 }) => {
     const n = options.length;

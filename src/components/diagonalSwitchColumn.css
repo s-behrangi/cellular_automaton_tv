@@ -1,0 +1,83 @@
+.diagonal-switch-column {
+    display: flex;
+    flex-direction: column;
+    width: 120px;
+    padding-top: 10px;
+}
+
+.dummy-diagonal-switch {
+    position: relative;
+    z-index: 2;
+    background-color: var(--diagonal-switch-column-colour);
+    width: 100%;
+    height: 40px;
+    border-radius: 0px 3px 3px 0px;
+    box-shadow: -2px 4px 4px 2px black;
+
+}
+
+.dummy-diagonal-switch.top {
+    box-shadow: inset -2px 2px 1px 1px rgb(161 161 161 / 11%), 
+                inset -2px 2px 1px -2px rgb(161 161 161 / 88%);
+}
+
+.diagonal-switch-column-bottom {
+    display: flex;
+}
+
+.dummy-diagonal-switch.bottom-left {
+    position: relative;
+    z-index: 2;
+    width: 40px;
+    box-shadow: -2px 8px 5px -2px black;
+    border-radius: 0px;
+}
+
+.dummy-diagonal-switch.bottom-right {
+    position: relative;
+    z-index: 1;
+    width: 80px;
+    border-radius: 0px 3px 3px 0px;
+    box-shadow: inset -1px 2px 1px 1px rgb(161 161 161 / 11%), 
+                inset -2px 2px 1px -2px rgb(161 161 161 / 88%),
+                -2px 4px 4px 2px black;
+}
+
+.diagonal-switch-column-left {
+    display: flex;
+}
+
+.diagonal-switch-column-left-runner {
+    width: 10px;
+    height: 100%;
+    background-color: var(--diagonal-switch-column-colour);
+}
+
+.diagonal-switch-column-labels {
+    height: calc(100% + 3px);
+    font-size: 11px;
+    align-items: center;
+    position: relative;
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background-color: var(--diagonal-switch-column-colour);
+    z-index: 3;
+    box-shadow: inset 2px -2px 5px -2px rgb(0 0 0 / 85%), inset -1px 7px 4px -2px rgba(0, 0, 0, 0.733), inset -2px 0px 2px 0px rgb(63 63 63 / 86%), inset 2px -2px 1px 2px rgb(63 63 63 / 65%), inset 2px -2px 1px -2px rgb(197 197 197 / 14%), inset -4px 3px 1px 3px rgba(0, 0, 0, 0.733);
+}
+
+.diagonal-switch-column-main {
+    position:relative;
+    display: flex;
+}
+
+.diagonal-switch-column-switches {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}

@@ -1,0 +1,27 @@
+.brush-state-knob .push-button {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    left: 50px;
+    top: -80px;
+    cursor: pointer;
+    background: radial-gradient(circle at 68% 29%, #2b2b2b, rgb(0 0 0) 70%);
+    border-style: none;
+    box-shadow: inset 1px -1px 2px 0px #060606c9, inset -1px 0px 2px 0px #5b5b5b, inset 4px -4px 8px 2px #2d2c2c61, -2px 2px 2px 2px #0a0a0a, -2px 4px 4px 2px #00000070, inset -5px 7px 4px -8px #f9f7f79e;
+    color: var(--machine-text);
+}
+
+.brush-state-knob .push-button.active, .brush-state-knob .push-button:active {
+    background: radial-gradient(circle at 68% 29%, #1b1b1b, rgb(0 0 0) 70%);
+    box-shadow: inset -2px 2px 2px 0px #000000, 
+                inset 2px -3px 2px -1px #a3a3a32b, 
+                inset 2px -3px 4px 0px #00000045, 
+                inset -2px 2px 18px 0px #1e1e1ec7;
+}
+
+.brush-state-knob .push-button.active span, .brush-state-knob .push-button:active span {
+    left: -1px;
+    top: 2px;
+    position: relative;
+}

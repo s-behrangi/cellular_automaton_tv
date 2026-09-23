@@ -1,0 +1,19 @@
+.io-and-cpu-knob {
+    align-items: end;
+    height: 85px;
+}
+
+.io-and-cpu-knob .winged-selector {
+    margin-bottom: -20px;
+}
+
+.io-and-cpu-knob .push-button {
+    width: 40px;
+    height: 30px;
+}
+
+.rule-panel .knob-row {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+}

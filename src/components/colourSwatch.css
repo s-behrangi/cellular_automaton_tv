@@ -1,0 +1,18 @@
+.colour-swatch-housing {
+    margin: 5px;
+    box-shadow: inset -5px 5px 2px 1px #00000085, inset 4px -4px 2px 1px #47474729, inset 2px -2px 1px 0px #77777712, inset -3px 3px 2px 1px #000000ba;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.colour-swatch {
+    position: relative;
+    background-color: rgb(3, 3, 3);
+    
+}
+
+.colour-swatch-dot {
+    position: absolute;
+    border-radius: 50%;
+}

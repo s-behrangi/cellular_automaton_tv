@@ -1,10 +1,11 @@
 import React from 'react';
 import { Automaton } from '../automaton.ts';
 import { useAutomatonStore } from '../automatonStore.ts';
-import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
-import { DEFAULT_BRUSH_SIZE } from '../constants.ts';
 import BinarySwitch from './inputDevices/binarySwitch.tsx';
+import Knob from './inputDevices/knob.tsx';
+import PushButton from './inputDevices/pushButton.tsx';
+import JackalSlider from './inputDevices/jackalSlider.tsx';
+import './drawPanel.css'; 
 
 interface drawPanelProps{
     simulation: Automaton,
@@ -15,12 +16,16 @@ const DrawPanel: React.FC<drawPanelProps> = ({
 }) => {
     const brushSize = useAutomatonStore((s) => s.brushSize);
     const setBrushSize = useAutomatonStore((s) => s.setBrushSize);
-    const [minBrushSize, maxBrushSize] = [1, 100];
 
-    const brushState = useAutomatonStore((s) => s.brushState);
-    const setBrushState = useAutomatonStore((s) => s.setBrushState);
+    const brushStateKnobState = useAutomatonStore((s) => s.brushStateKnobState);
+    const setBrushStateKnobState = useAutomatonStore((s) => s.setBrushStateKnobState);
 
-    //<button onClick={() => simulation.flash()}>FLASH</button>
+    const knobOptions = ["2", "", "", "", "", "7", "", "", "", "", "12", "", "", "", "", "17", "", "", "", ""];
+    
+    const brushErase = useAutomatonStore((s) => s.brushErase);
+    const setBrushErase = useAutomatonStore((s) => s.setBrushErase);
+
+    const brushSizeTicks = Array.from({length: 11}, (_, idx) => idx * 0.1);
 
     return <div className="panel-horizontal">
         <fieldset>
@@ -47,23 +52,36 @@ const DrawPanel: React.FC<drawPanelProps> = ({
                 </div>
                 
                 <span>Brush Size:</span>
-                <Box sx={{ height: 150 }}>
-                    <Slider
-                        aria-label="Brush Size"
-                        orientation="vertical"
-                        getAriaValueText={(n: number) => `${n}`}
-                        valueLabelDisplay="auto"
-                        defaultValue={DEFAULT_BRUSH_SIZE}
-                        max={maxBrushSize}
-                        min={minBrushSize}
-                        onChange={(_: Event, newValue: number) => setBrushSize(newValue)}
+                <div>
+                    <JackalSlider 
+                        value={brushSize}
+                        onChange={(n: number) => setBrushSize(n)}
+                        min={1}
+                        max={50}
+                        vertical={true}
+                        ticks={true}
+                        tickList={brushSizeTicks}
+                        emphasize={5}
+                        size={170}
                     />
-                </Box>
-                <span>{brushSize}</span>
-                <span>Brush State:</span>
-                <button onClick={() => setBrushState(brushState + 1)}>▲</button>
-                <span>{brushState}</span>
-                <button onClick={() => setBrushState(brushState - 1)}>▼</button>
+                </div>
+                <div className="brush-state-knob">
+                    <Knob 
+                        key={brushStateKnobState}
+                        options={knobOptions}
+                        defaultValue={Math.max(0, brushStateKnobState - 1)}
+                        onChange={(n: number) => setBrushStateKnobState(n + 1)}
+                        emphasize={5}
+                        size={80}
+                    />
+                    <PushButton 
+                        key={brushErase ? -1 : -2}
+                        label={"1"}
+                        toggle={true}
+                        value={brushErase}
+                        onChange={setBrushErase}
+                    />
+                </div>
             </div>
         </fieldset>
     </div>

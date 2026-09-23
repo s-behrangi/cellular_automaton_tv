@@ -6,14 +6,16 @@ interface pushButtonProps {
     label?: string,
     onChange?: (val: boolean) => void,
     toggle?: boolean,
+    value?: boolean,
 }
 
 const PushButton: React.FC<pushButtonProps> = ({
     label = "label",
     onChange = (_val: boolean) => (null),
     toggle = true,
+    value = false,
 }) => {
-    const [active, setActive] = useState<boolean>(false);
+    const [active, setActive] = useState<boolean>(value);
     
     useEffect(() => {
             onChange(active);

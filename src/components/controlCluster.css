@@ -26,6 +26,7 @@
 
 .control-cluster .control-row {
     width: 120px;
+    height: 100%;
 }
 
 .control-cluster .control-column, .control-column.zoom-button {
