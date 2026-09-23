@@ -11,7 +11,6 @@ const RAIL_LENGTH = 1.0;
 const TICK_WIDTH = 2;
 const TICK_HEIGHT = 4;
 const TICK_EMPH_DIFF = 4;
-const TICK_START_X = 0.04;
 interface jackalSliderProps {
     value: number,
     onChange: (x: number) => void,
