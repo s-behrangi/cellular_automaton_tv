@@ -23,22 +23,23 @@ const DiagonalSwitchColumn: React.FC<diagonalSwitchColumnProps> = ({
     const setIsPlaying = useAutomatonStore((s) => s.setIsPlaying);
 
     const handleStep = () => {
-        console.log("handling it");
         setIsPlaying(false);
         simulation.stepSim();
     }
 
+    const screenshot = () => {
+        const dataUrl = cRef.current?.toDataURL()!;
+        downloadFile(dataUrl, 'screenshot.png');
+    }
+
     const toggleRecording = (val: boolean) => {
         setIsRecording((recording: boolean) => {
-            console.log(val, recording);
             if (!val) {
-                console.log("stopped")
                 if (!mediaRecorderRef.current) {
                     return false;
                 }
                 mediaRecorderRef.current?.stop()!;
             } else if (val){
-                console.log("started")
                 chunksRef.current = [];
 
                 const stream = cRef.current?.captureStream(30)!;
@@ -88,12 +89,18 @@ const DiagonalSwitchColumn: React.FC<diagonalSwitchColumnProps> = ({
             <div className="diagonal-switch-column-left">
                 <div className="diagonal-switch-column-left-runner" />
                 <div className="diagonal-switch-column-labels">
+                    <span>PNG</span>
                     <span>&#128308;</span>
                     <span>&#8658;</span>
-                    <span>&#9199;</span>
+                    <span className="play-pause">&#9199;</span>
                 </div>
             </div>
             <div className="diagonal-switch-column-switches">
+                <DiagonalSwitch 
+                    onChange={(val: boolean) => val ? screenshot() : null}
+                    defaultValue={false}
+                    toggle={false}
+                />
                 <DiagonalSwitch 
                     onChange={(val: boolean) => toggleRecording(val)}
                     defaultValue={isRecording}
@@ -113,8 +120,8 @@ const DiagonalSwitchColumn: React.FC<diagonalSwitchColumnProps> = ({
             </div>
         </div>
         <div className="diagonal-switch-column-bottom">
+            <div className="dummy-diagonal-switch bottom" />
             <div className="dummy-diagonal-switch bottom-left" />
-            <div className="dummy-diagonal-switch bottom-right" />
         </div>
     </div>
 };

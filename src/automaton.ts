@@ -1269,22 +1269,34 @@ export class Automaton {
         }
     }
 
-    public importRule(rule: string): void {
+    public importRule(rule: string): boolean {
         let unpacked;
         let n;
 
         if (rule.length == 3 || rule.length == 45) {
             /* 2-state or 3-state */
             n = rule.length == 3 ? 2 : 3;
-            unpacked = importRuleDirect(rule, n);
+            try {
+                unpacked = importRuleDirect(rule, n);
+            } catch (_error){
+                /* invalid */
+                return false;
+            }
         } else {
             const lengths = [-1, -1, -1, 34, 165, 930, 2898, 7884, 19305, 57915, 121550, 240669, 453492];
-            const decompressed = rulifyString(rule);
+            let decompressed;
+            try {
+                decompressed = rulifyString(rule);
+            } catch (_error) {
+                /* invalid */
+                return false;
+            }
+            
             n = lengths.indexOf(decompressed.length);
 
             if (n < 3) {
                 /* invalid */
-                return;
+                return false;
             }
 
             unpacked = unpackRule(decompressed, n);
@@ -1300,6 +1312,8 @@ export class Automaton {
 
         this.genRule();
         this.ruleArrayIsCurrent = true;
+
+        return true;
     }
 
     /* ----------------- COLOUR CONTROL ----------------- */

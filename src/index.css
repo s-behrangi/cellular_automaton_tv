@@ -89,13 +89,30 @@ canvas {
 }
 
 .gutter {
-  height: 250px;
-  width: 140px;
-  border-radius: 5% 5% 5% 5%;
-  background-color: var(--machine-colour);
-  box-shadow: inset -2px 3px 4px 4px rgba(0, 0, 0, 0.829),
-              inset 4px 4px 10px 0px rgba(255, 255, 255, 0.096);
+    height: 250px;
+    width: 140px;
+    border-radius: 5% 5% 5% 5%;
+    background-color: var(--machine-colour);
+    box-shadow: inset -2px 3px 4px 4px rgba(0, 0, 0, 0.829), inset 3px -2px 3px 0px rgb(231 231 231 / 10%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+span {
+  font: bold 11px ui-monospace, monospace; 
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.input-with-label {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0 5px;
+}
+
+.input-with-label span {
+  margin-bottom: 5px;
 }

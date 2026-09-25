@@ -1,7 +1,7 @@
 import React from 'react';
 import { Automaton } from '../automaton.ts';
 import { useAutomatonStore } from '../automatonStore.ts';
-import BinarySwitch from './inputDevices/binarySwitch.tsx';
+import LightSwitch from './inputDevices/lightSwitch.tsx';
 import Knob from './inputDevices/knob.tsx';
 import PushButton from './inputDevices/pushButton.tsx';
 import JackalSlider from './inputDevices/jackalSlider.tsx';
@@ -31,56 +31,66 @@ const DrawPanel: React.FC<drawPanelProps> = ({
         <fieldset>
             <legend>DRAW</legend>
             <div className="control-row">
-                <div className="control-column">
-                    <span>CLEAR</span>
-                    <BinarySwitch 
-                        onChange={(val: boolean) => simulation.setClear(val)}
-                        toggle={false}
-                    />
-                    <BinarySwitch 
-                        onChange={(val: boolean) => simulation.setFlash(val)}
-                        toggle={false}
-                    />
-                    <span>FLASH</span>
+                <div className="control-column switches-and-brush-size">
+                    <div className="control-row">
+                        <div className="input-with-label">
+                            <span>CLEAR</span>
+                            <LightSwitch 
+                                onChange={(val: boolean) => simulation.setClear(val)}
+                                toggle={false}
+                            />
+                        </div>
+                        <div className="input-with-label">
+                            <span>FLASH</span>
+                            <LightSwitch 
+                                onChange={(val: boolean) => simulation.setFlash(val)}
+                                toggle={false}
+                            />
+                        </div>
+                        <div className="input-with-label">
+                            <span>DOT</span>
+                            <LightSwitch 
+                                onChange={(val: boolean) => simulation.setDot(val)}
+                                toggle={false}
+                            />
+                        </div>
+                    </div>
+                    <div className="input-with-label brush-size-wrapper">
+                        <span>Brush Size</span>
+                        <div>
+                            <JackalSlider 
+                                value={brushSize}
+                                onChange={(n: number) => setBrushSize(n)}
+                                min={1}
+                                max={50}
+                                vertical={false}
+                                ticks={true}
+                                tickList={brushSizeTicks}
+                                emphasize={5}
+                                size={200}
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div className = "control-column">
-                    <span>DOT</span>
-                    <BinarySwitch 
-                        onChange={(val: boolean) => simulation.setDot(val)}
-                        toggle={false}
-                    />
-                </div>
-                
-                <span>Brush Size:</span>
-                <div>
-                    <JackalSlider 
-                        value={brushSize}
-                        onChange={(n: number) => setBrushSize(n)}
-                        min={1}
-                        max={50}
-                        vertical={true}
-                        ticks={true}
-                        tickList={brushSizeTicks}
-                        emphasize={5}
-                        size={170}
-                    />
-                </div>
-                <div className="brush-state-knob">
-                    <Knob 
-                        key={brushStateKnobState}
-                        options={knobOptions}
-                        defaultValue={Math.max(0, brushStateKnobState - 1)}
-                        onChange={(n: number) => setBrushStateKnobState(n + 1)}
-                        emphasize={5}
-                        size={80}
-                    />
-                    <PushButton 
-                        key={brushErase ? -1 : -2}
-                        label={"1"}
-                        toggle={true}
-                        value={brushErase}
-                        onChange={setBrushErase}
-                    />
+                <div className="input-with-label">
+                    <span>BRUSH STATE</span>
+                    <div className="brush-state-knob">
+                        <Knob 
+                            key={brushStateKnobState}
+                            options={knobOptions}
+                            defaultValue={Math.max(0, brushStateKnobState - 1)}
+                            onChange={(n: number) => setBrushStateKnobState(n + 1)}
+                            emphasize={5}
+                            size={80}
+                        />
+                        <PushButton 
+                            key={brushErase ? -1 : -2}
+                            label={"1"}
+                            toggle={true}
+                            value={brushErase}
+                            onChange={setBrushErase}
+                        />
+                    </div>
                 </div>
             </div>
         </fieldset>

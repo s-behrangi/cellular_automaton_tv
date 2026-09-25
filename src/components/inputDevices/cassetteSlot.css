@@ -1,0 +1,103 @@
+:root {
+    --cassette-slot-slot-colour: rgb(30 30 30);
+    --cassette-slot-slot-shadow: rgb(5, 5, 5);
+
+}
+
+.cassette-slot-housing {
+    position: relative;
+    width: 200px;
+    height: 65px;
+    margin: 10px;
+}
+
+.cassette-slot-inset {
+    position: absolute;
+    width: 165px;
+    height: 50px;
+    left: 15px;
+    top: 10px;
+    z-index: 1;
+}
+
+.cassette-slot-slot-wide {
+    position: absolute;
+    left: 7px;
+    top: 5px;
+    width: 150px;
+    height: 31px;
+    background-color: var(--cassette-slot-slot-colour);
+    z-index: 2;
+    border-radius: 0px 0px 3px 3px;
+    box-shadow: 2px 2px 1px 1px var(--cassette-slot-slot-shadow);
+}
+
+.cassette-slot-slot-shadow-under {
+    position: absolute;
+    left: 4px;
+    top: 5px;
+    width: 155px;
+    height: 31px;
+    background-color: black;
+    border-radius: 2px;
+    z-index: 1;
+}
+
+.cassette-slot-slot-shadow-cover {
+    position: absolute;
+    left: 7px;
+    top: 5px;
+    width: 150px;
+    height: 31px;
+    z-index: 4;
+    background: radial-gradient(circle at 79% 41%, #181818, var(--machine-colour) 76%);
+    
+}
+
+.cassette-slot-slot-tall {
+    position: absolute;
+    left: 7px;
+    top: 5px;
+    width: 40px;
+    height: 35px;
+    background: radial-gradient(circle at 138% -54%, #181818, var(--machine-colour) 76%);
+    z-index: 3;
+    border-radius: 3px;
+    box-shadow: -2px 2px 1px 1px var(--cassette-slot-slot-shadow),
+                2px 2px 1px 1px var(--cassette-slot-slot-shadow);
+    clip-path: polygon(-10% 0%, 110% 0%, 110% 110%, -10% 110%);
+}
+
+.cassette-slot-slot-top-rail {
+    position: absolute;
+    left: 4px;
+    top: 5px;
+    width: 156px;
+    height: 4px;
+    background: radial-gradient(circle at 138% -54%, #181818, var(--machine-colour) 76%);
+    z-index: 5;
+    box-shadow: 1px 1px 1px 0px black;
+}
+
+.cassette-slot-inset-shadow {
+    position: absolute;
+    width: 165px;
+    height: 50px;
+    left: 15px;
+    top: 10px;
+    box-shadow: inset -2px 6px 8px 4px rgb(10, 10, 10), inset 2px -3px 2px 0px rgb(77 76 76 / 16%), inset -2px 2px 2px 2px rgb(10, 10, 10), inset 1px -3px 2px 2px rgb(53, 53, 53);
+    z-index: 2;
+    border-radius: 2px;
+}
+
+.cassette-slot-slot-ridge {
+    position: absolute;
+    top: 16px;
+    width: 4px;
+    height: 15px;
+    z-index: 6;
+    box-shadow: inset 2px -3px 2px 0px #06060691, 
+                inset -2px 2px 2px 0px #3d3d3d2f, 
+                inset 2px -2px 2px 0px #1b1b1b3d,
+                -1px 1px 1px 0px rgba(0, 0, 0, 0.24);
+}

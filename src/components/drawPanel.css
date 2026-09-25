@@ -1,3 +1,8 @@
+.brush-state-knob {
+    margin-left: 10px;
+    margin-bottom: -10px;
+}
+
 .brush-state-knob .push-button {
     position: relative;
     width: 30px;
@@ -20,8 +25,22 @@
                 inset -2px 2px 18px 0px #1e1e1ec7;
 }
 
-.brush-state-knob .push-button.active span, .brush-state-knob .push-button:active span {
-    left: -1px;
-    top: 2px;
+.brush-state-knob .push-button span {
     position: relative;
+    top: -1px;
+    left: 1px;
+}
+
+.brush-state-knob .push-button.active span, .brush-state-knob .push-button:active span {
+    left: 0px;
+    top: 0px;
+    position: relative;
+}
+
+.brush-size-wrapper {
+    margin-top: 10px;
+}
+
+.switches-and-brush-size {
+    margin-left: 10px;
 }

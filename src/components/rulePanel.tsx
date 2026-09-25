@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Automaton } from '../automaton.ts';
 import { useAutomatonStore } from '../automatonStore.ts';
-import BinarySwitch from './inputDevices/binarySwitch.tsx';
 import WingedSelector from './inputDevices/wingedSelector.tsx';
 import Knob from './inputDevices/knob.tsx';
 import PushButton from './inputDevices/pushButton.tsx';
 import './rulePanel.css';
 import { FRAMERATES } from '../constants.ts';
+import CassetteSlot from './inputDevices/cassetteSlot.tsx';
+import Modal from '@mui/material/Modal';
+import { Box } from '@mui/material';
+import LightSwitch from './inputDevices/lightSwitch.tsx';
 
 interface rulePanelProps{
     simulation: Automaton,
@@ -19,6 +22,9 @@ const RulePanel: React.FC<rulePanelProps> = ({
     exportRule,
     importRule,
 }) => {
+    const [importModalOpen, setImportModalOpen] = useState<boolean>(false);
+    const [importButtonDepressed, setImportButtonDepressed] = useState<boolean>(false);
+
     const n = useAutomatonStore((s) => s.n);
     const setN = useAutomatonStore((s) => s.setN);
 
@@ -35,29 +41,52 @@ const RulePanel: React.FC<rulePanelProps> = ({
     const framerateOptions = FRAMERATES.map((x) => String(x));
     framerateOptions[framerateOptions.length - 1] = "MAX";
 
+    const handleImport = () => {
+        setImportModalOpen(true);
+        setImportButtonDepressed(true);
+    }
+
+    const handleCloseImportModal = () => {
+        importRule(importString);
+        setImportString("");
+        setImportModalOpen(false);
+        setImportButtonDepressed(false);
+    }
+
+    const importModalStyle = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
     return <div className="panel-horizontal rule-panel">
+        <Modal
+            open={importModalOpen}
+            onClose={handleCloseImportModal}
+        >
+            <Box sx={importModalStyle}>
+                <input value={importString} 
+                        onChange={e => setImportString(e.target.value)} />
+                <button onClick={handleCloseImportModal}>IMPORT</button>
+            </Box>
+        </Modal>
         <fieldset>
             <legend>RULE</legend>
             <div className="control-column">
                 <div className="control-row">
-                    <span>RND</span><span>MUT</span>
-                </div>
-                <div className="control-row">
-                    <BinarySwitch 
-                        onChange={(val: boolean) => val && simulation.randomizeRule()}
-                        toggle={false}
-                    />
-                    <BinarySwitch 
-                        onChange={(val: boolean) => val && simulation.mutateRule()}
-                        toggle={false}
-                    />
-                </div>
-                <div className="control-row io-and-cpu-knob">
-                    <PushButton 
-                        label={"IN"}
-                        onChange={(val: boolean) => val ? importRule(importString) : null}
-                        toggle={false}
-                    />
+                    <div className="input-with-label">
+                        <span>RND</span>
+                        <LightSwitch 
+                            onChange={(val: boolean) => val && simulation.randomizeRule()}
+                            toggle={false}
+                        />
+                    </div>
                     <WingedSelector
                         options={["CPU", "GPU"]}
                         value={
@@ -66,14 +95,32 @@ const RulePanel: React.FC<rulePanelProps> = ({
                         onChange={(i) => setCpuRuleControl(i == 0)}
                         size={70}
                     />
+                    <div className="input-with-label">
+                        <span>MUT</span>
+                        <LightSwitch 
+                            onChange={(val: boolean) => val && simulation.mutateRule()}
+                            toggle={false}
+                        />
+                    </div>
+                </div>
+                <div className="control-row io-and-cpu-knob">
+                    <PushButton 
+                        key={importButtonDepressed ? 1 : 0}
+                        label={"IN"}
+                        onChange={(val: boolean) => val ? handleImport() : null}
+                        toggle={false}
+                        value={importButtonDepressed}
+                    />
+                    
                     <PushButton 
                         label={"&#128190;"}
                         onChange={(val: boolean) => val ? exportRule() : null}
                         toggle={false}
                     />
                 </div>
-                <input value={importString} 
-                        onChange={e => setImportString(e.target.value)} />
+                <CassetteSlot 
+
+                />
                 <div className="knob-row">
                     <Knob 
                         options={dialOptions}

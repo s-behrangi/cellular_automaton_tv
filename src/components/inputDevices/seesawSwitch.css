@@ -1,0 +1,108 @@
+:root {
+    --seesaw-housing-width: 60px;
+    --seesaw-housing-height: 40px;
+    --seesaw-housing-inset: 8px;
+    --seesaw-switch-height: calc(var(--seesaw-housing-height) - 2 * var(--seesaw-housing-inset));
+    --seesaw-ratio: 0.8;
+    --seesaw-rise-width: calc((var(--seesaw-housing-width) - 2 * var(--seesaw-housing-inset)) * var(--seesaw-ratio));
+    --seesaw-fall-width: calc((var(--seesaw-housing-width) - 2 * var(--seesaw-housing-inset)) * (1 - var(--seesaw-ratio)));
+}
+
+.seesaw-switch-wrapper {
+    position: relative;
+    cursor: pointer;
+    width: var(--seesaw-housing-width);
+    height: var(--seesaw-housing-height);
+}
+
+.seesaw-switch-housing {
+    position: absolute;
+    z-index: 1;
+    width: var(--seesaw-housing-width);
+    height: var(--seesaw-housing-height);
+    background-color: rgb(16 16 16);
+    box-shadow: inset -2px 2px 3px -1px #2d2d2d, inset 2px -2px 3px -1px #020202, -1px 1px 2px 0px black;
+}
+
+.seesaw-switch-rise {
+    position: absolute;
+    z-index: 3;
+    left: var(--seesaw-housing-inset);
+    top: var(--seesaw-housing-inset);
+    width: var(--seesaw-rise-width);
+    height: var(--seesaw-switch-height);
+    
+    background: linear-gradient(to right, #181818 45%, rgb(8 8 8) 100%);
+    box-shadow: inset 1px -1px 2px 0px black, inset -1px 0px 2px 0px rgb(59 58 58);
+}
+
+.seesaw-switch-fall {
+    position: absolute;
+    z-index: 3;
+    top: var(--seesaw-housing-inset);
+    width: var(--seesaw-fall-width);
+    height: var(--seesaw-switch-height);
+    left: calc(var(--seesaw-housing-inset) + var(--seesaw-rise-width));
+    background: linear-gradient(to right, rgb(43 42 42) 0%, rgb(14 14 14) 100%);
+    box-shadow: inset -1px -1px 2px 0px black, inset 0px 2px 2px 0px rgb(45 45 45);
+}
+
+.seesaw-switch-outline {
+    position: absolute;
+    z-index: 2;
+    left: var(--seesaw-housing-inset);
+    top: var(--seesaw-housing-inset);
+    width: calc(var(--seesaw-housing-width) - 2 * var(--seesaw-housing-inset));
+    height: calc(var(--seesaw-housing-height) - 2 * var(--seesaw-housing-inset));
+    box-shadow: 0px 0px 1px 2px black;
+}
+
+.seesaw-switch-wrapper.active .seesaw-switch-rise {
+    left: calc(var(--seesaw-housing-inset) + var(--seesaw-fall-width));
+    background: linear-gradient(to right, rgb(65 64 64) 0%, rgb(28 28 28) 53%, rgb(24 24 24) 101%);
+    box-shadow: inset -1px -1px 2px 0px black, inset 1px 0px 2px -1px #2f2f2f, inset 1px 1px 2px 0px rgb(45 45 45);
+}
+
+.seesaw-switch-wrapper.active .seesaw-switch-fall {
+    left: var(--seesaw-housing-inset);
+    background: linear-gradient(to left, #181818 1%, rgb(8 8 8) 100%);
+    box-shadow: inset 1px -1px 2px 0px black, inset -2px 0px 1px 0px rgb(24 24 24);
+}
+
+.seesaw-switch-circle {
+    position: absolute;
+    z-index: 4;
+    opacity: 0.6;
+    left: calc(var(--seesaw-housing-inset) + 6px);
+    top: calc(var(--seesaw-housing-inset) + 7px);
+    height: 6px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border-color: var(--machine-text);
+    border-style: solid;
+    border-width: 2px;
+
+}
+
+.seesaw-switch-line {
+    position: absolute;
+    z-index: 4;
+    opacity: 0.6;
+    left: calc(var(--seesaw-housing-inset) + 23px);
+    top: calc(var(--seesaw-housing-inset) + 10px);
+    width: 6px;
+    border-color: var(--machine-text);
+    border-width: 3px;
+    border-style: none none solid none;
+}
+
+.seesaw-switch-wrapper.active .seesaw-switch-circle {
+    left: calc(var(--seesaw-housing-inset) + 12px);
+    height: 6px;
+    aspect-ratio: 0.9;
+}
+
+.seesaw-switch-wrapper.active .seesaw-switch-line {
+    left: calc(var(--seesaw-housing-inset) + 29px);
+    width: 7px;
+}

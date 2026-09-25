@@ -1,0 +1,143 @@
+:root {
+    --housing-width: 36px;
+    --housing-height: 60px;
+    --switch-width: 22px;
+    --switch-height: 46px;
+    --rise-height: 18px;
+    --tip-height: 10px;
+    --base-top: calc((var(--housing-height) - var(--switch-height)) / 2);
+    --switch-left: calc((var(--housing-width) - var(--switch-width)) / 2);
+    --switch-top: calc(var(--base-top) + 3px);
+
+    --active-switch-top: calc(var(--housing-height) / 2 + 3px);
+}
+
+.light-switch-wrapper {
+    position: relative;
+    cursor: pointer;
+    width: var(--housing-width);
+    height: var(--housing-height);
+}
+
+.light-switch-housing {
+    position: absolute;
+    z-index: 1;
+    width: var(--housing-width);
+    height: var(--housing-height);
+    background-color: rgb(16 16 16);
+    box-shadow: inset -2px 2px 3px -1px #2d2d2d, inset 2px -2px 3px -1px #020202, -1px 1px 2px 0px black;
+}
+
+.light-switch-base {
+    position: absolute;
+    z-index: 2;
+    left: var(--switch-left);
+    top: var(--base-top);
+    width: var(--switch-width);
+    height: var(--switch-height);
+    background: linear-gradient(to bottom, #0e0e0e 46%, rgb(45 45 45) 59%, rgb(30 30 30) 82%, rgb(12, 12, 12) 100%);
+    box-shadow: inset 1px 0px 2px 0px black, inset -1px 0px 3px -1px rgb(59 58 58), 0px 0px 1px 2px black;
+}
+
+.light-switch-rise {
+    position: absolute;
+    z-index: 3;
+    left: var(--switch-left);
+    top: calc(var(--switch-top));
+    width: var(--switch-width);
+    height: var(--rise-height);
+    background: linear-gradient(to bottom, rgb(14 14 14) 0%, #101010 100%);
+    box-shadow: inset -1px 0px 2px -1px rgb(41 39 39), inset 1px 0px 2px 0px #060606;
+}
+
+.light-switch-tip {
+    position: absolute;
+    z-index: 4;
+    left: var(--switch-left);
+    top: calc(var(--switch-top) - var(--tip-height));
+    width: var(--switch-width);
+    height: var(--tip-height);
+    background: radial-gradient(circle at 138% -54%, #454545, rgb(35 35 35) 76%);
+    box-shadow: inset 2px -2px 3px -1px rgb(4 4 4), inset -2px 2px 3px -2px #575757;
+    border-radius: 2px;
+}
+
+.light-switch-tip-shadow {
+    position: absolute;
+    z-index: 1;
+    
+    top: calc(var(--switch-top) - 1px);
+    left: calc(var(--switch-left) - 10px);
+    width: calc(var(--switch-width) / 2);
+    height: calc(var(--tip-height));
+    
+    
+    background: rgb(0, 0, 0);
+    filter: blur(2px);
+}
+
+.light-switch-rise-shadow {
+    position: absolute;
+    z-index: 1;
+    
+    top: calc(var(--switch-top) + 6px);
+    left: calc(var(--switch-left) - 4px);
+    width: calc(var(--switch-width) / 2);
+    height: calc(var(--rise-height) + 10px);
+    
+    transform: rotate(-20deg);
+    
+    background: rgb(0, 0, 0);
+    filter: blur(2px);
+}
+
+.light-switch-base-shadow {
+    position: absolute;
+    z-index: 1;
+    
+    top: calc(var(--switch-top) + var(--rise-height));
+    left: calc(var(--switch-left) - 3px);
+    width: calc(var(--switch-width) / 2);
+    height: calc(var(--rise-height) + 7px);
+    
+    transform: rotate(-3deg);
+    
+    background: rgb(0, 0, 0);
+    filter: blur(1px);
+}
+
+
+.light-switch-wrapper.active .light-switch-tip {
+    top: calc(var(--active-switch-top) + var(--rise-height));
+    background: linear-gradient(to bottom, rgb(18 18 18) 0%, #101010 100%);
+    box-shadow: inset 2px -2px 2px -1px rgb(0 0 0), inset -2px 2px 2px -1px rgb(43 43 43);
+}
+
+.light-switch-wrapper.active .light-switch-rise {
+    top: var(--active-switch-top);
+    background: radial-gradient(circle at 86% 18%, #3d3d3d, rgb(55 55 55) 92%);
+    box-shadow: inset 6px 0px 3px -5px rgb(0 0 0), inset -1px 2px 2px 0px #3f3f3f;
+}
+.light-switch-wrapper.active .light-switch-base {
+    background: linear-gradient(to bottom, #0e0e0e 0%, rgb(22 22 22) 18%, rgb(63 61 61) 55%, rgb(12, 12, 12) 100%);
+    box-shadow: inset 1px 2px 3px 0px black, inset -1px 0px 3px -1px rgb(59 58 58), 0px 0px 1px 2px black;
+}
+
+.light-switch-wrapper.active .light-switch-tip-shadow {
+    top: calc(var(--active-switch-top) + var(--rise-height) + 3px);
+    left: calc(var(--switch-left - 8px));
+    width: var(--switch-width);
+}
+
+.light-switch-wrapper.active .light-switch-rise-shadow {
+    top: calc(var(--active-switch-top));
+    left: calc(var(--switch-left) - 6px);
+    transform: rotate(10deg);
+}
+
+.light-switch-wrapper.active .light-switch-base-shadow {
+    top: calc(var(--switch-top));
+    left: calc(var(--switch-left) - 3px);
+    
+    transform: rotate(3deg);
+}

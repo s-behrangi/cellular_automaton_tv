@@ -171,7 +171,7 @@ vec3 fastApproxUchimura(vec3 color)
 /* ---------------------------------------------- */
 
 float rgbToLuminance(vec3 colour) {
-    return dot(vec3(colour), luminanceVec2);
+    return dot(vec3(colour), luminanceVec1);
 }
 
 /* https://raphlinus.github.io/graphics/2020/04/21/blurred-rounded-rects.html */
@@ -287,7 +287,7 @@ void main() {
     vec2 barrelledPos = barrelledCoord * uScreenSize;
 
     vec4 colour = bilinear(barrelledCoord);
-    colour.rgb = style ? colour.rgb * shadowMask(pos, 0.8) : colour.rgb * apertureGrille(pos, 0.8);
+    colour.rgb = style ? colour.rgb * shadowMask(pos, 0.6) : colour.rgb * apertureGrille(pos, 0.6);
 
     /* LUMINANCE-ADJUSTED SCAN LINES */
     float baseBrightness = sin(barrelledPos.y * 2.0 * PI / scanLinePeriodicity) * 0.5 + 0.5;
@@ -308,12 +308,14 @@ void main() {
     luminosityAdjustment = rgbToLuminance(vec3(bloomColour.rgb)) * luminosityFraction;
     bloomColour = vec4(bloomColour.rgb * (baseBrightness + luminosityAdjustment), 1.0);
 
-    vec3 hdrColour = colour.rgb + bloomColour.rgb * 0.6;
+    
+
+    vec3 hdrColour = colour.rgb * 1.0 + bloomColour.rgb * 0.6;
     /* tone-mapping algorithms */
     // colour.rgb = reinhardExtended(hdrColour, vec3(1.0, 1.0, 1.0));
     // colour.rgb = ACES_Narkowicz(hdrColour);
     // colour.rgb = filmic_reinhard2(hdrColour) * 1.2;
-     colour.rgb = exposure(hdrColour, 1.5);    
+      colour.rgb = exposure(hdrColour, 1.5);    
     // colour.rgb = nativeTanh(hdrColour);
     // colour.rgb = fastTanh(hdrColour);
     // colour.rgb = superfastTanh(hdrColour);
