@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Automaton } from '../automaton.ts';
 import { useAutomatonStore } from '../automatonStore.ts';
-import WingedSelector from './inputDevices/wingedSelector.tsx';
 import Knob from './inputDevices/knob.tsx';
 import PushButton from './inputDevices/pushButton.tsx';
 import './rulePanel.css';
