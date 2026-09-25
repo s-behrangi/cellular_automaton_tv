@@ -87,14 +87,14 @@ const RulePanel: React.FC<rulePanelProps> = ({
                             toggle={false}
                         />
                     </div>
-                    <WingedSelector
-                        options={["CPU", "GPU"]}
-                        value={
-                            (cpuRuleControl ? 0 : 1)
-                        }
-                        onChange={(i) => setCpuRuleControl(i == 0)}
-                        size={70}
-                    />
+                    <div className="input-with-label">
+                        <span>GPU</span>
+                        <LightSwitch 
+                            onChange={setCpuRuleControl}
+                            toggle={true}
+                            value={cpuRuleControl}
+                        />
+                    </div>
                     <div className="input-with-label">
                         <span>MUT</span>
                         <LightSwitch 

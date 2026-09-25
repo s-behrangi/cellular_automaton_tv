@@ -125,7 +125,7 @@
 
 .light-switch-wrapper.active .light-switch-tip-shadow {
     top: calc(var(--active-switch-top) + var(--rise-height) + 3px);
-    left: calc(var(--switch-left - 8px));
+    left: calc(var(--switch-left) - 8px);
     width: var(--switch-width);
 }
 
