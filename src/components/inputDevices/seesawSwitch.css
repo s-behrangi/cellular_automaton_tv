@@ -97,12 +97,12 @@
 }
 
 .seesaw-switch-wrapper.active .seesaw-switch-circle {
-    left: calc(var(--seesaw-housing-inset) + 12px);
+    left: calc(var(--seesaw-housing-inset) + 13px);
     height: 6px;
     aspect-ratio: 0.9;
 }
 
 .seesaw-switch-wrapper.active .seesaw-switch-line {
-    left: calc(var(--seesaw-housing-inset) + 29px);
+    left: calc(var(--seesaw-housing-inset) + 30px);
     width: 7px;
 }

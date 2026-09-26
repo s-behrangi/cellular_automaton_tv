@@ -1,22 +1,19 @@
 .push-button {
+    color: rgba(from var(--machine-text) r g b / 0.8);
     cursor: pointer;
     width: 70px;
     height: 40px;
-    background: radial-gradient(circle at 80% 19%, #c1c1c1, rgb(173 171 171) 70%);
+    background: radial-gradient(circle at 80% 19%, #474747, rgb(61 61 61) 70%);
     border-radius: 4%;
     border-style: none;
-    box-shadow: inset 2px -3px 2px 0px #060606c7, 
-                inset -3px 2px 4px -1px #e9e5e5, 
-                inset 4px -4px 8px 2px #2d2c2c61, 
-                0px 0px 1px 3px #000000e3, 
-                -2px 4px 4px 2px #000000;
+    box-shadow: inset 2px -2px 2px 0px #0e0e0e, inset -2px 2px 2px 0px #5d5d5d, inset 4px -4px 8px 2px #313131, 0px 0px 1px 3px #040404e3, -2px 4px 4px 2px #000000;
 }
 
 
 .push-button.active, .push-button:active {
-    background: radial-gradient(circle at 77% 26%, #b6b6b6, rgb(117, 116, 116) 70%);
+    background: radial-gradient(circle at 80% 19%, #383838, rgb(46, 46, 46) 70%);
     box-shadow: inset -2px 2px 2px 0px #000000, 
-                inset 2px -3px 2px -1px #a3a3a32b, 
+                inset 2px -3px 2px -1px #7272722b, 
                 inset 2px -3px 4px 0px #00000045, 
                 inset -2px 2px 18px 0px #1e1e1ec7, 
                 0px 0px 1px 3px #000000e0;

@@ -8,7 +8,12 @@
 
 .io-and-cpu-knob .push-button {
     width: 40px;
-    height: 30px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+.io-and-cpu-knob span {
+    margin-bottom: -3px;
 }
 
 .rule-panel .knob-row {

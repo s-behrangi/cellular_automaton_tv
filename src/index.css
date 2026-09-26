@@ -29,7 +29,7 @@
 
   /* --------- MACHINE SURFACE --------- */
   --machine-colour: rgb(19, 19, 19);
-  --machine-text: rgb(253, 143, 0);
+  --machine-text: rgba(253, 143, 0, 1);
 
   --diagonal-switch-column-colour: rgb(14, 14, 14);
 
@@ -115,4 +115,21 @@ span {
 
 .input-with-label span {
   margin-bottom: 5px;
+}
+
+.input-with-label .bottom-label{
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+
+.hsl-with-label {
+  align-items: center;
+}
+
+.hsl-with-label .label {
+  margin-left: 23px;
+}
+
+.hsl-with-label .slider{
+  margin-left: 23px;
 }

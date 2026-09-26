@@ -37,86 +37,81 @@ const ColourPanel: React.FC<colourPanelProps> = ({
     return <div className="panel-horizontal">
         <fieldset>
             <legend>COLOUR</legend>
-            <div className="control-column">
-                <div className="control-row">
-                    <WingedSelector
-                        options={["⋅⋅", "|⋅", "⋅|", "||"]}
-                        value={
-                            (distinguishZeroColour ? 1 : 0) +
-                            (distinguishMaxColour ? 2 : 0)
-                        }
-                        onChange={(i) => handleDistinguishChange(i)}
-                        size={100}
-                    />
-                    <WingedSelector
-                        options={["R", "H", "T"]}
-                        value={colouringStyleIdx}
-                        onChange={(i) => setColouringStyle(i)}
-                        size={100}
-                    />
-                </div>
-                <div 
-                    className="gutter"
-                    style={{height: '40px', width: '100%'}}
+            <div className="control-row">
+                <div className="control-column">
+                    <div className="control-row">
+                        <WingedSelector
+                            options={["⋅⋅", "|⋅", "⋅|", "||"]}
+                            value={
+                                (distinguishZeroColour ? 1 : 0) +
+                                (distinguishMaxColour ? 2 : 0)
+                            }
+                            onChange={(i) => handleDistinguishChange(i)}
+                            size={90}
+                        />
+                        <WingedSelector
+                            options={["R", "H", "T"]}
+                            value={colouringStyleIdx}
+                            onChange={(i) => setColouringStyle(i)}
+                            size={90}
+                        />
+                    </div>
+                    <div className="control-row">
+                        <JackalSlider 
+                            value={colouringStyleVariable}
+                            onChange={(x: number) => setColouringStyleVariable(x)}
+                            max={100}
+                            min={0}
+                            ticks={true}
+                            tickList={satLumVarTicks}
+                            emphasize={5}
+                        />
+                    </div>
+                    <div 
+                        className="gutter"
+                        style={{height: '100%', width: '100%', paddingTop: '7px', paddingBottom: '7px', paddingRight: '7px'}}
                     >
-                    <JackalSlider 
-                        value={colouringStyleVariable}
-                        onChange={(x: number) => setColouringStyleVariable(x)}
-                        max={100}
-                        min={0}
-                        ticks={true}
-                        tickList={satLumVarTicks}
-                        emphasize={5}
-                    />
-                </div>
-                <div className="control-row">
-                    <div className="control-column">
-                        <ColourSwatch />
-                    </div>
-                </div>
-                <div 
-                    className="gutter"
-                    style={{height: '100%', width: '100%'}}
-                >
-                    <div className="control-column">
-                        <div className="control-row">
-                            <JackalSlider 
-                                value={primaryColour.h}
-                                onChange={(newValue: number) => setPrimaryColour('h', newValue)}
-                                min={0}
-                                max={359}
-                                ticks={true}
-                                tickList={hueTicks}
-                                emphasize={6}
-                            />
-                            <span>H</span>
-                        </div>
-                        <div className="control-row">
-                            <JackalSlider 
-                                value={primaryColour.s}
-                                onChange={(newValue: number) => setPrimaryColour('s', newValue)}
-                                min={0}
-                                max={100}
-                                ticks={true}
-                                tickList={satLumVarTicks}
-                                emphasize={5}
-                            />
-                            <span>S</span>
-                        </div>
-                        <div className="control-row">
-                            <JackalSlider 
-                                value={primaryColour.l}
-                                onChange={(newValue: number) => setPrimaryColour('l', newValue)}
-                                min={0}
-                                max={100}
-                                ticks={true}
-                                tickList={satLumVarTicks}
-                                emphasize={5}
-                            />
-                            <span>L</span>
+                        <div className="control-column">
+                            <div className="control-row hsl-with-label">
+                                <JackalSlider 
+                                    value={primaryColour.h}
+                                    onChange={(newValue: number) => setPrimaryColour('h', newValue)}
+                                    min={0}
+                                    max={359}
+                                    ticks={true}
+                                    tickList={hueTicks}
+                                    emphasize={6}
+                                />
+                                <span className="label">H</span>
+                            </div>
+                            <div className="control-row hsl-with-label">
+                                <JackalSlider 
+                                    value={primaryColour.s}
+                                    onChange={(newValue: number) => setPrimaryColour('s', newValue)}
+                                    min={0}
+                                    max={100}
+                                    ticks={true}
+                                    tickList={satLumVarTicks}
+                                    emphasize={5}
+                                />
+                                <span className="label">S</span>
+                            </div>
+                            <div className="control-row hsl-with-label">
+                                <JackalSlider 
+                                    value={primaryColour.l}
+                                    onChange={(newValue: number) => setPrimaryColour('l', newValue)}
+                                    min={0}
+                                    max={100}
+                                    ticks={true}
+                                    tickList={satLumVarTicks}
+                                    emphasize={5}
+                                />
+                                <span className="label">L</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <ColourSwatch vertical={true}/>
             </div>
         </fieldset>
     </div>

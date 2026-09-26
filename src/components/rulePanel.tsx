@@ -93,6 +93,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
                             toggle={true}
                             value={cpuRuleControl}
                         />
+                        <span className="bottom-label">CPU</span>
                     </div>
                     <div className="input-with-label">
                         <span>MUT</span>
@@ -103,19 +104,24 @@ const RulePanel: React.FC<rulePanelProps> = ({
                     </div>
                 </div>
                 <div className="control-row io-and-cpu-knob">
-                    <PushButton 
-                        key={importButtonDepressed ? 1 : 0}
-                        label={"IN"}
-                        onChange={(val: boolean) => val ? handleImport() : null}
-                        toggle={false}
-                        value={importButtonDepressed}
-                    />
-                    
-                    <PushButton 
-                        label={"&#128190;"}
-                        onChange={(val: boolean) => val ? exportRule() : null}
-                        toggle={false}
-                    />
+                    <div className="input-with-label">
+                        <span>IMPORT</span>
+                        <PushButton 
+                            key={importButtonDepressed ? 1 : 0}
+                            label={""}
+                            onChange={(val: boolean) => val ? handleImport() : null}
+                            toggle={false}
+                            value={importButtonDepressed}
+                        />
+                    </div>
+                    <div className="input-with-label">
+                        <span>EXPORT</span>
+                        <PushButton 
+                            label={""}
+                            onChange={(val: boolean) => val ? exportRule() : null}
+                            toggle={false}
+                        />
+                    </div>
                 </div>
                 <CassetteSlot 
 

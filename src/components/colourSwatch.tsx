@@ -2,16 +2,17 @@ import React from 'react';
 import { useAutomatonStore } from '../automatonStore.ts';
 import './colourSwatch.css';
 
-const DOTS_WIDE = Math.floor(21 * 3.5);
+const DOTS_WIDE = Math.floor(21 * 3);
 const DOTS_HIGH = 6;
 const PSEUDOPIXEL_SIZE = 5;
 const DOT_OFFSET = 1;
 
 interface colourSwatchProps{
+    vertical?: boolean,
 }
 
 const ColourSwatch: React.FC<colourSwatchProps> = ({
-
+    vertical = false,
 }) => {
     const colours = useAutomatonStore((s) => s.colours);
 
@@ -21,14 +22,14 @@ const ColourSwatch: React.FC<colourSwatchProps> = ({
 
     return <div className="colour-swatch-housing"
         style={{
-                width: `${DOTS_WIDE * PSEUDOPIXEL_SIZE + 15}px`,
-                height: `${DOTS_HIGH * PSEUDOPIXEL_SIZE + 15}px`
+                width: `${(vertical ? DOTS_HIGH : DOTS_WIDE) * PSEUDOPIXEL_SIZE + 15}px`,
+                height: `${(vertical ? DOTS_WIDE : DOTS_HIGH) * PSEUDOPIXEL_SIZE + 15}px`
             }}
     >
         <div className="colour-swatch"
             style={{
-                width: `${DOTS_WIDE * PSEUDOPIXEL_SIZE + 1}px`,
-                height: `${DOTS_HIGH * PSEUDOPIXEL_SIZE + 1}px`
+                width: `${(vertical ? DOTS_HIGH : DOTS_WIDE) * PSEUDOPIXEL_SIZE + 1}px`,
+                height: `${(vertical ? DOTS_WIDE : DOTS_HIGH) * PSEUDOPIXEL_SIZE + 1}px`
             }}
         >
                 {
@@ -38,8 +39,8 @@ const ColourSwatch: React.FC<colourSwatchProps> = ({
                             style={{
                                 width:`${PSEUDOPIXEL_SIZE - DOT_OFFSET}px`,
                                 height:`${PSEUDOPIXEL_SIZE - DOT_OFFSET}px`,
-                                left:`${coords[0]}px`,
-                                bottom:`${coords[1]}px`,
+                                left:`${vertical ? coords[1] : coords[0]}px`,
+                                bottom:`${vertical ? coords[0] : coords[1]}px`,
                                 backgroundColor: `hsl(${colours[coords[2]][0]}, ${colours[coords[2]][1]}%, ${colours[coords[2]][2]}%)`
                             }}
                         />

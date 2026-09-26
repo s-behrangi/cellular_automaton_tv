@@ -11,10 +11,8 @@
     cursor: grab;
     touch-action: none;
     outline: none;
-    background: radial-gradient(circle at 32% 26%, #232323, var(--machine-colour) 72%);
-    
-    box-shadow:
-        inset 0px 0px 2px 5px black;
+    background: radial-gradient(circle at 73% 19%, #232323, rgb(14 14 14) 82%);
+    box-shadow: 0px 0px 1px 5px black, inset -3px 3px 4px -4px #999999, inset 2px -2px 3px -1px #000000;
 }
 
 
@@ -31,25 +29,14 @@
 .winged-selector-wing {
     position: absolute;
     left: 50%;
-    bottom: -24%;                            
-    width:  calc(var(--winged-selector-size) * 0.23);
-    height: calc(var(--winged-selector-size) * 1.00);     
+    /* bottom: -24%; */
+    width: calc(var(--winged-selector-size) * 0.18);
+    height: calc(var(--winged-selector-size) * 0.9);
     transform: translateX(-50%);
-    border-radius: 100% 100% 25% 25%;
-
-    background: linear-gradient(
-    90deg,
-    var(--winged-selector-wing-low) 0%,
-    var(--winged-selector-wing-med) 5%,
-    var(--winged-selector-wing-high) 45%,
-    var(--winged-selector-wing-med) 95%,
-    var(--winged-selector-wing-low) 100%);
-
-    box-shadow: 
-        inset -1px -1px 1px 1px rgba(0, 0, 0, 0.7),
-        inset 1px 2px 3px 2px rgba(255, 255, 255, 1);
-
-    clip-path: polygon(30% 0%, 70% 0%, 95% 100%, 5% 100%);
+    border-radius: 3px;
+    background: radial-gradient(circle at 92% 15%, #232323, rgb(18 18 18) 92%);
+    box-shadow: inset 3px -2px 2px 0px rgb(8 8 8), inset -2px 0px 1px 0px rgb(67 67 67), inset -2px 2px 2px 0px rgb(73 73 73), -3px 1px 2px 2px black;
+    /* clip-path: polygon(30% 0%, 70% 0%, 95% 100%, 5% 100%); */
 }
 
 /* ------------ LABELS --------------- */
