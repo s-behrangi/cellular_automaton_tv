@@ -19,7 +19,7 @@ const ControlCluster: React.FC<controlClusterProps> = ({
         val ? simulation.changeZoom(d) : null;
     }
     
-    return <div className="control-cluster-wrapper"> 
+    return <div className="control-cluster-wrapper plateau"> 
                 <div className="control-cluster">
                         <div className="up-button">
                             <PushButton 

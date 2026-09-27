@@ -51,24 +51,37 @@
 
 body {
   margin: 0;
-}
-
-p {
-  margin: 0;
+  padding: 10px;
+  min-height: 100vh;  
+  min-width: fit-content;
+  background-color: black;
 }
 
 canvas {
   width: 800px;
   height: 600px;
+  box-shadow: -1px -1px 2px 1px black;
 }
 
 .machine {
+  padding: 10px;
+  position: relative;
+  width: min-content;
   display: flex;
   flex-direction: row;
+  background-color: var(--machine-colour);
+}
+
+.machine-face {
+  height: 670px;
+  width: min-content;
+  display: flex;
+  position: relative;
 }
 
 .panel-horizontal {
   display: flex;
+  position: relative;
 }
 
 .playback-column {
@@ -99,13 +112,21 @@ canvas {
     align-items: center;
 }
 
+.plateau {
+    margin: 5px;
+    padding: 5px;
+    background-color: var(--machine-colour);
+    box-shadow: inset -3px 3px 2px 0px rgb(101 101 101 / 33%), inset 3px -3px 2px 0px rgb(10 10 10), -1px 1px 1px 0px #080808;
+}
+
 span {
   font: bold 11px ui-monospace, monospace; 
-  letter-spacing: .08em;
+  letter-spacing: .06em;
   text-transform: uppercase;
 }
 
 .input-with-label {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,4 +153,118 @@ span {
 
 .hsl-with-label .slider{
   margin-left: 23px;
+}
+
+.panel-name {
+  position: absolute;
+  font-size: 18px;
+  padding: 3px 9px;
+  border-style: solid;
+  border-radius: 4px;
+  border-width: 2px;
+  border-color: rgba(from var(--machine-text) r g b / 0.8);
+}
+
+#rule-panel-name {
+    position: relative;
+    margin:auto;
+    margin-top: 10px;
+}
+
+#draw-panel-name {
+  left: 210px;
+  top: 8px;
+}
+
+#colour-panel-contents {
+  margin: 5px;
+}
+
+#colour-panel {
+  width: 410px;
+}
+
+#rule-panel-contents {
+    margin-top: 10px;
+}
+
+#rightside-panels {
+  justify-content:space-between
+}
+
+#hsl-gutter {
+  height: 100%;
+  width: 320px;
+  padding: 7px 7px 7px 0px;
+}
+
+#preset-panel {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 290px
+}
+
+#preset-panel-name {
+  top: -20px;
+  left: 67px;
+  border-style: none;
+  font-size: 14px;
+}
+
+#preset-window {
+    width: 170px;
+    height: 40px;
+    display: flex;
+    justify-content: left;
+    background: radial-gradient(circle at 34% 89%, #fbfbfb17, rgb(14 14 14 / 0%) 93%);
+    border-style: solid;
+    border-color: #333333;
+    border-radius: 3px;
+    box-shadow: inset 2px -2px 2px -1px #252525, inset -2px 2px 4px 0px #000000, -2px 2px 3px -1px #000000;
+    background-color: #0c0c0c;
+    overflow: hidden;
+}
+
+#preset-name {
+  position: relative;
+  display: inline-block;
+  transform: translateY(var(--preset-name-yoffset));
+  margin-left: 10px;
+  line-height: 40px;
+  white-space: pre-line;
+  transition: transform 0.1s linear, clip-path 0.1s linear;
+}
+
+#preset-panel .push-button {
+  position: relative;
+  height: 42px;
+  width: 35px;
+  top: -1px;
+}
+
+#preset-panel .push-button span {
+  position: relative;
+  font-size: 30px;
+  top: -1px;
+}
+
+#preset-selector-column {
+  position: relative;
+  top: -3px;
+}
+
+#preset-selector-column .push-button {
+  position: relative;
+  width: 40px;
+  height: 20px;
+  top: unset;
+}
+
+#preset-selector-column .push-button span {
+  width: 40px;
+  height: 20px;
+  font-size: 11px;
 }

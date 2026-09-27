@@ -5,7 +5,7 @@ import RulePanel from './components/rulePanel.tsx';
 import DrawPanel from './components/drawPanel.tsx';
 import PlaybackPanel from './components/playbackPanel.tsx';
 import ColourPanel from './components/colourPanel.tsx';
-import MiscPanel from './components/miscPanel.tsx';
+import PresetPanel from './components/presetPanel.tsx';
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -21,33 +21,36 @@ function App() {
   return (
     <>
       <div className="machine">
-        <canvas ref = {canvasRef} />
-        <div className="control-column">
+        <div className="machine-face">
+          <div id="screen-housing">
+            <div id="screen-inset">
+              <canvas ref = {canvasRef} />
+            </div>
+          </div>
+          
+          
           <PlaybackPanel
             simulation={automaton.simulation}
             cRef = {canvasRef}
           />
-        </div>
         
-        
-        <RulePanel
-          simulation={automaton.simulation}
-          importRule={automaton.importRule}
-          exportRule={automaton.exportRule}
-        />
-        <div className="control-column">
-          <DrawPanel
+          
+          <RulePanel
             simulation={automaton.simulation}
+            importRule={automaton.importRule}
+            exportRule={automaton.exportRule}
           />
-          <ColourPanel
-          />
+          <div className="control-column" id="rightside-panels">
+            <DrawPanel
+              simulation={automaton.simulation}
+            />
+            <PresetPanel
+              setPreset={automaton.setPreset}
+            />
+            <ColourPanel
+            />
+          </div>
         </div>
-        
-      </div>
-      <div className="control-row">
-      <MiscPanel
-        simulation={automaton.simulation}
-      />
       </div>
     </>
   )

@@ -1,6 +1,7 @@
 .brush-state-knob {
-    margin-left: 10px;
+    margin-left: 20px;
     margin-bottom: -10px;
+    position: relative;
 }
 
 .brush-state-knob .push-button {
@@ -37,10 +38,22 @@
     position: relative;
 }
 
+.brush-state-knob .bottom-label {
+    position: absolute;
+    left: -22px;
+    top: 87px;
+    font-size: 12px;
+}
+
 .brush-size-wrapper {
     margin-top: 10px;
 }
 
 .switches-and-brush-size {
     margin-left: 10px;
+}
+
+#draw-panel-contents {
+    margin-top: 10px;
+    margin-left: -20px;
 }

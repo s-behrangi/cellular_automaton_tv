@@ -10,7 +10,7 @@ interface pushButtonProps {
 }
 
 const PushButton: React.FC<pushButtonProps> = ({
-    label = "label",
+    label = "",
     onChange = (_val: boolean) => (null),
     toggle = true,
     value = false,

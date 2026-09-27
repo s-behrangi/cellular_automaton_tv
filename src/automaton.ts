@@ -1,6 +1,6 @@
 import { createProgramFromSource } from './utils/webglUtils';
 import { binomialArray, chooseWithRep, hslToRGB, stringifyRule, packRule, unpackRule, rulifyString, fmod, importRuleDirect, exportRuleDirect } from './utils/mathUtils';
-import { DEFAULT_CPU_RULE_CONTROL, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, MAX_N, MIN_N, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_SIM_FRAMERATE_IDX, FRAMERATES, COLOURING_STYLES, DEFAULT_COLOURING_STYLE_VARIABLE } from './constants';
+import { DEFAULT_CPU_RULE_CONTROL, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, MAX_N, MIN_N, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_SIM_FRAMERATE_IDX, FRAMERATES, COLOURING_STYLES, DEFAULT_COLOURING_STYLE_VARIABLE, PRESET_DIAGONALS, PRESET_CIRCUITBOARD, PRESET_HIGHWAYS, PRESET_SOLAR_PANELS } from './constants';
 
 const SIMWIDTH = 1024;
 const SIMHEIGHT = 1024;
@@ -74,7 +74,7 @@ export class Automaton {
     private playing: boolean = false;
     private lastSimFrame = performance.now();
     useCRT = true;
-    private CRTstyle = true;
+    private CRTstyle = false;
     private framerates = [1, 6, 12, 24, 60, 120];
     private frameRateIdx = 3;
     private panDir = "";
@@ -158,8 +158,6 @@ export class Automaton {
     /* -------------------------------------------------- */
 
     private init(): void {
-        this.setConway();
-
         this.initListeners();
         this.initTex();
         this.initLocs();
@@ -170,6 +168,7 @@ export class Automaton {
         
         //this.drawToCanvas();
         this.handleZoomChange();
+        this.setConway();
         this.animSim(performance.now());
     }
 
@@ -478,7 +477,7 @@ export class Automaton {
         this.gl.uniform2f(this.uniforms.crtWithBloomScreenSize.loc, this.screenWidth, this.screenHeight);
         this.gl.uniform2f(this.uniforms.crtWithBloomSimSize.loc, this.autoWidth, this.autoHeight);
         this.gl.uniform3f(this.uniforms.crtWithBloomCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
-        this.gl.uniform1i(this.uniforms.crtWithBloomStyle.loc, 1);
+        this.gl.uniform1i(this.uniforms.crtWithBloomStyle.loc, this.CRTstyle ? 1 : 0);
 
         /* FLAT QUADRUPLE PROJECTOR */
         this.gl.useProgram(this.programs.flatQuadrupleProjection.prog);
@@ -1006,10 +1005,12 @@ export class Automaton {
     }
 
     public setN(n: number): number {
-        if (n >= MIN_N && n <= MAX_N) {
+        if (n == this.states) {
+            return n
+        } else if (n >= MIN_N && n <= MAX_N) {
             this.states = n;
             this.clear();
-            this.randomizeRule();
+            this.randomizeRule(n);
             
             this.gl.useProgram(this.programs.autoColour.prog);
 
@@ -1119,14 +1120,40 @@ export class Automaton {
 
         this.ruleNumber = this.ruleToNumber();
     }
-
+    
     public setConway(): void {
-        for (let i = 0; i < 18; i++) {
-            this.rule[i] = 0;
+        this.importRule("41W");
+    }
+
+
+    public setPreset(s: string): boolean {
+        switch(s) {
+            case 'conway':
+                this.importRule("41W");
+                break;
+            case 'life without death':
+                this.importRule("47/");
+                break;
+            case 'day and night':
+                this.importRule("4ut");
+                break;
+            case 'circuitboard':
+                this.importRule(PRESET_CIRCUITBOARD);
+                break;
+            case 'diagonals':
+                this.importRule(PRESET_DIAGONALS);
+                break;
+            case 'highways':
+                this.importRule(PRESET_HIGHWAYS);
+                break;
+            case 'solar panels':
+                this.importRule(PRESET_SOLAR_PANELS);
+                break;
+            default:
+                return false;
         }
-        this.rule[3] = 1;
-        this.rule[11] = 1;
-        this.rule[12] = 1;
+        this.genRule();
+        return true;
     }
 
     public randomizeRule(n = this.states) {
@@ -1156,7 +1183,7 @@ export class Automaton {
             this.gl.useProgram(this.programs.ruleGen.prog);
 
             this.gl.uniform1f(this.uniforms.ruleGenSeed.loc, Math.random());
-            this.gl.uniform1f(this.uniforms.ruleGenN.loc, this.states);
+            this.gl.uniform1f(this.uniforms.ruleGenN.loc, n);
             this.gl.uniform1f(this.uniforms.ruleGenZeroChanceExp.loc, this.ruleZeroChanceExp);
             
             this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbRule!);
@@ -1293,6 +1320,7 @@ export class Automaton {
             }
             
             n = lengths.indexOf(decompressed.length);
+            console.log(decompressed.length);
 
             if (n < 3) {
                 /* invalid */

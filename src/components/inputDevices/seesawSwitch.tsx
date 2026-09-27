@@ -45,8 +45,6 @@ const SeesawSwitch: React.FC<seesawSwitchProps> = ({
         <div className="seesaw-switch-rise" />
         <div className="seesaw-switch-fall" />
         <div className="seesaw-switch-outline" />
-        <div className="seesaw-switch-rise-shadow" />
-        <div className="seesaw-switch-fall-shadow" />
         {onOffMarks && <div className="seesaw-switch-circle" />}
         {onOffMarks && <div className="seesaw-switch-line" />}
     </div>

@@ -28,9 +28,8 @@ const DrawPanel: React.FC<drawPanelProps> = ({
     const brushSizeTicks = Array.from({length: 11}, (_, idx) => idx * 0.1);
 
     return <div className="panel-horizontal">
-        <fieldset>
-            <legend>DRAW</legend>
-            <div className="control-row">
+            <span className="panel-name" id="draw-panel-name">DRAW</span>
+            <div className="control-row" id="draw-panel-contents">
                 <div className="control-column switches-and-brush-size">
                     <div className="control-row">
                         <div className="input-with-label">
@@ -72,9 +71,8 @@ const DrawPanel: React.FC<drawPanelProps> = ({
                         </div>
                     </div>
                 </div>
-                <div className="input-with-label">
-                    <span>BRUSH STATE</span>
-                    <div className="brush-state-knob">
+                <div className="input-with-label brush-state-knob">
+                    <div>
                         <Knob 
                             key={brushStateKnobState}
                             options={knobOptions}
@@ -91,9 +89,9 @@ const DrawPanel: React.FC<drawPanelProps> = ({
                             onChange={setBrushErase}
                         />
                     </div>
+                    <span className="bottom-label">BRUSH<br/> &nbsp;&nbsp;&nbsp;STATE</span>
                 </div>
             </div>
-        </fieldset>
     </div>
 };
 

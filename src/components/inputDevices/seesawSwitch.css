@@ -1,5 +1,5 @@
 :root {
-    --seesaw-housing-width: 60px;
+    --seesaw-housing-width: 66px;
     --seesaw-housing-height: 40px;
     --seesaw-housing-inset: 8px;
     --seesaw-switch-height: calc(var(--seesaw-housing-height) - 2 * var(--seesaw-housing-inset));
@@ -72,8 +72,8 @@
 .seesaw-switch-circle {
     position: absolute;
     z-index: 4;
-    opacity: 0.6;
-    left: calc(var(--seesaw-housing-inset) + 6px);
+    opacity: 0.7;
+    left: calc(var(--seesaw-housing-inset) + 8px);
     top: calc(var(--seesaw-housing-inset) + 7px);
     height: 6px;
     aspect-ratio: 1;
@@ -87,8 +87,8 @@
 .seesaw-switch-line {
     position: absolute;
     z-index: 4;
-    opacity: 0.6;
-    left: calc(var(--seesaw-housing-inset) + 23px);
+    opacity: 0.7;
+    left: calc(var(--seesaw-housing-inset) + 26px);
     top: calc(var(--seesaw-housing-inset) + 10px);
     width: 6px;
     border-color: var(--machine-text);
@@ -97,12 +97,12 @@
 }
 
 .seesaw-switch-wrapper.active .seesaw-switch-circle {
-    left: calc(var(--seesaw-housing-inset) + 13px);
+    left: calc(var(--seesaw-housing-inset) + 15px);
     height: 6px;
     aspect-ratio: 0.9;
 }
 
 .seesaw-switch-wrapper.active .seesaw-switch-line {
-    left: calc(var(--seesaw-housing-inset) + 30px);
-    width: 7px;
+    left: calc(var(--seesaw-housing-inset) + 33px);
+    width: 8px;
 }

@@ -20,7 +20,7 @@ uint random(vec2 uv, float seed, float n) {
 
     float zeroChance = max(zeroChanceExp, 1.0 - 1.0 / pow(n, zeroChanceExp));
     float notZero = step(zeroChance, rand);
-    float stateIfNotZero = floor((n - 1.0) * ((rand - zeroChance) / (1.0 - zeroChance)));
+    float stateIfNotZero = floor(n * ((rand - zeroChance) / (1.0 - zeroChance)));
 
     return uint(notZero * stateIfNotZero);
 }

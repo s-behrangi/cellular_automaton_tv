@@ -46,6 +46,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
     }
 
     const handleCloseImportModal = () => {
+        console.log(importString.length);
         importRule(importString);
         setImportString("");
         setImportModalOpen(false);
@@ -64,7 +65,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
         p: 4,
     };
 
-    return <div className="panel-horizontal rule-panel">
+    return <div className="panel-horizontal rule-panel plateau">
         <Modal
             open={importModalOpen}
             onClose={handleCloseImportModal}
@@ -75,9 +76,8 @@ const RulePanel: React.FC<rulePanelProps> = ({
                 <button onClick={handleCloseImportModal}>IMPORT</button>
             </Box>
         </Modal>
-        <fieldset>
-            <legend>RULE</legend>
-            <div className="control-column">
+            <span className="panel-name" id="rule-panel-name">RULE</span>
+            <div className="control-column" id="rule-panel-contents">
                 <div className="control-row">
                     <div className="input-with-label">
                         <span>RND</span>
@@ -126,14 +126,15 @@ const RulePanel: React.FC<rulePanelProps> = ({
                 <CassetteSlot 
 
                 />
-                <div className="knob-row">
+                <div className="input-with-label" id="n-knob" key={n}>
                     <Knob 
                         options={dialOptions}
                         defaultValue={n - 2}
                         onChange={handleDialChange}
                     />
+                    <span className="bottom-label" id="n-label">N</span>
                 </div>
-                <div className="knob-row">
+                <div className="input-with-label">
                     <Knob 
                         options={framerateOptions}
                         defaultValue={framerateIdx}
@@ -141,9 +142,9 @@ const RulePanel: React.FC<rulePanelProps> = ({
                         emphasize={2}
                         size={80}
                     />
+                    <span className="bottom-label" id="framerate-label">FRAMERATE</span>
                 </div>
             </div>
-        </fieldset>
     </div>
 };
 

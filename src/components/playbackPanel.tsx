@@ -20,23 +20,21 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
     const setUseCRT = useAutomatonStore((s) => s.setUseCRT);
     
     return <div className="panel-horizontal playback-panel">
-                <div className="control-column">
-                    <div className="input-with-label"> 
-                        <span>CRT</span>
-                        <SeesawSwitch 
-                            onChange={setUseCRT}
-                            value={useCRT}
-                            toggle={true}
-                        />
-                    </div>
-                    <DiagonalSwitchColumn 
-                        simulation={simulation}
-                        cRef={cRef}
-                    />
-                    <ControlCluster
-                        simulation={simulation}
+                <div className="input-with-label"> 
+                    <span>CRT</span>
+                    <SeesawSwitch 
+                        onChange={setUseCRT}
+                        value={useCRT}
+                        toggle={true}
                     />
                 </div>
+                <DiagonalSwitchColumn 
+                    simulation={simulation}
+                    cRef={cRef}
+                />
+                <ControlCluster
+                    simulation={simulation}
+                />
             </div>
 };
 

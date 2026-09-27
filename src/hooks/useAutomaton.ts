@@ -27,6 +27,11 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
         setN(autoRef.current?.states!);
     }
 
+    const setPreset = (preset: string) => {
+        autoRef.current?.setPreset(preset);
+        setN(autoRef.current?.states!);
+    }
+
     const exportRule = () => {
         const stringifiedRule = autoRef.current?.exportRule()!;
         if (stringifiedRule.length < 50) {
@@ -50,7 +55,7 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
         const unsubscribe = useAutomatonStore.subscribe(
             (s) => s.n,
             (n) => {
-                autoRef.current!.setN(n);
+                console.log(autoRef.current!.setN(n));
                 setBrushState(n - 1);
                 setColours(autoRef.current!.getColours());
             },
@@ -62,7 +67,7 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
     useEffect(() => {
         const unsubscribe = useAutomatonStore.subscribe(
             (s) => s.isPlaying,
-            (isPlaying) => {console.log("here"); autoRef.current!.setPlay(isPlaying);}
+            (isPlaying) => autoRef.current!.setPlay(isPlaying)
         );
 
         return unsubscribe;
@@ -180,5 +185,6 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
         simulation,
         importRule,
         exportRule,
+        setPreset,
     };
 }
