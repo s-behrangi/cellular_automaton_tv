@@ -51,9 +51,15 @@
 
 .switches-and-brush-size {
     margin-left: 10px;
+    align-items: center;
 }
 
 #draw-panel-contents {
     margin-top: 10px;
     margin-left: -20px;
+}
+
+#draw-panel-contents #draw-panel-switches {
+    justify-content: space-around;
+    width: 175px;
 }

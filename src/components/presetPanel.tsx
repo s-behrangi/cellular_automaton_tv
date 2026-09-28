@@ -45,9 +45,8 @@ const PresetPanel: React.FC<presetPanelProp> = ({
         <PushButton
             onChange={(val: boolean) => val ? setPreset(PRESET_NAMES[selectedPreset][1]) : null}
             toggle={false}
-            label={"&#8594;"}
+            label={"&#9654;"}
         />
-
     </div>
     );
 };

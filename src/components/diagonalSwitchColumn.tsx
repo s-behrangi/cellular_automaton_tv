@@ -87,7 +87,6 @@ const DiagonalSwitchColumn: React.FC<diagonalSwitchColumnProps> = ({
         <div className="dummy-diagonal-switch top" />
         <div className="diagonal-switch-column-main">
             <div className="diagonal-switch-column-left">
-                <div className="diagonal-switch-column-left-runner" />
                 <div className="diagonal-switch-column-labels">
                     <span>PNG</span>
                     <span>&#128308;</span>
@@ -119,10 +118,7 @@ const DiagonalSwitchColumn: React.FC<diagonalSwitchColumnProps> = ({
                 />
             </div>
         </div>
-        <div className="diagonal-switch-column-bottom">
-            <div className="dummy-diagonal-switch bottom" />
-            <div className="dummy-diagonal-switch bottom-left" />
-        </div>
+        <div className="dummy-diagonal-switch bottom" />
     </div>
 };
 

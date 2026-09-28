@@ -31,8 +31,8 @@ const DrawPanel: React.FC<drawPanelProps> = ({
             <span className="panel-name" id="draw-panel-name">DRAW</span>
             <div className="control-row" id="draw-panel-contents">
                 <div className="control-column switches-and-brush-size">
-                    <div className="control-row">
-                        <div className="input-with-label">
+                    <div className="control-row" id="draw-panel-switches">
+                        <div className="input-with-label" >
                             <span>CLEAR</span>
                             <LightSwitch 
                                 onChange={(val: boolean) => simulation.setClear(val)}

@@ -20,35 +20,37 @@ function App() {
 
   return (
     <>
-      <div className="machine">
-        <div className="machine-face">
-          <div id="screen-housing">
-            <div id="screen-inset">
-              <canvas ref = {canvasRef} />
+      <div className="machine-recede">
+        <div className="machine">
+          <div className="machine-face">
+            <div id="screen-housing">
+              <div id="screen-inset">
+                <canvas ref = {canvasRef} />
+              </div>
             </div>
-          </div>
-          
-          
-          <PlaybackPanel
-            simulation={automaton.simulation}
-            cRef = {canvasRef}
-          />
-        
-          
-          <RulePanel
-            simulation={automaton.simulation}
-            importRule={automaton.importRule}
-            exportRule={automaton.exportRule}
-          />
-          <div className="control-column" id="rightside-panels">
-            <DrawPanel
+            
+            
+            <PlaybackPanel
               simulation={automaton.simulation}
+              cRef = {canvasRef}
             />
-            <PresetPanel
-              setPreset={automaton.setPreset}
+          
+            
+            <RulePanel
+              simulation={automaton.simulation}
+              importRule={automaton.importRule}
+              exportRule={automaton.exportRule}
             />
-            <ColourPanel
-            />
+            <div className="control-column" id="rightside-panels">
+              <DrawPanel
+                simulation={automaton.simulation}
+              />
+              <ColourPanel
+              />
+              <PresetPanel
+                setPreset={automaton.setPreset}
+              />
+            </div>
           </div>
         </div>
       </div>

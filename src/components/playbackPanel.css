@@ -1,11 +1,22 @@
 .playback-panel {
     position: relative;
+    margin-left: -120px;
     display: flex;
     flex-direction: column;
     margin-top: 20px;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 .control-cluster-wrapper {
-    margin: 10px 10px 30px 10px;
+    position: relative;
+    margin: 10px 10px 30px -14px;
+}
+
+.diagonal-switch-column {
+    margin-top: -70px;
+}
+
+.playback-panel .input-with-label {
+    position: relative;
+    margin-left: -24px;
 }

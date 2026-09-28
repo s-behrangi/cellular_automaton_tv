@@ -38,22 +38,24 @@ const ColourPanel: React.FC<colourPanelProps> = ({
             <span className="panel-name" id="colour-panel-name">COLOUR</span>
             <div className="control-row" id="colour-panel-contents">
                 <div className="control-column">
-                    <div className="control-row">
+                    <div className="control-row" id="colour-winged-selectors">
                         <WingedSelector
-                            options={["R", "H", "T"]}
+                            options={["HUE", "LUM", "BIN"]}
                             value={colouringStyleIdx}
                             onChange={(i) => setColouringStyle(i)}
                             size={90}
                         />
-                        <WingedSelector
-                            options={["⋅⋅", "|⋅", "⋅|", "||"]}
-                            value={
-                                (distinguishZeroColour ? 1 : 0) +
-                                (distinguishMaxColour ? 2 : 0)
-                            }
-                            onChange={(i) => handleDistinguishChange(i)}
-                            size={90}
-                        />
+                        <div id="colour-endpoint-selector">
+                            <WingedSelector
+                                options={["⋅⋅", "[⋅", "⋅]", "[]"]}
+                                value={
+                                    (distinguishZeroColour ? 1 : 0) +
+                                    (distinguishMaxColour ? 2 : 0)
+                                }
+                                onChange={(i) => handleDistinguishChange(i)}
+                                size={90}
+                            />
+                        </div>
                     </div>
                     <div className="control-row">
                         <JackalSlider 

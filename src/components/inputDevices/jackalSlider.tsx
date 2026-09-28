@@ -108,6 +108,7 @@ const JackalSlider: React.FC<jackalSliderProps> = ({
                         marginTop: '7px',
                         writingMode: `${vertical ? 'vertical-lr' : ""}`,
                         '& .MuiSlider-thumb': {
+                            opacity: '1.0',
                             width: vertical ? THUMB_WIDTH : THUMB_HEIGHT,
                             height: vertical ? THUMB_HEIGHT : THUMB_WIDTH,
 

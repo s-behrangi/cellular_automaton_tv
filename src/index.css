@@ -29,9 +29,9 @@
 
   /* --------- MACHINE SURFACE --------- */
   --machine-colour: rgb(19, 19, 19);
-  --machine-text: rgba(253, 143, 0, 1);
+  --machine-text: rgba(253, 143, 0, 0.815);
 
-  --diagonal-switch-column-colour: rgb(14, 14, 14);
+  --diagonal-switch-column-colour: rgb(17, 17, 17);
 
   /* -------- CONTROL DEVICES --------- */
   /* WINGED SELECTOR */
@@ -55,6 +55,7 @@ body {
   min-height: 100vh;  
   min-width: fit-content;
   background-color: black;
+  overflow-y: hidden;
 }
 
 canvas {
@@ -63,13 +64,24 @@ canvas {
   box-shadow: -1px -1px 2px 1px black;
 }
 
+.machine-recede {
+    margin: 20px;
+    width: min-content;
+    padding: 5px 5px 10px 10px;
+    box-shadow: inset -7px 7px 6px 0px #53535354, inset 12px -13px 4px -1px rgb(6 6 6);
+    border-radius: 7px;
+    background-color: #1e1e1e;
+}
+
 .machine {
-  padding: 10px;
-  position: relative;
-  width: min-content;
-  display: flex;
-  flex-direction: row;
-  background-color: var(--machine-colour);
+    padding: 20px;
+    border-radius: 5px;
+    position: relative;
+    width: min-content;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--machine-colour);
+    box-shadow: inset -2px 2px 3px 0px #41414194, inset 2px -2px 2px 0px #060606, -10px 11px 9px 0px #00000085;
 }
 
 .machine-face {
@@ -83,11 +95,6 @@ canvas {
   display: flex;
   position: relative;
 }
-
-.playback-column {
-  justify-content: center;
-}
-
 .control-column {
   width: 100%;
   height: 100%;
@@ -99,6 +106,13 @@ canvas {
   width: 100%;
   display: flex;
   justify-content: space-evenly;
+}
+
+fieldset {
+  border-color: rgba(202, 132, 1, 0.733);
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 5px;
 }
 
 .gutter {
@@ -158,11 +172,8 @@ span {
 .panel-name {
   position: absolute;
   font-size: 18px;
+  letter-spacing: 0.2em;
   padding: 3px 9px;
-  border-style: solid;
-  border-radius: 4px;
-  border-width: 2px;
-  border-color: rgba(from var(--machine-text) r g b / 0.8);
 }
 
 #rule-panel-name {
@@ -182,6 +193,24 @@ span {
 
 #colour-panel {
   width: 410px;
+  margin-top: -30px;
+}
+
+#colour-panel-name {
+  left: 130px;
+  top: -10px;
+}
+
+#colour-winged-selectors {
+  margin-bottom: -10px;
+  justify-content: space-between;
+}
+
+#colour-endpoint-selector .winged-selector-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04px;
+  font-family:'Courier New', Courier, monospace;
 }
 
 #rule-panel-contents {
@@ -189,7 +218,10 @@ span {
 }
 
 #rightside-panels {
-  justify-content:space-between
+  justify-content: space-around;
+  margin-top: -10px;
+  height: 100%;
+  position: relative;
 }
 
 #hsl-gutter {
@@ -200,18 +232,20 @@ span {
 
 #preset-panel {
   position: relative;
+  margin-left: 35px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  width: 290px
+  width: 290px;
+  margin-top: -20px;
 }
 
 #preset-panel-name {
-  top: -20px;
-  left: 67px;
   border-style: none;
   font-size: 14px;
+  top: -20px;
+  left: 62px;
 }
 
 #preset-window {
@@ -230,12 +264,16 @@ span {
 
 #preset-name {
   position: relative;
+  opacity: 0.9;
   display: inline-block;
   transform: translateY(var(--preset-name-yoffset));
   margin-left: 10px;
   line-height: 40px;
   white-space: pre-line;
-  transition: transform 0.1s linear, clip-path 0.1s linear;
+  
+  clip-path: polygon(0px calc(2px - var(--preset-name-yoffset)), 0px calc(38px - var(--preset-name-yoffset)), 150px calc(38px - var(--preset-name-yoffset)), 150px calc(2px - var(--preset-name-yoffset)));
+  
+  transition: transform 0.15s linear, clip-path 0.15s linear;
 }
 
 #preset-panel .push-button {
@@ -247,8 +285,16 @@ span {
 
 #preset-panel .push-button span {
   position: relative;
-  font-size: 30px;
+  font-size: 15px;
   top: -1px;
+  left: 1px;
+}
+
+#preset-panel .push-button.active span {
+  position: relative;
+  font-size: 15px;
+  top: -1px;
+  left: 0px;
 }
 
 #preset-selector-column {
@@ -263,7 +309,7 @@ span {
   top: unset;
 }
 
-#preset-selector-column .push-button span {
+#preset-selector-column .push-button span, #preset-selector-column .push-button.active span {
   width: 40px;
   height: 20px;
   font-size: 11px;

@@ -38,7 +38,6 @@ const DiagonalSwitch: React.FC<diagonalSwitchProps> = ({
         { active ?
         <div className="diagonal-switch-base-flipped">
             <div className="diagonal-switch-grip-flipped"/>
-            <div className="diagonal-switch-flipped-lighting"/>
         </div> 
         : 
         <div className="diagonal-switch-base">

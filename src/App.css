@@ -1,18 +1,19 @@
 #screen-housing {
     position: relative;
-    width: 870px;
+    width: 1000px;
     height: 670px;
-    flex: 0 0 870px;
+    flex: 0 0 1000px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
     background-color: var(--machine-colour);
-    box-shadow: inset -2px 2px 2px 0px #3b3b3b, inset 2px -2px 2px 0px #060606;
+    box-shadow: inset -2px 2px 2px 0px #3b3b3b, inset 2px -2px 2px 0px #060606, -8px 8px 3px 0px #060606;
     border-radius: 15px;
 }
 
 #screen-inset {
     position: relative;
+    margin-left: 20px;
     width: 830px;
     height: 630px;
     flex: 0 0 830px;

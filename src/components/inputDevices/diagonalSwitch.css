@@ -10,9 +10,11 @@
 .diagonal-switch-base {
     width: 80px;
     height: 44px;
-    background: radial-gradient(circle at 64% 19%, #242424, rgb(27, 27, 27) 70%);
+    background: radial-gradient(circle at 64% 19%, #0c0c0c, rgb(14 14 14) 70%);
     border-radius: 2px;
+    box-shadow: inset -2px 1px 2px #292929;
 }
+
 
 .diagonal-switch-grip {
     position: relative;
@@ -20,11 +22,11 @@
     top: 2px;
     width: 44px;
     height: 40px;
-    background-image: repeating-linear-gradient(to left, #000000d4 0px, transparent 4px), repeating-linear-gradient(to top, rgb(0 0 0 / 64%) 0px, transparent 4px), radial-gradient(circle at 80% 19%, #c1c1c100, rgb(173 171 171 / 34%) 70%);
+    background-image: repeating-linear-gradient(to left, #000000fc 0px, transparent 4px), repeating-linear-gradient(to top, rgb(0 0 0 / 64%) 0px, transparent 4px), radial-gradient(circle at 80% 19%, #c1c1c100, rgb(173 171 171 / 34%) 70%);
     background-size: 8px 8px;
     background-position: 0 0, 4px 4px;
-    background-color: #353434;
-    box-shadow: inset -2px 2px 1px -2px #040404, inset 0px 0px 0px 0px #5353533b, inset -2px 2px 2px 2px #2929293b, inset 2px -2px 2px 0px #0404044d, inset 2px -2px 0px 2px #040404, inset -2px 2px 0px 2px #1a1a1a;
+    background-color: #252525;
+    box-shadow: inset -2px 2px 1px -2px #040404, inset 0px 0px 0px 0px #5353533b, inset -2px 2px 2px 2px #2929293b, inset 2px -2px 2px 0px #0404044d, inset 2px -2px 0px 2px #040404, inset -2px 2px 0px 2px #181818;
 }
 
 .diagonal-switch-flipped {
@@ -41,21 +43,22 @@
     left: 3px;
     width: 69px;
     height: 44px;
-    background: radial-gradient(circle at 81% 19%, #494949, rgb(37, 37, 37) 64%);
+    background: radial-gradient(circle at 81% 27%, #1c1c1c, rgb(12 12 12) 111%);
     border-radius: 2px;
+    box-shadow: inset -2px 1px 2px #393939;
 }
 
 .diagonal-switch-grip-flipped {
     position: relative;
-    left: 23px;
+    left: 22px;
     top: 3px;
     width: 40px;
     height: 40px;
-    background-image: repeating-linear-gradient(to left, #101010e3 0px, transparent 4px), repeating-linear-gradient(to top, rgba(27, 27, 27, 0.64) 0px, transparent 4px), radial-gradient(circle at 80% 19%, #c1c1c100, rgb(173 171 171 / 49%) 70%);
+    background-image: repeating-linear-gradient(to left, #0a0a0a 0px, transparent 4px), repeating-linear-gradient(to top, rgb(4 4 4 / 64%) 0px, transparent 4px), radial-gradient(circle at 80% 19%, #c1c1c100, rgb(173 171 171 / 49%) 70%);
     background-size: 8px 8px;
     background-position: 0 0, 4px 4px;
-    background-color: #555555;
-    box-shadow: inset -2px 2px 1px -2px #000000, inset 0px 0px 0px 0px #d5d5d53b, inset -2px 2px 2px 2px #8383833b, inset 2px -2px 2px 0px #3131314d, inset 2px -2px 0px 2px #060606, inset -2px 2px 0px 2px #353535;
+    background-color: #272727;
+    box-shadow: inset -2px 2px 1px -2px #000000, inset 0px 0px 0px 0px #d5d5d53b, inset -2px 2px 2px 2px #8383833b, inset 2px -2px 2px 0px #2d2d2d4d, inset 2px -2px 0px 2px #060606, inset -2px 2px 0px 2px #0c0c0c;
 }
 
 .diagonal-switch-flipped-lighting {
