@@ -1,6 +1,6 @@
 import { createProgramFromSource } from './utils/webglUtils';
 import { binomialArray, chooseWithRep, hslToRGB, stringifyRule, packRule, unpackRule, rulifyString, fmod, importRuleDirect, exportRuleDirect } from './utils/mathUtils';
-import { DEFAULT_CPU_RULE_CONTROL, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, MAX_N, MIN_N, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_SIM_FRAMERATE_IDX, FRAMERATES, COLOURING_STYLES, DEFAULT_COLOURING_STYLE_VARIABLE, PRESET_DIAGONALS, PRESET_CIRCUITBOARD, PRESET_HIGHWAYS, PRESET_SOLAR_PANELS } from './constants';
+import { DEFAULT_CPU_RULE_CONTROL, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, MAX_N, MIN_N, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_SIM_FRAMERATE_IDX, FRAMERATES, COLOURING_STYLES, DEFAULT_COLOURING_STYLE_VARIABLE, PRESETS } from './constants';
 
 const SIMWIDTH = 1024;
 const SIMHEIGHT = 1024;
@@ -11,14 +11,6 @@ const texDataBuffer = new Uint8Array(SIMWIDTH * SIMHEIGHT);
 const NUMCOLOURS = 64;      //number of colours in colour map array
 const COLOURWIDTH = 4;      //byte-width of colours (4 bc RGBA)
 const COLOURTEXWIDTH = 8;   //sqrt(NUMCOLOURS)
-
-/* CRT constants */
-const CRTPIXELSTRUCTURE = Float32Array.from([
-    0.25, 0.25, 0.25, 0.25,     0.5, 0.0, 0.5, 0.0,     0.5, 0.0, 0.5, 0.0,     0.5, 0.0, 0.5, 0.0,
-    0.5, 0.5, 0.0, 0.0,         1.0, 0.0, 0.0, 0.0,     1.0, 0.0, 0.0, 0.0,     1.0, 0.0, 0.0, 0.0, 
-    0.5, 0.5, 0.0, 0.0,         1.0, 0.0, 0.0, 0.0,     1.0, 0.0, 0.0, 0.0,     1.0, 0.0, 0.0, 0.0, 
-    0.5, 0.5, 0.0, 0.0,         1.0, 0.0, 0.0, 0.0,     1.0, 0.0, 0.0, 0.0,     1.0, 0.0, 0.0, 0.0
-]);
 
 type FrameBufferBundle = {
     fb: WebGLFramebuffer,
@@ -54,7 +46,6 @@ export class Automaton {
     private ruleTex?: WebGLTexture;
     private fbRule? : WebGLFramebuffer;
     private colourTex?: WebGLTexture;
-    private crtPixelTex?: WebGLTexture;
     /* [bloom] */
     private bloomDepth = 1; //how many times to downsample [both dimension of screensize should be divisible by 2^bloomDepth]
 
@@ -257,22 +248,6 @@ export class Automaton {
         /* RULE TEXTURE */
         this.ruleTex = this.gl.createTexture();
         this.genRule();
-
-        /* CRT PIXEL TEXTURE */
-        this.crtPixelTex = this.gl.createTexture();
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.crtPixelTex);
-        this.gl.texImage2D(
-            this.gl.TEXTURE_2D, 
-            0, 
-            this.gl.RGBA32F, //this.gl.RGBA, 
-            4, 
-            4,
-            0, 
-            this.gl.RGBA, //this.gl.RGBA, 
-            this.gl.FLOAT, //this.gl.UNSIGNED_BYTE,
-            CRTPIXELSTRUCTURE
-        );
-        this.texParams();
 
         /* - SIMULATION FRAMES - */
         /* --------------------- */
@@ -1126,32 +1101,8 @@ export class Automaton {
     }
 
 
-    public setPreset(s: string): boolean {
-        switch(s) {
-            case 'conway':
-                this.importRule("41W");
-                break;
-            case 'life without death':
-                this.importRule("47/");
-                break;
-            case 'day and night':
-                this.importRule("4ut");
-                break;
-            case 'circuitboard':
-                this.importRule(PRESET_CIRCUITBOARD);
-                break;
-            case 'diagonals':
-                this.importRule(PRESET_DIAGONALS);
-                break;
-            case 'highways':
-                this.importRule(PRESET_HIGHWAYS);
-                break;
-            case 'solar panels':
-                this.importRule(PRESET_SOLAR_PANELS);
-                break;
-            default:
-                return false;
-        }
+    public setPreset(idx: number): boolean {
+        this.importRule(PRESETS[idx][1]);
         this.genRule();
         return true;
     }
@@ -1267,7 +1218,7 @@ export class Automaton {
             this.ruleArrayIsCurrent = true;
         }
 
-        if (this.states < 4) {
+        if (this.states < 5) {
             return exportRuleDirect(this.rule, this.states);
         }
         
@@ -1300,9 +1251,9 @@ export class Automaton {
         let unpacked;
         let n;
 
-        if (rule.length == 3 || rule.length == 45) {
+        if (rule.length == 3 || rule.length == 45 || rule.length == 220) {
             /* 2-state or 3-state */
-            n = rule.length == 3 ? 2 : 3;
+            n = rule.length == 3 ? 2 : (rule.length == 45 ? 3 : 4);
             try {
                 unpacked = importRuleDirect(rule, n);
             } catch (_error){
@@ -1310,7 +1261,7 @@ export class Automaton {
                 return false;
             }
         } else {
-            const lengths = [-1, -1, -1, 34, 165, 930, 2898, 7884, 19305, 57915, 121550, 240669, 453492];
+            const lengths = [-1, -1, -1, -1, 165, 930, 2898, 7884, 19305, 57915, 121550, 240669, 453492];
             let decompressed;
             try {
                 decompressed = rulifyString(rule);
@@ -1322,7 +1273,7 @@ export class Automaton {
             n = lengths.indexOf(decompressed.length);
             console.log(decompressed.length);
 
-            if (n < 3) {
+            if (n < 4) {
                 /* invalid */
                 return false;
             }

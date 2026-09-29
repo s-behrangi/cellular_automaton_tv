@@ -74,7 +74,7 @@ canvas {
 }
 
 .machine {
-    padding: 20px;
+    padding: 20px 20px 20px 40px;
     border-radius: 5px;
     position: relative;
     width: min-content;
@@ -237,7 +237,7 @@ span {
 
 #preset-panel {
   position: relative;
-  margin-left: 35px;
+  margin-left: 70px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -380,4 +380,22 @@ span {
 
 #to-first-page {
   left: 2%;
+}
+
+#machine-lighting {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  background: radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.034), rgba(0, 0, 0, 0) 40%);
+}
+
+#rule-lighting {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  background: radial-gradient(circle at 130% 30%, rgba(255, 255, 255, 0.034), rgba(0, 0, 0, 0) 40%);
 }

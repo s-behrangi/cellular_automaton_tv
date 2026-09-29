@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import PushButton from './inputDevices/pushButton.tsx';
-import { PRESET_NAMES } from '../constants';
+import { PRESETS } from '../constants';
 
 const LINE_HEIGHT = 40;
 
 interface presetPanelProp{
-    setPreset: (s: string) => void,
+    setPreset: (s: number) => void,
 }
 
 const PresetPanel: React.FC<presetPanelProp> = ({
@@ -16,13 +16,13 @@ const PresetPanel: React.FC<presetPanelProp> = ({
 
     const handleChangePreset = (diff: number) => {
         setSelectedPreset( (prev) => {
-            const next = Math.max(0, Math.min(PRESET_NAMES.length - 1, prev + diff));
+            const next = Math.max(0, Math.min(PRESETS.length - 1, prev + diff));
             setPresetNameOffset((pre) => pre + (prev - next) * LINE_HEIGHT);
             return next;
         });
     }
 
-    const presetText = PRESET_NAMES.map((pair) => pair[0]).join("\n");
+    const presetText = PRESETS.map((pair) => pair[0]).join("\n");
 
     return (
     <div id="preset-panel">
@@ -43,7 +43,7 @@ const PresetPanel: React.FC<presetPanelProp> = ({
             <span id="preset-name" style={{'--preset-name-yoffset': `${presetNameOffset}px`}  as React.CSSProperties}>{presetText}</span>
         </div>
         <PushButton
-            onChange={(val: boolean) => val ? setPreset(PRESET_NAMES[selectedPreset][1]) : null}
+            onChange={(val: boolean) => val ? setPreset(selectedPreset) : null}
             toggle={false}
             label={"&#9654;"}
         />

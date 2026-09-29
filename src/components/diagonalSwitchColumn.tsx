@@ -4,6 +4,7 @@ import { Automaton } from '../automaton.ts';
 import { useAutomatonStore } from '../automatonStore.ts';
 import DiagonalSwitch from './inputDevices/diagonalSwitch.tsx';
 import './diagonalSwitchColumn.css';
+import { FRAMERATES } from '../constants.ts';
 
 interface diagonalSwitchColumnProps{
     simulation: Automaton,
@@ -16,6 +17,8 @@ const DiagonalSwitchColumn: React.FC<diagonalSwitchColumnProps> = ({
 }) => {
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const chunksRef = useRef<Blob[]>([]);
+
+    const framerateIdx = useAutomatonStore((s) => s.framerateIdx);
 
     const [isRecording, setIsRecording] = useState<boolean>(false);
 
@@ -42,11 +45,15 @@ const DiagonalSwitchColumn: React.FC<diagonalSwitchColumnProps> = ({
             } else if (val){
                 chunksRef.current = [];
 
-                const stream = cRef.current?.captureStream(30)!;
+                const stream = cRef.current?.captureStream(FRAMERATES[framerateIdx])!;
+
+                const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+                    ? 'video/webm;codecs=vp9'
+                    : '';
 
                 const mediaRecorder = new MediaRecorder(stream, {
                     videoBitsPerSecond: 12_000_000,
-                    mimeType: 'video/webm;codecs=vp9',
+                    mimeType,
                 })
 
                 mediaRecorder.ondataavailable = (e) => {
@@ -77,6 +84,7 @@ const DiagonalSwitchColumn: React.FC<diagonalSwitchColumnProps> = ({
         const downloadLink = document.createElement('a');
         downloadLink.href = url;
         downloadLink.download = filename;
+        downloadLink.style.display = 'none';
     
         document.body.appendChild(downloadLink);
         downloadLink.click();

@@ -77,6 +77,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
             </Box>
         </Modal>
             <span className="panel-name" id="rule-panel-name">RULE</span>
+            <div id="rule-lighting" />
             <div className="control-column" id="rule-panel-contents">
                 <div className="control-row">
                     <div className="input-with-label">

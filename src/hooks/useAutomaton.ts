@@ -27,7 +27,7 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
         setN(autoRef.current?.states!);
     }
 
-    const setPreset = (preset: string) => {
+    const setPreset = (preset: number) => {
         autoRef.current?.setPreset(preset);
         setN(autoRef.current?.states!);
     }

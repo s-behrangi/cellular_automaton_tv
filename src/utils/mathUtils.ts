@@ -161,7 +161,7 @@ export function exportThreeState(rule: Uint8Array): string {
 export function exportRuleDirect(rule: Uint8Array, n: number): string {
     let stringified = "";
 
-    const length = n == 2 ? 3 : 45;
+    const length = n == 2 ? 3 : (n == 3 ? 45 : 220);
     const perLetter = n == 2 ? 6 : 3;
     const width = n == 2 ? 1 : 2;
 
@@ -191,9 +191,9 @@ export function importTwoState(stringified: string): Uint8Array {
 }
 
 export function importRuleDirect(stringified: string, n: number): Uint8Array {
-    const rule = new Uint8Array(n == 2 ? 18: 135);
+    const rule = new Uint8Array(n == 2 ? 18 : (n == 3 ? 135 : 660));
 
-    const length = n == 2 ? 3 : 45;
+    const length = n == 2 ? 3 : (n == 3 ? 45 : 220);
     const perLetter = n == 2 ? 6 : 3;
     const width = n == 2 ? 1 : 2;
 
@@ -261,33 +261,6 @@ export function packRule(rule: Uint8Array, n: number): Uint8Array {
     }
 
     return packed;
-}
-
-export function oldPackRule(rule: Uint8Array, n: number) {
-    const length = (n * chooseWithRep(n, 8) + 1) / 2;
-    const packed = new Uint8Array(length);
-    
-    for (let i = 0; i < length; i++) {
-        let byte = rule[i * 2] & 15; //first nibble
-        byte <<= 4; //make space for the second
-        byte |= rule[i * 2 + 1] & 15; //second nibble
-        packed[i] = byte;  
-    }
-
-    return packed;
-}
-
-export function oldUnpackRule(packed: Uint8Array): Uint8Array {
-    /* simply reverses the packing */
-    const rule = new Uint8Array(packed.length * 2);
-
-    for (let i = 0; i < packed.length; i++) {
-        const byte = packed[i];
-        rule[i * 2] = (byte >> 4) & 15;
-        rule[i * 2 + 1] = byte & 15;
-    }
-
-    return rule;
 }
 
 export function unpackRule(packed: Uint8Array, n: number): Uint8Array {

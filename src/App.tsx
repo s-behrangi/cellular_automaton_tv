@@ -22,6 +22,7 @@ function App() {
     <>
       <div className="machine-recede">
         <div className="machine">
+          <div id="machine-lighting" />
           <div className="machine-face">
             <div id="screen-housing">
               <div id="screen-inset">
