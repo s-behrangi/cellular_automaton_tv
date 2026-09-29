@@ -39,13 +39,17 @@ const ColourPanel: React.FC<colourPanelProps> = ({
             <div className="control-row" id="colour-panel-contents">
                 <div className="control-column">
                     <div className="control-row" id="colour-winged-selectors">
-                        <WingedSelector
-                            options={["HUE", "LUM", "BIN"]}
-                            value={colouringStyleIdx}
-                            onChange={(i) => setColouringStyle(i)}
-                            size={90}
-                        />
-                        <div id="colour-endpoint-selector">
+                        <div className="input-with-label">
+                            <span>MODE</span>
+                            <WingedSelector
+                                options={["HUE", "LUM", "BIN"]}
+                                value={colouringStyleIdx}
+                                onChange={(i) => setColouringStyle(i)}
+                                size={90}
+                            />
+                        </div>
+                        <div className="input-with-label" id="colour-endpoint-selector">
+                            <span>ENDPOINTS</span>
                             <WingedSelector
                                 options={["⋅⋅", "[⋅", "⋅]", "[]"]}
                                 value={

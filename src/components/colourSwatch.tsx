@@ -5,7 +5,7 @@ import './colourSwatch.css';
 const DOTS_WIDE = Math.floor(21 * 3);
 const DOTS_HIGH = 6;
 const PSEUDOPIXEL_SIZE = 5;
-const DOT_OFFSET = 1;
+const HOUSING_INSET = 5;
 
 interface colourSwatchProps{
     vertical?: boolean,
@@ -16,38 +16,41 @@ const ColourSwatch: React.FC<colourSwatchProps> = ({
 }) => {
     const colours = useAutomatonStore((s) => s.colours);
 
-    const dotCoords = Array.from({length: DOTS_WIDE * DOTS_HIGH}, (_, idx) => 
-        [(idx % DOTS_WIDE) * PSEUDOPIXEL_SIZE + DOT_OFFSET, Math.floor(idx / DOTS_WIDE) * PSEUDOPIXEL_SIZE + DOT_OFFSET, Math.floor((idx % DOTS_WIDE) / (DOTS_WIDE / colours.length))]
+    const rectCoords = Array.from({length: DOTS_WIDE}, (_, idx) => 
+        [idx * (PSEUDOPIXEL_SIZE), 0, Math.floor((idx / DOTS_WIDE) * colours.length)]
     );
 
-    return <div className="colour-swatch-housing"
+    return ( 
+    <div className="colour-swatch-housing"
         style={{
-                width: `${(vertical ? DOTS_HIGH : DOTS_WIDE) * PSEUDOPIXEL_SIZE + 15}px`,
-                height: `${(vertical ? DOTS_WIDE : DOTS_HIGH) * PSEUDOPIXEL_SIZE + 15}px`
+                width: `${(vertical ? DOTS_HIGH : DOTS_WIDE) * PSEUDOPIXEL_SIZE + 17}px`,
+                height: `${(vertical ? DOTS_WIDE : DOTS_HIGH) * PSEUDOPIXEL_SIZE + 17}px`
             }}
     >
+        {
+                rectCoords.map((coords, idx) => (
+                    <div className="colour-swatch-rect" 
+                        key={idx}
+                        style={{
+                            width:`${(vertical ? DOTS_HIGH : 1) * PSEUDOPIXEL_SIZE}px`,
+                            height:`${(vertical ? 1 : DOTS_HIGH) * PSEUDOPIXEL_SIZE}px`,
+                            left:`${(vertical ? coords[1] : coords[0]) + HOUSING_INSET}px`,
+                            bottom:`${(vertical ? coords[0] : coords[1]) + HOUSING_INSET + 3}px`,
+                            backgroundColor: `hsl(${colours[coords[2]][0]}, ${colours[coords[2]][1]}%, ${colours[coords[2]][2]}%)`
+                        }}
+                    />
+                ))
+        }
         <div className="colour-swatch"
             style={{
                 width: `${(vertical ? DOTS_HIGH : DOTS_WIDE) * PSEUDOPIXEL_SIZE + 1}px`,
                 height: `${(vertical ? DOTS_WIDE : DOTS_HIGH) * PSEUDOPIXEL_SIZE + 1}px`
             }}
         >
-                {
-                    dotCoords.map((coords, idx) => (
-                        <div className="colour-swatch-dot"
-                            key={idx}
-                            style={{
-                                width:`${PSEUDOPIXEL_SIZE - DOT_OFFSET}px`,
-                                height:`${PSEUDOPIXEL_SIZE - DOT_OFFSET}px`,
-                                left:`${vertical ? coords[1] : coords[0]}px`,
-                                bottom:`${vertical ? coords[0] : coords[1]}px`,
-                                backgroundColor: `hsl(${colours[coords[2]][0]}, ${colours[coords[2]][1]}%, ${colours[coords[2]][2]}%)`
-                            }}
-                        />
-                    ))
-                }
-            </div>
+            
         </div>
+    </div>
+    );
 };
 
 export default React.memo(ColourSwatch);

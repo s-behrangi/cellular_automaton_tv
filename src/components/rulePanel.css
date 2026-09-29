@@ -1,9 +1,6 @@
 .io-and-cpu-knob {
+    margin-top: 25px;
     align-items: end;
-}
-
-.io-and-cpu-knob .winged-selector {
-    margin-bottom: -20px;
 }
 
 .io-and-cpu-knob .push-button {

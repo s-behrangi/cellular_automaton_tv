@@ -29,7 +29,7 @@
 
   /* --------- MACHINE SURFACE --------- */
   --machine-colour: rgb(19, 19, 19);
-  --machine-text: rgba(253, 143, 0, 0.815);
+  --machine-text: rgba(255, 132, 16, 0.938);
 
   --diagonal-switch-column-colour: rgb(17, 17, 17);
 
@@ -157,6 +157,11 @@ span {
   margin-bottom: 0px;
 }
 
+#colour-winged-selectors .input-with-label span{
+  font-size: 14px;
+  margin-bottom: 0px;
+}
+
 .hsl-with-label {
   align-items: center;
 }
@@ -197,8 +202,8 @@ span {
 }
 
 #colour-panel-name {
-  left: 130px;
-  top: -10px;
+  left: 127px;
+  top: 78px;
 }
 
 #colour-winged-selectors {
@@ -313,4 +318,66 @@ span {
   width: 40px;
   height: 20px;
   font-size: 11px;
+}
+
+#manual {
+  color:#060606;
+  line-height: normal;
+  white-space: pre-line;
+}
+
+#manual p, #manual ul, #manual ol, #manual li {
+  font-size: 12px;
+  white-space: pre-line;
+  font-weight: 400; 
+}
+
+#manual p {
+  text-indent: 1em;
+  margin-top: 0.5em;
+  margin-block-end: 0.5em;
+  margin-block-start: 0.5em;
+}
+
+#manual ul {
+  list-style-type: none;
+}
+
+#manual ul, #manual ol {
+  padding-inline-start: 2em;
+  margin-block-end: 0.3em;
+  margin-block-start: 0.3em;
+}
+
+#manual .sublist {
+  list-style-type: none;
+}
+
+#manual .small-note {
+  font-size: 10px;
+}
+
+#manual h1 {
+  margin: 0px;
+  font-size: 16px;
+}
+
+#manual h2 {
+  margin-bottom: 0px;
+  margin-top: 1em;
+  font-size: 14px;
+}
+
+#manual h3 {
+  margin: 0px;
+  margin-block-start: 1em;
+  font-size: 12px;
+}
+
+#to-second-page {
+  left: 97%;
+}
+
+#to-first-page {
+  left: 2%;
 }
