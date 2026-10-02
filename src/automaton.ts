@@ -1,6 +1,6 @@
 import { createProgramFromSource } from './utils/webglUtils';
 import { binomialArray, chooseWithRep, hslToRGB, stringifyRule, packRule, unpackRule, rulifyString, fmod, importRuleDirect, exportRuleDirect } from './utils/mathUtils';
-import { DEFAULT_CPU_RULE_CONTROL, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, MAX_N, MIN_N, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_SIM_FRAMERATE_IDX, FRAMERATES, COLOURING_STYLES, DEFAULT_COLOURING_STYLE_VARIABLE, PRESETS } from './constants';
+import { DEFAULT_CPU_RULE_CONTROL, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, MAX_N, MIN_N, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_SIM_FRAMERATE_IDX, FRAMERATES, COLOURING_STYLES, DEFAULT_COLOURING_STYLE_VARIABLE, PRESETS, DEFAULT_RULE_DRAW } from './constants';
 
 const SIMWIDTH = 1024;
 const SIMHEIGHT = 1024;
@@ -45,13 +45,14 @@ export class Automaton {
     private binomialTex?: WebGLTexture;
     private ruleTex?: WebGLTexture;
     private fbRule? : WebGLFramebuffer;
+    private ruleVisTex?: WebGLTexture;
+    private fbRuleVis?: WebGLFramebuffer;
     private colourTex?: WebGLTexture;
     /* [bloom] */
-    private bloomDepth = 1; //how many times to downsample [both dimension of screensize should be divisible by 2^bloomDepth]
+    private bloomDepth = 1; 
 
     /* RULE */
     private rule: Uint8Array = new Uint8Array(RULEWIDTH * RULEWIDTH).fill(0);
-    ruleNumber: number = 0;
     private ruleZeroChanceExp = 0.5;
     states: number = 2;
     cpuRuleControl = true;
@@ -73,6 +74,7 @@ export class Automaton {
     private flashing = false;
     private dotting = false;
     private clearing = false;
+    private drawingRule = false; //when true, draws the rule visualization
     
     /* CAMERA & DRAWING */
     camera = {x: 0, y: 0, rot: 0, zoom: 1}; //rot doesn't do anything atm
@@ -120,6 +122,9 @@ export class Automaton {
             bloomUpsample: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.bloomUpsampleColour.shad)!},
             bloomToneMap: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.bloomToneMapColour.shad)!},
             flatQuadrupleProjection: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.flatQuadrupleProjectionColour.shad)!},
+        
+            ruleToVis: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.ruleToVisColour.shad)!},
+            visToRule: {prog: createProgramFromSource(this.gl, shaders.quadVertex.shad, shaders.visToRuleColour.shad)!},
         }
 
         /* override with app constants as necessary */
@@ -138,10 +143,13 @@ export class Automaton {
         this.frameRateIdx = DEFAULT_SIM_FRAMERATE_IDX;
 
         this.useCRT = DEFAULT_CRT;
+
+        this.drawingRule = DEFAULT_RULE_DRAW;
         
         this.zoomIdx = this.useCRT ? this.zoomLevels.findIndex(level => level == 4.0) : 0;
 
         this.init();
+        //this.setDrawRule(true);
     }
 
     /* ---------------- INITIALIZATION ------------------ */
@@ -150,14 +158,13 @@ export class Automaton {
 
     private init(): void {
         this.initListeners();
-        this.initTex();
         this.initLocs();
+        this.initTex();
         this.initUnifsAndAttribs();
 
         // Tell WebGL how to convert from clip space to pixels
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         
-        //this.drawToCanvas();
         this.handleZoomChange();
         this.setConway();
         this.animSim(performance.now());
@@ -169,21 +176,36 @@ export class Automaton {
             this.draw = false;
             this.canvas.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
+
             this.gl.useProgram(this.programs.autoDraw.prog);
             this.gl.uniform4f(this.uniforms.drawMouse.loc, 0, 0, this.brushSize, 0);
+
+            this.gl.useProgram(this.programs.ruleToVis.prog);
+            this.gl.uniform4f(this.uniforms.ruleToVisMouse.loc, 0, 0, 0, 0);
         };
 
         const handleMouseMove = (e: MouseEvent) => {
             const [simX, simY] = this.getSimSpaceMousePosition(e);
             if (this.pan) {
-                this.camera.x = Math.floor(fmod(this.panStartCam[0] + (this.panStartPos[0] - simX), this.autoWidth));
-                this.camera.y = Math.floor(fmod(this.panStartCam[1] + (this.panStartPos[1] - simY), this.autoHeight));
+                const rawX = this.panStartCam[0] + (this.panStartPos[0] - simX);
+                const rawY = this.panStartCam[1] + (this.panStartPos[1] - simY);
+                this.camera.x = Math.floor(this.drawingRule ? rawX : fmod(rawX, this.autoWidth));
+                this.camera.y = Math.floor(this.drawingRule ? rawY : fmod(rawY, this.autoHeight));
+
+                // this.camera.x = Math.floor(fmod(this.panStartCam[0] + (this.panStartPos[0] - simX), this.autoWidth));
+                // this.camera.y = Math.floor(fmod(this.panStartCam[1] + (this.panStartPos[1] - simY), this.autoHeight));
+
+                console.log(this.camera.x, this.camera.y, this.camera.zoom);
 
                 this.updateCamera();
                 this.drawToCanvas();
             } else if (this.draw) { //supposing proper functionality this is equivalent to an else
                 this.gl.useProgram(this.programs.autoDraw.prog);
+                console.log(simX, simY);
                 this.gl.uniform4f(this.uniforms.drawMouse.loc, Math.floor(fmod(simX, this.autoWidth)), Math.floor(fmod(simY, this.autoHeight)), this.brushSize, this.brushState);
+            
+                this.gl.useProgram(this.programs.ruleToVis.prog);
+                this.gl.uniform4f(this.uniforms.ruleToVisMouse.loc, Math.floor(simX), Math.floor(simY), this.brushSize, this.brushState);
             }
         };
 
@@ -205,7 +227,7 @@ export class Automaton {
             this.camera.x = newX;
             this.camera.y = newY;
             this.camera.zoom = newZoom;
-            
+
             this.updateCamera();
 
             this.drawToCanvas();
@@ -224,6 +246,9 @@ export class Automaton {
             if (this.draw) {
                 this.gl.useProgram(this.programs.autoDraw.prog);
                 this.gl.uniform4f(this.uniforms.drawMouse.loc, Math.floor(fmod(simX, this.autoWidth)), Math.floor(fmod(simY, this.autoHeight)), this.brushSize, this.brushState);
+            
+                this.gl.useProgram(this.programs.ruleToVis.prog);
+                this.gl.uniform4f(this.uniforms.ruleToVisMouse.loc, Math.floor(simX), Math.floor(simY), this.brushSize, this.brushState);
             }
         });
     }
@@ -247,6 +272,10 @@ export class Automaton {
 
         /* RULE TEXTURE */
         this.ruleTex = this.gl.createTexture();
+
+        /* RULE VISUALIZATION TEXTURE */
+        this.genRuleVis();
+
         this.genRule();
 
         /* - SIMULATION FRAMES - */
@@ -337,6 +366,8 @@ export class Automaton {
             this.fbBundles[`upSampler${i}`] = this.createFrameBufferBundle(upWidth, upHeight, this.gl.CLAMP_TO_EDGE, this.gl.LINEAR, bloomFormat);
         }
 
+        /* RULE VISUALIZATION */
+
         /* CLEAR */
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
@@ -360,6 +391,7 @@ export class Automaton {
             colourScreenSize: {loc: this.gl.getUniformLocation(this.programs.autoColour.prog, "uScreenSize")!},
             colourSimSize: {loc: this.gl.getUniformLocation(this.programs.autoColour.prog, "uSimSize")!},
             colourCamera: {loc: this.gl.getUniformLocation(this.programs.autoColour.prog, "camera")!},
+            colourRuleDraw: {loc: this.gl.getUniformLocation(this.programs.autoColour.prog, "uRuleDraw")!},
 
             screenFadeSampler: {loc: this.gl.getUniformLocation(this.programs.screenFade.prog, "uSampler")!},
             screenFadeCoefficient: {loc: this.gl.getUniformLocation(this.programs.screenFade.prog, "fade")!},
@@ -381,6 +413,7 @@ export class Automaton {
             crtWithBloomSimSize: {loc: this.gl.getUniformLocation(this.programs.crtWithBloom.prog, "uSimSize")!},
             crtWithBloomCamera: {loc: this.gl.getUniformLocation(this.programs.crtWithBloom.prog, "camera")!},
             crtWithBloomStyle: {loc: this.gl.getUniformLocation(this.programs.crtWithBloom.prog, "style")!},
+            crtWithBloomRuleDraw: {loc: this.gl.getUniformLocation(this.programs.crtWithBloom.prog, "uRuleDraw")!},
 
             flatQuadrupleProjectionStartTexture: {loc: this.gl.getUniformLocation(this.programs.flatQuadrupleProjection.prog, "uSampler")!},
             flatQuadrupleProjectionColours: {loc: this.gl.getUniformLocation(this.programs.flatQuadrupleProjection.prog, "uColours")!},
@@ -390,6 +423,18 @@ export class Automaton {
 
             bloomUpsamplerSmaller: {loc: this.gl.getUniformLocation(this.programs.bloomUpsample.prog, "smallerSampler")!},
             bloomUpsamplerLarger: {loc: this.gl.getUniformLocation(this.programs.bloomUpsample.prog, "largerSampler")!},
+        
+            ruleToVisSampler: {loc: this.gl.getUniformLocation(this.programs.ruleToVis.prog, "uRuleText")!},
+            ruleToVisRuleTextureEdge: {loc: this.gl.getUniformLocation(this.programs.ruleToVis.prog, "uRuleTextureEdge")!},
+            ruleToVisRuleVisEdge: {loc: this.gl.getUniformLocation(this.programs.ruleToVis.prog, "uRuleVisEdge")!},
+            ruleToVisRuleLength: {loc: this.gl.getUniformLocation(this.programs.ruleToVis.prog, "uRuleLength")!},
+            ruleToVisMouse: {loc: this.gl.getUniformLocation(this.programs.ruleToVis.prog, "uMouse")!},
+
+            visToRuleTexSampler: {loc: this.gl.getUniformLocation(this.programs.visToRule.prog, "uRuleTex")!},
+            visToRuleVisSampler: {loc: this.gl.getUniformLocation(this.programs.visToRule.prog, "uRuleVis")!},
+            visToRuleRuleTextureEdge: {loc: this.gl.getUniformLocation(this.programs.visToRule.prog, "uRuleTextureEdge")!},
+            visToRuleRuleVisEdge: {loc: this.gl.getUniformLocation(this.programs.visToRule.prog, "uRuleVisEdge")!},
+            visToRuleRuleLength: {loc: this.gl.getUniformLocation(this.programs.visToRule.prog, "uRuleLength")!},
         }
 
         for (let i = 0; i < this.bloomDepth; i++) {
@@ -442,6 +487,7 @@ export class Automaton {
         this.gl.uniform2f(this.uniforms.colourScreenSize.loc, this.screenWidth, this.screenHeight);
         this.gl.uniform2f(this.uniforms.colourSimSize.loc, this.autoWidth, this.autoHeight);
         this.gl.uniform3f(this.uniforms.colourCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
+        this.gl.uniform1i(this.uniforms.colourRuleDraw.loc, this.drawingRule ? 1 : 0);
 
         /* CRT WITH BLOOM */
         this.gl.useProgram(this.programs.crtWithBloom.prog);
@@ -453,6 +499,7 @@ export class Automaton {
         this.gl.uniform2f(this.uniforms.crtWithBloomSimSize.loc, this.autoWidth, this.autoHeight);
         this.gl.uniform3f(this.uniforms.crtWithBloomCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
         this.gl.uniform1i(this.uniforms.crtWithBloomStyle.loc, this.CRTstyle ? 1 : 0);
+        this.gl.uniform1i(this.uniforms.crtWithBloomRuleDraw.loc, this.drawingRule ? 1 : 0);
 
         /* FLAT QUADRUPLE PROJECTOR */
         this.gl.useProgram(this.programs.flatQuadrupleProjection.prog);
@@ -500,6 +547,24 @@ export class Automaton {
 
         this.gl.uniform1i(this.uniforms.bloomUpsamplerSmaller.loc, 0);
         this.gl.uniform1i(this.uniforms.bloomUpsamplerLarger.loc, 1);
+
+        /* RULE VISUALIZER */
+        this.gl.useProgram(this.programs.ruleToVis.prog);
+
+        this.gl.uniform1i(this.uniforms.ruleToVisSampler.loc, 1);
+        this.gl.uniform1i(this.uniforms.ruleToVisRuleTextureEdge.loc, RULEWIDTH);
+        this.gl.uniform1i(this.uniforms.ruleToVisRuleVisEdge.loc, this.calcRuleVisEdge());
+        this.gl.uniform1i(this.uniforms.ruleToVisRuleLength.loc, this.ruleLength());
+        this.gl.uniform4f(this.uniforms.ruleToVisMouse.loc, 0, 0, 0, this.brushState);
+
+        /* VISUALIZATION TO RULE PROGRAM */
+        this.gl.useProgram(this.programs.visToRule.prog);
+
+        this.gl.uniform1i(this.uniforms.visToRuleTexSampler.loc, 0);
+        this.gl.uniform1i(this.uniforms.visToRuleVisSampler.loc, 1);
+        this.gl.uniform1i(this.uniforms.visToRuleRuleTextureEdge.loc, RULEWIDTH);
+        this.gl.uniform1i(this.uniforms.visToRuleRuleVisEdge.loc, this.calcRuleVisEdge());
+        this.gl.uniform1i(this.uniforms.visToRuleRuleLength.loc, this.ruleLength());
     }
 
     /* ----------- FRAME AND SIM MANAGEMENT ------------- */
@@ -548,7 +613,7 @@ export class Automaton {
     private prepareBloom(): void {
         /* makes sure that the last upsampler texture is ready to be used by the crt shader */
         /* first we have to draw a flat projection */
-        this.drawQuad(this.programs.flatQuadrupleProjection.prog, [(this.activeFrame ? this.texA : this.texB)!, this.colourTex!], (this.activeScreen ? this.fbScreenA : this.fbScreenB)!);
+        this.drawQuad(this.programs.flatQuadrupleProjection.prog, [(this.drawingRule ? this.ruleVisTex! : (this.activeFrame ? this.texA : this.texB)!), this.colourTex!], (this.activeScreen ? this.fbScreenA : this.fbScreenB)!);
 
         /* perform threshold pass */
         this.drawQuad(this.programs.bloomThreshold.prog, [(this.activeScreen ? this.texScreenA : this.texScreenB)!], this.fbBundles.threshold.fb);
@@ -585,7 +650,7 @@ export class Automaton {
 
         /* Bind the right texture to read from */
         this.gl.activeTexture(this.gl.TEXTURE0);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, (this.activeFrame ? this.texA : this.texB)!);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, ((this.drawingRule ? this.ruleVisTex! : (this.activeFrame ? this.texA : this.texB)!)));
         
         /* Bind the colour scheme texture */
         this.gl.activeTexture(this.gl.TEXTURE1);
@@ -629,7 +694,7 @@ export class Automaton {
 
         /* Bind the right texture to read from */
         this.gl.activeTexture(this.gl.TEXTURE0);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, (this.activeFrame ? this.texA : this.texB)!);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, ((this.drawingRule ? this.ruleVisTex! : (this.activeFrame ? this.texA : this.texB)))!);
         
         /* Bind the colour scheme texture */
         this.gl.activeTexture(this.gl.TEXTURE1);
@@ -715,7 +780,7 @@ export class Automaton {
 
     private animSim(now: number): void {
         /* one cycle per call */
-        this.fadeScreen();
+        this.fadeScreen(); //currently inactive
 
         const panSpeed = 4.0 / this.zoomLevels[this.zoomIdx];
         switch (this.panDir) {
@@ -734,25 +799,34 @@ export class Automaton {
 
         this.updateCamera();
 
-        if (this.flashing) {
-            this.flash();
-        } else if (this.dotting) {
-            this.circle();
-        } else if (this.clearing) {
-            this.clear();
-        }
+        if (this.drawingRule) {
+            if (this.draw) {
+                this.drawRuleVis();
+                this.drawVisToRule();
+                this.ruleArrayIsCurrent = false;
+            }
+        } else {
+            if (this.flashing) {
+                this.flash();
+            } else if (this.dotting) {
+                this.circle();
+            } else if (this.clearing) {
+                this.clear();
+            }
 
-        /* handle any drawing that needs to be done */
-        if (this.draw) {
-            this.stepDraw();
-        }
+            /* handle any drawing that needs to be done */
+            if (this.draw) {
+                this.stepDraw();
+            }
 
-        if (this.playing && now - this.lastSimFrame >= 1000 / this.framerates[this.frameRateIdx]) {
-            this.lastSimFrame = now;
-            this.stepSim();
+            if (this.playing && now - this.lastSimFrame >= 1000 / this.framerates[this.frameRateIdx]) {
+                this.lastSimFrame = now;
+                this.stepSim();
+            }
         }
 
         this.drawToCanvas();
+
         window.requestAnimationFrame(this.animSim.bind(this));
     }
 
@@ -887,6 +961,9 @@ export class Automaton {
     }
 
     private updateCamera(): void {
+        if (this.drawingRule) {
+            this.clampCamera();
+        }
         this.gl.useProgram(this.programs.autoColour.prog);
         this.gl.uniform3f(this.uniforms.colourCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
         this.gl.useProgram(this.programs.crtWithBloom.prog);
@@ -924,6 +1001,65 @@ export class Automaton {
             this.animSim(performance.now());
         }
         return this.playing;
+    }
+
+    private setSimSize(width: number, height: number): void {
+        this.gl.useProgram(this.programs.flatQuadrupleProjection.prog);
+        this.gl.uniform2f(this.uniforms.flatQuadrupleProjectionSimSize.loc, width, height);
+
+        this.gl.useProgram(this.programs.crtWithBloom.prog);
+        this.gl.uniform2f(this.uniforms.crtWithBloomSimSize.loc, width, height);
+
+        this.gl.useProgram(this.programs.autoColour.prog);
+        this.gl.uniform2f(this.uniforms.colourSimSize.loc, width, height);
+    }
+
+    private clampCamera(): void {
+        /* clamps camera, specific to rule visualization */
+        const edge = this.calcRuleVisEdge();
+        const zoom = this.camera.zoom;
+        const extra = edge / 2.0;
+
+        this.camera.x = Math.max(
+            Math.min(- this.canvas.width / zoom + extra, - this.canvas.width / (2 * zoom)),
+            Math.min(
+                Math.max(extra, edge - this.canvas.width / (2 * zoom)),
+                this.camera.x
+            )
+        );
+
+        this.camera.y = Math.max(
+            Math.min(- this.canvas.height / zoom + extra, - this.canvas.height / (2 * zoom)),
+            Math.min(
+                Math.max(extra, edge - this.canvas.height / (2 * zoom)),
+                this.camera.y
+            )
+        );
+    }
+
+    private centerRule(): void {
+        /* centers the rule texture */
+        const edge = this.calcRuleVisEdge();
+        const zoom = this.camera.zoom;
+        this.camera.x = edge / 2.0 - this.canvas.width / (2.0 * zoom);
+        this.camera.y = edge / 2.0 - this.canvas.height / (2.0 * zoom);
+        this.updateCamera();
+    }
+
+    public setDrawRule(val: boolean): void {
+        this.drawingRule = val;
+        if (this.drawingRule) {
+            this.drawRuleVis();
+            this.centerRule();
+        } else {
+            this.setSimSize(this.autoWidth, this.autoHeight);
+        }
+
+        this.gl.useProgram(this.programs.autoColour.prog);
+        this.gl.uniform1i(this.uniforms.colourRuleDraw.loc, this.drawingRule ? 1 : 0);
+
+        this.gl.useProgram(this.programs.crtWithBloom.prog);
+        this.gl.uniform1i(this.uniforms.crtWithBloomRuleDraw.loc, this.drawingRule ? 1 : 0);
     }
 
     public setPlay(val: boolean): void {
@@ -1054,6 +1190,7 @@ export class Automaton {
         this.brushSize = n;
         this.gl.useProgram(this.programs.autoDraw.prog);
         this.gl.uniform4f(this.uniforms.drawMouse.loc, 0, 0, this.brushSize, 0);
+
         return this.brushSize;
     }
 
@@ -1093,7 +1230,85 @@ export class Automaton {
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbRule);
         this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.ruleTex!, 0);
 
-        this.ruleNumber = this.ruleToNumber();
+        this.drawRuleVis();
+    }
+
+    private genRuleVis(): void {
+        /* creates a visualization of the rule texture */
+        this.ruleVisTex = this.gl.createTexture();
+
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.ruleVisTex!);
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.R8UI, this.calcRuleVisEdge(), this.calcRuleVisEdge(), 0, this.gl.RED_INTEGER, this.gl.UNSIGNED_BYTE, null)!;
+        this.texParams(this.gl.CLAMP_TO_EDGE);
+
+        this.fbRuleVis = this.gl.createFramebuffer();
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbRuleVis);
+        this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.ruleVisTex, 0);
+    }
+
+    private drawRuleVis(): void {
+        /* fills the rule visualization texture */
+        /* update relevant uniforms */
+        this.gl.useProgram(this.programs.ruleToVis.prog);
+
+        this.gl.uniform1i(this.uniforms.ruleToVisRuleVisEdge.loc, this.calcRuleVisEdge());
+        this.gl.uniform1i(this.uniforms.ruleToVisRuleLength.loc, this.ruleLength());
+
+        /* make sure target texture has the right dimensions */
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.ruleVisTex!);
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.R8UI, this.calcRuleVisEdge(), this.calcRuleVisEdge(), 0, this.gl.RED_INTEGER, this.gl.UNSIGNED_BYTE, null)!;
+
+        /* Bind the right framebuffer & set dims */
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbRuleVis!);
+
+        this.gl.viewport(0, 0, this.calcRuleVisEdge(), this.calcRuleVisEdge());
+
+        /* Bind the rule texture to read from */
+        this.gl.activeTexture(this.gl.TEXTURE0);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.ruleTex!);;
+
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
+
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+
+        if (this.drawingRule) {
+            this.setSimSize(this.calcRuleVisEdge(), this.calcRuleVisEdge());
+        }
+    }
+
+    private drawVisToRule(): void {
+        /* writes the rule visualization back to the rule to apply changes */
+        /* update relevant uniforms */
+        this.gl.useProgram(this.programs.visToRule.prog);
+
+        this.gl.uniform1i(this.uniforms.visToRuleRuleVisEdge.loc, this.calcRuleVisEdge());
+        this.gl.uniform1i(this.uniforms.visToRuleRuleLength.loc, this.ruleLength());
+
+        /* Bind the right framebuffer & dims */
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbRule!);
+
+        this.gl.viewport(0, 0, RULEWIDTH, RULEWIDTH);
+
+        /* Copy the rule texture to temp */
+        const temp = this.gl.createTexture();
+        this.gl.bindTexture(this.gl.TEXTURE_2D, temp);
+        this.gl.copyTexImage2D(this.gl.TEXTURE_2D, 0, this.gl.R8UI, 0, 0, RULEWIDTH, RULEWIDTH, 0);
+        this.texParams();
+
+        /* Bind the rule texture and vis texture */
+        this.gl.activeTexture(this.gl.TEXTURE0);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, temp);
+
+        this.gl.activeTexture(this.gl.TEXTURE1);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.ruleVisTex!);
+
+        /* draw and reset */
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
+
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+        this.gl.deleteTexture(temp);
     }
     
     public setConway(): void {
@@ -1143,6 +1358,8 @@ export class Automaton {
             
             this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
             this.ruleArrayIsCurrent = false;
+
+            this.drawRuleVis();
         }
     }
     
@@ -1191,14 +1408,21 @@ export class Automaton {
             /* reset */
             this.gl.bindVertexArray(this.texVAO!);
             this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+            this.gl.deleteTexture(temp);
 
             this.ruleArrayIsCurrent = false;
+
+            this.drawRuleVis();
         }
     }
 
     private ruleLength(n = this.states): number {
         /* returns the length of the current rule */
         return chooseWithRep(n, 8) * n;
+    }
+
+    private calcRuleVisEdge(n = this.states): number {
+        return Math.ceil(Math.sqrt(this.ruleLength(n)));
     }
 
     public ruleToNumber(): number {

@@ -13,6 +13,8 @@ export const DEFAULT_SIM_FRAMERATE_IDX = 4;
 
 export const DEFAULT_CRT = true;
 
+export const DEFAULT_RULE_DRAW = false;
+
 export const DEFAULT_COLOUR = {
     h: 120,
     s: 100,

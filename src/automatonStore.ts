@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, DEFAULT_N, MAX_N, MIN_N, DEFAULT_CPU_RULE_CONTROL, DEFAULT_SIM_FRAMERATE_IDX, DEFAULT_COLOURING_STYLE_VARIABLE, COLOURING_STYLES } from './constants';
+import { DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, DEFAULT_N, MAX_N, MIN_N, DEFAULT_CPU_RULE_CONTROL, DEFAULT_SIM_FRAMERATE_IDX, DEFAULT_COLOURING_STYLE_VARIABLE, COLOURING_STYLES, DEFAULT_RULE_DRAW } from './constants';
 import { rgbToHSL } from './utils/mathUtils';
 
 interface AutomatonStore {
@@ -52,6 +52,9 @@ interface AutomatonStore {
 
     framerateIdx: number,
     setFramerateIdx: (n: number) => void,
+
+    ruleDraw: boolean,
+    setRuleDraw: (val: boolean) => void,
 }
 
 export const useAutomatonStore = create<AutomatonStore>()(
@@ -129,4 +132,7 @@ export const useAutomatonStore = create<AutomatonStore>()(
 
     colouringStyleVariable: DEFAULT_COLOURING_STYLE_VARIABLE,
     setColouringStyleVariable: (n: number) => set({colouringStyleVariable: n}),
+
+    ruleDraw: DEFAULT_RULE_DRAW,
+    setRuleDraw: (val: boolean) => set({ruleDraw: val}),
 })));

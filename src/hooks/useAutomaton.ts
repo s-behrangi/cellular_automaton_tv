@@ -178,6 +178,15 @@ export function useAutomaton(cRef: RefObject<HTMLCanvasElement | null>) {
         return unsubscribe;
     }, []);
 
+    useEffect(() => {
+        const unsubscribe = useAutomatonStore.subscribe(
+            (s) => s.ruleDraw,
+            (ruleDraw) => autoRef.current!.setDrawRule(ruleDraw),
+        );
+
+        return unsubscribe;
+    }, []);
+
     /* END SUBSCRIPTIONS */
 
     return {

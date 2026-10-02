@@ -9,16 +9,19 @@
 
 .control-cluster-wrapper {
     position: relative;
-    margin: 10px 10px -30px -14px;
+    margin: -20px 10px -60px -14px;
 }
 
 .diagonal-switch-column {
     margin-top: -70px;
 }
 
-.playback-panel .input-with-label {
+#playback-toggles {
     position: relative;
-    margin-left: -24px;
+    margin-left: -15px;
+    height: min-content;
+    gap: 5px;
+    margin-bottom: -20px;
 }
 
 #logo-cluster {

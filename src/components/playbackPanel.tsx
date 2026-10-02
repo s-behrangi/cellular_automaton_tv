@@ -22,6 +22,10 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
 }) => {
     const useCRT = useAutomatonStore((s) => s.useCRT);
     const setUseCRT = useAutomatonStore((s) => s.setUseCRT);
+
+    const ruleDraw = useAutomatonStore((s) => s.ruleDraw);
+    const setRuleDraw = useAutomatonStore((s) => s.setRuleDraw);
+    
     
     const [manualOpen, setManualOpen] = useState<boolean>(false);
     const [manualFirstPage, setManualFirstPage] = useState<boolean>(true);
@@ -86,13 +90,26 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
                 <ControlCluster
                     simulation={simulation}
                 />
-                <div className="input-with-label"> 
-                    <span>CRT</span>
-                    <SeesawSwitch 
-                        onChange={setUseCRT}
-                        value={useCRT}
-                        toggle={true}
-                    />
+
+                <div className="control-column" id="playback-toggles">
+                    <div className="input-with-label"> 
+                        <span>RULE DRAW</span>
+                        <SeesawSwitch 
+                            onChange={setRuleDraw}
+                            value={ruleDraw}
+                            toggle={true}
+                            onOffMarks={true}
+                        />
+                    </div>
+                    <div className="input-with-label"> 
+                        
+                        <SeesawSwitch 
+                            onChange={setUseCRT}
+                            value={useCRT}
+                            toggle={true}
+                        />
+                        <span className="bottom-label">CRT</span>
+                    </div>
                 </div>
             </div>
 };

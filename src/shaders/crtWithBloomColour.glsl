@@ -27,6 +27,8 @@ const float bgGrey = 5.0;
 
 const float screenCurvature = 0.23;
 
+const float tolerance = 0.00;
+
 /* END CONSTANTS */
 
 in vec2 vTexCoord;
@@ -38,6 +40,7 @@ uniform vec2 uScreenSize;           //dimensions of the screen
 uniform vec2 uSimSize;              //dimensions of the simulation texture
 uniform vec3 camera;                //camera x, y, zoom
 uniform bool style;                 //aperture grille or shadow mask
+uniform bool uRuleDraw;             //are we drawing a rule?
 
 layout(location = 0) out vec4 fragColour;
 
@@ -236,6 +239,23 @@ vec3 shadowMask(vec2 uv, float intensity) {
     return mix(vec3(1.0), mask, intensity);
 }
 
+bool outOfBounds(vec2 uv, float tolerance) {
+    return (
+        uv.x * (1.0 - tolerance) < 0.0 - tolerance ||
+        uv.y * (1.0 - tolerance) < 0.0 - tolerance ||
+        uv.x * (1.0 - tolerance) > 1.0 + tolerance ||
+        uv.y * (1.0 - tolerance) > 1.0 + tolerance
+    );
+}
+
+float distFromBounds(vec2 uv) {
+    float normalizedFadeThreshold = 1.0 / (uSimSize.x * 5.0);
+    return min(smoothstep(1.0, 1.0 + normalizedFadeThreshold, uv.x) +
+           smoothstep(1.0, 1.0 + normalizedFadeThreshold, uv.y) +
+           (1.0 - smoothstep( - normalizedFadeThreshold, 0.0, uv.x)) +
+           (1.0 - smoothstep( - normalizedFadeThreshold, 0.0, uv.y)), 1.0);
+}
+
 vec4 bilinear(vec2 uv) {
     vec2 screenPixCoord = uv * uScreenSize;
     vec2 simPixCoord = camera.xy + screenPixCoord / camera.z;
@@ -267,6 +287,25 @@ vec4 bilinear(vec2 uv) {
     vec4 c10 = vec4(texelFetch(uColours, ivec2(s10 % COLOURTEXWIDTH, s10 / COLOURTEXWIDTH), 0)) / 255.0;                   
     vec4 c01 = vec4(texelFetch(uColours, ivec2(s01 % COLOURTEXWIDTH, s01 / COLOURTEXWIDTH), 0)) / 255.0;                   
     vec4 c11 = vec4(texelFetch(uColours, ivec2(s11 % COLOURTEXWIDTH, s11 / COLOURTEXWIDTH), 0)) / 255.0;     
+
+    if (uRuleDraw) {
+        if (outOfBounds(centerPos, tolerance) || s00 == 50) {
+            c00 = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+
+        if (outOfBounds(rightPos, tolerance) || s10 == 50) {
+            c10 = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+
+        if (outOfBounds(upPos, tolerance) || s01 == 50) {
+            c01 = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+
+        if (outOfBounds(upRightPos, tolerance) || s11 == 50) {
+            c11 = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+    }
+    
 
     // use below code to produce "looking closer at screen" effect (supposing scanlines are adjusted too)
     // vec4 top = mix(c00, c10, frac.x * frac.x);
@@ -308,14 +347,18 @@ void main() {
     luminosityAdjustment = rgbToLuminance(vec3(bloomColour.rgb)) * luminosityFraction;
     bloomColour = vec4(bloomColour.rgb * (baseBrightness + luminosityAdjustment), 1.0);
 
-    
+    vec2 barrelledSimCoord = (camera.xy + barrelledCoord * (uScreenSize / camera.z)) / uSimSize;
+    if (uRuleDraw) {
+        bloomColour = bloomColour * (1.0 - distFromBounds(barrelledSimCoord));
+    }
 
-    vec3 hdrColour = colour.rgb * 1.0 + bloomColour.rgb * 0.6;
+
+    vec3 hdrColour = uRuleDraw ? colour.rgb * 2.6 : colour.rgb * 1.0 + bloomColour.rgb * 0.6;
     /* tone-mapping algorithms */
     // colour.rgb = reinhardExtended(hdrColour, vec3(1.0, 1.0, 1.0));
     // colour.rgb = ACES_Narkowicz(hdrColour);
     // colour.rgb = filmic_reinhard2(hdrColour) * 1.2;
-      colour.rgb = exposure(hdrColour, 1.5);    
+    colour.rgb = exposure(hdrColour, 1.5);    
     // colour.rgb = nativeTanh(hdrColour);
     // colour.rgb = fastTanh(hdrColour);
     // colour.rgb = superfastTanh(hdrColour);
@@ -325,6 +368,8 @@ void main() {
     // Correct gamma (if needed)
     //colour.rgb = pow(colour.rgb, vec3(1.0 / 1.6	));
 
+    
+
 
     /* VIGNETTING & ROUNDED CORNERS*/
     float dist = length(vTexCoord - 0.5);
@@ -333,10 +378,21 @@ void main() {
 
     colour = max(colour, vec4(bgGrey, bgGrey, bgGrey, 255.0) / 255.0);
 
+    // /* checks for ruledraw case only */
+    // vec2 simCoord = (camera.xy + barrelledCoord * (uScreenSize / camera.z)) / uSimSize;
+
+    // if (uRuleDraw && (
+    //     simCoord.x < 0.0 ||
+    //     simCoord.y < 0.0 ||
+    //     simCoord.x > 1.0 ||
+    //     simCoord.y > 1.0
+    // )) {
+    //     colour = vec4(bgGrey, bgGrey, bgGrey, 255.0) / 255.0;
+    // }
+
     float cornerDist = sdRoundedBox(barrelledPos);
     float blackCornerFactor = 1.0 - smoothstep(0.0, 10.0, cornerDist);
     colour = vec4(colour.rgb * blackCornerFactor, colour.a);
- 
     
     fragColour = colour;
 }

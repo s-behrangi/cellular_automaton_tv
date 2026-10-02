@@ -29,7 +29,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
 
     const cpuRuleControl = useAutomatonStore((s) => s.cpuRuleControl);
     const setCpuRuleControl = useAutomatonStore((s) => s.setCpuRuleControl);
-
+    
     const [importString, setImportString] = useState<string>("");
 
     const handleDialChange = (i: number) => setN(i + 2);

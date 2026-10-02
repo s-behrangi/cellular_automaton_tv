@@ -21,6 +21,9 @@ import bloomUpsampleColourSource from './bloom/bloomUpsampleColour.glsl?raw';
 import bloomToneMapColourSource from './bloom/bloomToneMapColour.glsl?raw';
 import flatQuadrupleProjectionColourSource from './bloom/flatQuadrupleProjectionColour.glsl?raw';
 
+import ruleToVisColourSource from './rule/ruleToVisColour.glsl?raw';
+import visToRuleColourSource from './rule/visToRuleColour.glsl?raw';
+
 export const shaders = {
     quadVertex: {shad: quadVertexSource},
     autoColour: {shad: autoColourShaderSource},
@@ -39,4 +42,7 @@ export const shaders = {
     bloomUpsampleColour: {shad: bloomUpsampleColourSource},
     bloomToneMapColour: {shad: bloomToneMapColourSource},
     flatQuadrupleProjectionColour: {shad: flatQuadrupleProjectionColourSource},
+
+    ruleToVisColour: {shad: ruleToVisColourSource},
+    visToRuleColour: {shad: visToRuleColourSource},
 }
