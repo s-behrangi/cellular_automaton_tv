@@ -1062,6 +1062,17 @@ export class Automaton {
         this.gl.uniform1i(this.uniforms.crtWithBloomRuleDraw.loc, this.drawingRule ? 1 : 0);
     }
 
+    public getRule(): Uint8Array {
+        return this.rule;
+    }
+
+    public setRuleEntry(idx: number, val: number): void{
+        if (idx < RULEWIDTH * RULEWIDTH) {
+            this.rule[idx] = val;
+        }
+        this.genRule();
+    }
+
     public setPlay(val: boolean): void {
         this.playing = val;
         if (this.playing) {
@@ -1449,8 +1460,9 @@ export class Automaton {
         return stringifyRule(packRule(this.rule, this.states));
     }
 
-    private synchronizeRuleArray(): void {
+    public synchronizeRuleArray(): void {
         /* read the rule in from the rule texture */
+        if (this.ruleArrayIsCurrent) { return }
         const length = this.ruleLength();
         const height = Math.ceil((length * 1.0 / RULEWIDTH));
         const pixels = new Uint8Array(height * RULEWIDTH);

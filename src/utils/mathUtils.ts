@@ -54,6 +54,30 @@ export function comboToRank(a: Array<number>, n: number, k: number) {
     return binomial(N, k) - idx - 1;
 }
 
+export function rankToCombo(i: number, n: number, k: number): Array<number> {
+    /* returns the ith combination of k choices of n, with repetition */
+    /* 0-indexed, e.g. (44, 3, 8) => [2, 2, 2, 2, 2, 2, 2, 2]         */
+    const comb = Array(8).fill(0);
+    let remainder = i;
+    let lastX = 0;
+
+    for (let j = 0; j < k; j++) {
+        const L = k - j;
+        const total = binomial(n - lastX + L - 1, L);
+        for (let v = lastX; v < n; v++) {
+            const extra = binomial(n - v + L - 2, L);
+            if (remainder < total - extra) {
+                lastX = v;
+                comb[j] = v;
+                remainder -= (total - binomial(n - v + L - 1, L));
+                break;
+            }
+        }
+    }
+
+    return comb;
+}
+
 export function chooseWithRep(n: number, k: number) {
     return binomial(n + k - 1, k);
 }

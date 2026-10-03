@@ -45,3 +45,55 @@
     font-size: 12px;
 
 }
+
+#edit-modal-headers {
+    position: relative;
+    white-space: pre;
+    top: -10px;
+}
+
+#edit-modal-headers, .edit-input-idx, .edit-input-state, .edit-input-neighbourhood, .edit-input-input {
+    font-size: 15px;
+}
+
+.edit-input-row {
+    position: relative;
+}
+
+.edit-input-idx {
+    position: absolute;
+    left: 0px;
+    margin: 0;
+}
+
+.edit-input-state {
+    position: absolute;
+    left: 80px;
+    margin: 0;
+}
+
+.edit-input-neighbourhood {
+    position: absolute;
+    left: 135px;
+}
+
+.edit-input-input {
+    position: relative;
+    left: 460px;
+    top: -6px;
+    width: 35px;
+    color: var(--machine-text);
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 800;
+}
+
+.edit-modal-page-button {
+    font-size: 30px;
+    cursor: pointer;
+    user-select: none;   
+}
+
+#edit-modal-page-right {
+    position: absolute;
+    left: 93%;
+}

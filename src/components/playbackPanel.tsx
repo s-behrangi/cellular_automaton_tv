@@ -93,7 +93,7 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
 
                 <div className="control-column" id="playback-toggles">
                     <div className="input-with-label"> 
-                        <span>RULE DRAW</span>
+                        <span>RULE VIS</span>
                         <SeesawSwitch 
                             onChange={setRuleDraw}
                             value={ruleDraw}
