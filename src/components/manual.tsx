@@ -324,4 +324,25 @@ export const MANUAL_TWO = (
             </li>
         </ul>
     </div>
+);
+
+export const FIRST_TIME_TEXT = (
+    <div id="manual">
+        <h1>Quick Start</h1>
+
+        <p>This is a cellular automaton visualizer; you can get it running in just two steps:</p>
+        <ol>
+            <li>Hit <code>FLASH</code> in the <code>DRAW</code> controls.</li>
+            <li>Flip the &#9199; switch to the upper-right of the main screen.</li>
+        </ol>
+        <p>This will populate the simulation with random noise, which will then evolve according to the rules of Conway's Game of Life. From there, you can...</p>
+        <ul>
+            <li>...select a different <code>PRESET</code> from the bottom-right corner.</li>
+            <li>...draw on the canvas with your mouse or the <code>DOT</code> switch.</li>
+            <li>...randomize the active rule with the <code>RND</code> switch.</li>
+            <li>...turn the <code>N</code> knob to change the number of states.</li>
+        </ul>
+
+        <p>This window will only appear on your first visit. The Quick Start instructions, as well as more detailed information, can be found by clicking on the circled ? near the center of the app, above the logo. Click anywhere outside this window to dismiss.</p>
+    </div>
 )

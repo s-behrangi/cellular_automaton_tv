@@ -9,11 +9,11 @@
 
 .control-cluster-wrapper {
     position: relative;
-    margin: -20px 10px -60px -14px;
+    margin: -20px 10px -70px -14px;
 }
 
 .diagonal-switch-column {
-    margin-top: -70px;
+    margin-top: -80px;
 }
 
 #playback-toggles {
@@ -21,13 +21,13 @@
     margin-left: -15px;
     height: min-content;
     gap: 5px;
-    margin-bottom: -20px;
+    margin-bottom: -30px;
 }
 
 #logo-cluster {
     position: relative;
     margin-top: -15px;
-    margin-bottom: -30px;
+    margin-bottom: -50px;
 }
 
 #gavazn-logo {
@@ -47,7 +47,7 @@
 
 #help-button {
     position: absolute;
-    top: -50px;
+    top: -30px;
     left: 93px;
     text-align: center;
     cursor: pointer;

@@ -574,7 +574,7 @@ export class Automaton {
         if (this.useCRT) {
             this.prepareBloom();
             this.drawCRTWithBloom();
-            this.drawActiveScreen();
+            //this.drawActiveScreen();
         } else {
             this.drawFrametoScreen();
             this.drawActiveScreen();
@@ -659,11 +659,13 @@ export class Automaton {
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.fbBundles.upSampler0.tex);
 
         /* Select the right framebuffer */
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, (this.activeScreen ? this.fbScreenA : this.fbScreenB)!);
+        //this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, (this.activeScreen ? this.fbScreenA : this.fbScreenB)!);
+
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
 
         this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
         
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+        
     }
     
     private fadeScreen(): void {
@@ -1506,17 +1508,6 @@ export class Automaton {
 
     private calcRuleVisEdge(n = this.states): number {
         return Math.ceil(Math.sqrt(this.ruleLength(n)));
-    }
-
-    public ruleToNumber(): number {
-        /* returns 1-indexed rule number      
-           only valid for 2-state because 
-           3-state already has 3^(45*3) rules */
-        if (this.states === 2) {
-            return parseInt(Array.from(this.rule.subarray(0, 18)).map(String).join(""), 2) + 1;
-        } else {
-            return 0;
-        }
     }
 
     public exportRule(): string {

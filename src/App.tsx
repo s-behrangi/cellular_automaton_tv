@@ -8,7 +8,7 @@ import ColourPanel from './components/colourPanel.tsx';
 import PresetPanel from './components/presetPanel.tsx';
 import Modal from '@mui/material/Modal';
 import { Box } from '@mui/material';
-import { MANUAL_ONE, MANUAL_TWO } from './components/manual.tsx';
+import { FIRST_TIME_TEXT } from './components/manual.tsx';
 import { useAutomatonStore } from './automatonStore.ts';
 import { FULLSCREEN_INSTRUCTIONS } from './constants.ts';
 
@@ -16,8 +16,8 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fullscreenInstructionsRef = useRef<ReturnType<typeof setTimeout> | null>(null); 
 
-  const [manualOpen, setManualOpen] = useState<boolean>(false);
-  const [manualFirstPage, setManualFirstPage] = useState<boolean>(true);
+  const [firstTimeModalOpen, setFirstTimeModalOpen] = useState<boolean>(false);
+
   const [fullScreenInstructionsClass, setFullScreenInstructionsClass] = useState<string>("hidden-fullscreen-instructions");
   const [canvasFullscreen, setCanvasFullscreen] = useState<string>("");
 
@@ -57,21 +57,13 @@ function App() {
       automaton.simulation.updateCanvasSize();
     }, [canvasFullscreen])
 
-  const handleManualOpen = () =>{
-      setManualOpen(true);
-  }
 
-  const handleManualClose = () =>{
-      setManualOpen(false);
-      setManualFirstPage(true);
-  }
-
-  const manualStyle = {
+  const firstTimeModalStyle = {
     position: 'absolute',
     top: '50px',
     left: '20%',
-    width: 1100,
-    height: 720,
+    width: 400,
+    height: 300,
     bgcolor: 'background.paper',
     border: 'none',
     borderRadius: '2px',
@@ -81,11 +73,16 @@ function App() {
   };
 
   useEffect(() => {
+    const hasVisited = localStorage.getItem('hasVisitedBefore');
+
+    if (!hasVisited) {
+      setFirstTimeModalOpen(true);
+
+      localStorage.setItem('hasVisitedBefore', 'true');
+    }
+
     if (canvasRef.current) {
       automaton.newAutomaton();
-
-      window.addEventListener('resize', () => automaton.simulation.updateCanvasSize());
-      window.addEventListener('keydown', (e) => handleWindowKeydown(e));
 
       const handleWindowKeydown = (e: KeyboardEvent) => {
         switch (e.key) {
@@ -112,6 +109,16 @@ function App() {
             break;
         }
       }
+
+      const handleResize = () => automaton.simulation.updateCanvasSize();
+
+      window.addEventListener('resize', handleResize);
+      window.addEventListener('keydown', handleWindowKeydown);
+
+      return () => {
+        window.removeEventListener('keydown', handleWindowKeydown);
+        window.removeEventListener('resize', handleResize);
+      }
     }
   }, []);
 
@@ -120,31 +127,17 @@ function App() {
       <span id="fullscreen-instructions" className={fullScreenInstructionsClass}>
         {FULLSCREEN_INSTRUCTIONS}
       </span>
-      <Modal
-          open={manualOpen}
-          onClose={handleManualClose}
+
+       <Modal
+          open={firstTimeModalOpen}
+          onClose={() => setFirstTimeModalOpen(false)}
           sx={{overflow:"auto"}}
       >
-          <Box sx={manualStyle}>
-              {manualFirstPage ? MANUAL_ONE : MANUAL_TWO}
-              <span 
-                  id={`${manualFirstPage ? "to-second-page" : "to-first-page"}`}
-                  onClick={() => setManualFirstPage((prev) => !prev)}
-                  style={{
-                      cursor: "pointer",
-                      color: "black",
-                      fontSize: "24px",
-                      position: "absolute",
-                      top: "95%",
-                  }}
-              >
-                  {manualFirstPage ? "→" : "←"}
-              </span>
+          <Box sx={firstTimeModalStyle}>
+              {FIRST_TIME_TEXT}
           </Box>
       </Modal>
-      <div id="user-manual-book" onClick={handleManualOpen}>
-        <span>User Manual</span>
-      </div>
+
       <div className="machine-recede">
         <div className="machine">
           <div id="machine-lighting" />

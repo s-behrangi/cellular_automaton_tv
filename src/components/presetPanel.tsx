@@ -12,12 +12,10 @@ const PresetPanel: React.FC<presetPanelProp> = ({
     setPreset
 }) => {
     const [selectedPreset, setSelectedPreset] = useState<number>(0);
-    const [presetNameOffset, setPresetNameOffset] = useState<number>(0);
 
     const handleChangePreset = (diff: number) => {
         setSelectedPreset( (prev) => {
             const next = Math.max(0, Math.min(PRESETS.length - 1, prev + diff));
-            setPresetNameOffset((pre) => pre + (prev - next) * LINE_HEIGHT);
             return next;
         });
     }
@@ -40,7 +38,7 @@ const PresetPanel: React.FC<presetPanelProp> = ({
             />
         </div>
         <div id="preset-window">
-            <span id="preset-name" style={{'--preset-name-yoffset': `${presetNameOffset}px`}  as React.CSSProperties}>{presetText}</span>
+            <span id="preset-name" style={{'--preset-name-yoffset': `${- selectedPreset * LINE_HEIGHT}px`}  as React.CSSProperties}>{presetText}</span>
         </div>
         <PushButton
             onChange={(val: boolean) => val ? setPreset(selectedPreset) : null}
