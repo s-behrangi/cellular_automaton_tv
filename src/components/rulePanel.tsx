@@ -108,10 +108,16 @@ const RulePanel: React.FC<rulePanelProps> = ({
         if (val) {
             simulation.synchronizeRuleArray();
             ruleArrayRef.current = simulation.getRule();
-            console.log(ruleArrayRef.current[3]);
+        } else {
+            setEditModalPage(0);
         }
         setEditModalOpen(val);
         setEditButtonDepressed(val);
+    }
+
+    const handleEditModalManualPageChange = (e: React.ChangeEvent<HTMLInputElement>, n: number, ruleSpan: number) => {
+        const newPage = Math.max(0, Math.min(Number(e.target.value) - 1, n * ruleSpan - 1));
+        setEditModalPage(newPage);
     }
 
     const editModalStyle = {
@@ -119,8 +125,8 @@ const RulePanel: React.FC<rulePanelProps> = ({
         top: '40%',
         left: '70%',
         transform: 'translate(-50%, -50%)',
-        width: 600,
-        height: 600,
+        width: 530,
+        height: 640,
         bgcolor: 'var(--machine-colour)',
         borderRadius: '2px',
         border: 'none',
@@ -162,7 +168,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
                 sx={editModalStyle}
             >
                 <span id="edit-modal-headers" >
-                    {`Index  State   Neighbourhood                      Output`}
+                    {`Index     State  Neighbourhood                     Output`}
                 </span>
                 {
                     rowRange(editModalPage * EDIT_MODAL_ROWS, ruleSpan, n).map((idx) => (
@@ -171,6 +177,18 @@ const RulePanel: React.FC<rulePanelProps> = ({
                 }
                 <span className="edit-modal-page-button" id="edit-modal-page-left" onClick={() => handleChangeModalPage(-1, n, ruleSpan)}>←</span>
                 <span className="edit-modal-page-button" id="edit-modal-page-right" onClick={() => handleChangeModalPage(1, n, ruleSpan)}>→</span>
+                <form onSubmit={(e) => {e.preventDefault(); setEditModalPage(Math.max(0, Math.min(Number((e.target.elements.namedItem('currentpage')! as HTMLInputElement).value) - 1, Math.floor((n * ruleSpan) / EDIT_MODAL_ROWS))));}}>
+                    <input 
+                        id="edit-current-page" 
+                        name="currentpage"
+                        key={editModalPage}
+                        defaultValue={editModalPage + 1}
+                        pattern="[0-9]*"
+                        onBlur={e => handleEditModalManualPageChange(e, n, ruleSpan) }
+                        inputMode="numeric"
+                    />
+                </form>
+                <span id="edit-total-page-count">/{Math.floor((n * ruleSpan) / EDIT_MODAL_ROWS) + 1}</span>
             </Box>
         </Modal>
 

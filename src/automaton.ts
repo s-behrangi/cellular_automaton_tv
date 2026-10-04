@@ -366,8 +366,6 @@ export class Automaton {
             this.fbBundles[`upSampler${i}`] = this.createFrameBufferBundle(upWidth, upHeight, this.gl.CLAMP_TO_EDGE, this.gl.LINEAR, bloomFormat);
         }
 
-        /* RULE VISUALIZATION */
-
         /* CLEAR */
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
@@ -1014,6 +1012,80 @@ export class Automaton {
         this.gl.uniform2f(this.uniforms.colourSimSize.loc, width, height);
     }
 
+    public updateCanvasSize(): void {
+        [this.canvas.width, this.canvas.height] = [this.canvas.clientWidth, this.canvas.clientHeight];
+        
+        if (this.canvas.width == this.screenWidth && this.canvas.height == this.screenHeight) { return }
+        
+        [this.screenWidth, this.screenHeight] = [this.canvas.width, this.canvas.height];
+
+        console.log(this.canvas.width, this.canvas.height);
+
+        this.gl.useProgram(this.programs.autoColour.prog);
+        this.gl.uniform2f(this.uniforms.colourScreenSize.loc, this.canvas.width, this.canvas.height);
+
+        this.gl.useProgram(this.programs.crtWithBloom.prog);
+        this.gl.uniform2f(this.uniforms.crtWithBloomScreenSize.loc, this.canvas.width, this.canvas.height);
+
+        this.gl.useProgram(this.programs.flatQuadrupleProjection.prog);
+        this.gl.uniform2f(this.uniforms.flatQuadrupleProjectionScreenSize.loc, this.canvas.width, this.canvas.height);
+
+        /* resize the relevant textures */
+        /* --- SCREEN FRAMES --- */
+        /* --------------------- */
+        /* SCREEN TEXTURE A */
+        let blackScreen = new Float32Array(this.screenWidth * this.screenHeight * 4);
+        for (let i = 0; i < this.screenWidth * this.screenHeight; i++) {
+            for (let j = 0; j < 4; j++) {
+                blackScreen[i * 4 + j] = BLACK_FLOAT[j];
+            }
+        }
+
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.texScreenA!);
+        this.gl.texImage2D(
+            this.gl.TEXTURE_2D, 
+            0, 
+            this.gl.RGBA32F, //this.gl.RGBA, 
+            this.screenWidth, 
+            this.screenHeight,
+            0, 
+            this.gl.RGBA, //this.gl.RGBA, 
+            this.gl.FLOAT, //this.gl.UNSIGNED_BYTE,
+            blackScreen
+        );
+        this.texParams();
+
+        /* SCREEN TEXTURE B */
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.texScreenB!);
+        this.gl.texImage2D(
+            this.gl.TEXTURE_2D, 
+            0, 
+            this.gl.RGBA32F, //this.gl.RGBA,  
+            this.screenWidth, 
+            this.screenHeight,
+            0, 
+            this.gl.RGBA, //this.gl.RGBA, 
+            this.gl.FLOAT, //this.gl.UNSIGNED_BYTE,
+            blackScreen
+        );
+        this.texParams();
+
+        /* BLOOM UTILITIES */
+        const bloomFormat = this.gl.RGBA16F;
+        this.fbBundles.threshold = this.createFrameBufferBundle(this.screenWidth, this.screenHeight, this.gl.CLAMP_TO_EDGE, this.gl.LINEAR, bloomFormat);
+        
+        for (let i = 0; i < this.bloomDepth; i++) {
+            const [downWidth, downHeight] = [this.screenWidth / Math.pow(2, i + 1), this.screenHeight / Math.pow(2, i + 1)];
+            const [upWidth, upHeight] = [this.screenWidth / Math.pow(2, i), this.screenHeight / Math.pow(2, i)];
+            this.fbBundles[`downSampler${i}`] = this.createFrameBufferBundle(downWidth, downHeight, this.gl.CLAMP_TO_EDGE, this.gl.LINEAR, bloomFormat);
+            this.fbBundles[`upSampler${i}`] = this.createFrameBufferBundle(upWidth, upHeight, this.gl.CLAMP_TO_EDGE, this.gl.LINEAR, bloomFormat);
+        }
+
+        if (this.drawingRule) {
+            this.clampCamera();
+        }
+    }
+
     private clampCamera(): void {
         /* clamps camera, specific to rule visualization */
         const edge = this.calcRuleVisEdge();
@@ -1068,7 +1140,7 @@ export class Automaton {
 
     public setRuleEntry(idx: number, val: number): void{
         if (idx < RULEWIDTH * RULEWIDTH) {
-            this.rule[idx] = val;
+            this.rule[idx] = Math.max(0, Math.min(val, this.states - 1));
         }
         this.genRule();
     }
@@ -1481,6 +1553,8 @@ export class Automaton {
         for (let i = 0; i < length; i++) {
             this.rule[i] = pixels[i];
         }
+
+        this.ruleArrayIsCurrent = true;
     }
 
     public importRule(rule: string): boolean {

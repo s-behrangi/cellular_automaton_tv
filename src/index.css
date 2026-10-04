@@ -52,6 +52,7 @@
 body {
   margin: 0;
   padding: 10px;
+  padding-top:5px;
   min-height: 100vh;  
   min-width: fit-content;
   background-color: black;
@@ -64,7 +65,18 @@ canvas {
   box-shadow: -1px -1px 2px 1px black;
 }
 
+#fullscreen-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  z-index: 99;
+}
+
 .machine-recede {
+    position: relative;
     margin: 20px;
     width: min-content;
     padding: 5px 5px 10px 10px;
@@ -224,7 +236,7 @@ span {
 
 #rightside-panels {
   justify-content: space-around;
-  margin-top: -10px;
+  margin-top: -25px;
   height: 100%;
   position: relative;
 }
@@ -398,4 +410,50 @@ span {
   top: 0px;
   left: 0px;
   background: radial-gradient(circle at 130% 30%, rgba(255, 255, 255, 0.034), rgba(0, 0, 0, 0) 40%);
+}
+
+#user-manual-book {
+    position: absolute;
+    z-index: 2;
+    top: 690px;
+    left: 1400px;
+    height: 20px;
+    width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 88% -24%, rgb(30 30 30), rgb(24 24 24) 85%);
+    box-shadow: 0px 0px 1px 3px black, inset -3px 3px 4px -2px #9999996e, inset 2px -2px 3px 0px #000000;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+#user-manual-book span {
+  position: relative;
+  font-size: 12px;
+  text-transform: none;
+  margin-top: 0px;
+  letter-spacing: 0.19em;
+}
+
+#fullscreen-instructions {
+  position: fixed;
+  z-index: 100;
+  top: 5%;
+  left: 5%;
+  white-space: pre;
+  font-size: 16px;
+}
+
+.visible-fullscreen-instructions {
+  opacity: 1.0;
+}
+
+.fading-fullscreen-instructions {
+  transition: opacity 2s ease-in-out;
+  opacity: 0.0;
+}
+
+.hidden-fullscreen-instructions {
+  opacity: 0.0;
 }

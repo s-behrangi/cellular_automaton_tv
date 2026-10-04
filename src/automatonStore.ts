@@ -9,6 +9,7 @@ interface AutomatonStore {
 
     isPlaying: boolean,
     setIsPlaying: (val: boolean) => void,
+    toggleIsPlaying: () => void,
 
     displayText: string,
     setDisplayText: (text: string) => void,
@@ -37,6 +38,7 @@ interface AutomatonStore {
 
     useCRT: boolean,
     setUseCRT: (val: boolean) => void,
+    toggleUseCRT: () => void,
 
     brushState: number,
     setBrushState: (n: number) => void,
@@ -55,6 +57,10 @@ interface AutomatonStore {
 
     ruleDraw: boolean,
     setRuleDraw: (val: boolean) => void,
+
+    fullscreen: boolean,
+    setFullscreen: (val: boolean) => void,
+    toggleFullscreen: () => void,
 }
 
 export const useAutomatonStore = create<AutomatonStore>()(
@@ -70,6 +76,7 @@ export const useAutomatonStore = create<AutomatonStore>()(
 
     isPlaying: false,
     setIsPlaying: (val: boolean) => set({isPlaying: val}),
+    toggleIsPlaying: () => set((s) => ({isPlaying: !s.isPlaying})),
 
     displayText: "",
     setDisplayText: (text: string) => set({displayText: text}),
@@ -102,6 +109,7 @@ export const useAutomatonStore = create<AutomatonStore>()(
 
     useCRT: DEFAULT_CRT,
     setUseCRT: (val: boolean) => set({useCRT: val}),
+    toggleUseCRT: () => set((s) => ({useCRT: !s.useCRT})),
 
     brushState: DEFAULT_N - 1,
     setBrushState: (n: number) => set((s) => {
@@ -135,4 +143,8 @@ export const useAutomatonStore = create<AutomatonStore>()(
 
     ruleDraw: DEFAULT_RULE_DRAW,
     setRuleDraw: (val: boolean) => set({ruleDraw: val}),
+
+    fullscreen: false,
+    setFullscreen: (val: boolean) => set({fullscreen: val}),
+    toggleFullscreen: () => set((s) => ({fullscreen: !s.fullscreen})),
 })));

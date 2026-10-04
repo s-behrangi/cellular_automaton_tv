@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { type RefObject } from 'react';
 import { Automaton } from '../automaton.ts';
 import { useAutomatonStore } from '../automatonStore.ts';
@@ -7,9 +7,7 @@ import ControlCluster from './controlCluster.tsx';
 import './playbackPanel.css'
 import SeesawSwitch from './inputDevices/seesawSwitch.tsx';
 import gavazn from '../assets/gavazn.svg';
-import Modal from '@mui/material/Modal';
-import { Box } from '@mui/material';
-import { MANUAL_ONE, MANUAL_TWO } from './manual.tsx';
+import PushButton from './inputDevices/pushButton.tsx';
 
 interface playbackPanelProps{
     simulation: Automaton,
@@ -26,56 +24,19 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
     const ruleDraw = useAutomatonStore((s) => s.ruleDraw);
     const setRuleDraw = useAutomatonStore((s) => s.setRuleDraw);
     
-    
-    const [manualOpen, setManualOpen] = useState<boolean>(false);
-    const [manualFirstPage, setManualFirstPage] = useState<boolean>(true);
-
-    const handleManualOpen = () =>{
-        setManualOpen(true);
-    }
-
-    const handleManualClose = () =>{
-        setManualOpen(false);
-        setManualFirstPage(true);
-    }
-
-    const manualStyle = {
-        position: 'absolute',
-        top: '50px',
-        left: '20%',
-        width: 1100,
-        height: 720,
-        bgcolor: 'background.paper',
-        border: 'none',
-        borderRadius: '2px',
-        boxShadow: 24,
-        p: 4,
-        outline: 'none',
-    };
+    const fullscreen = useAutomatonStore((s) => s.fullscreen);
+    const setFullscreen = useAutomatonStore((s) => s.setFullscreen);
 
     return <div className="panel-horizontal playback-panel">
-                <Modal
-                    open={manualOpen}
-                    onClose={handleManualClose}
-                    sx={{overflow:"auto"}}
-                >
-                    <Box sx={manualStyle}>
-                        {manualFirstPage ? MANUAL_ONE : MANUAL_TWO}
-                        <span 
-                            id={`${manualFirstPage ? "to-second-page" : "to-first-page"}`}
-                            onClick={() => setManualFirstPage((prev) => !prev)}
-                            style={{
-                                cursor: "pointer",
-                                color: "black",
-                                fontSize: "24px",
-                                position: "absolute",
-                                top: "95%",
-                            }}
-                        >
-                            {manualFirstPage ? "→" : "←"}
-                        </span>
-                    </Box>
-                </Modal>
+                <div key={fullscreen ? 1 : 0} id="fullscreen-button" className='input-with-label'>
+                    <span>FullScreen</span>
+                    <PushButton 
+                        onChange={(val: boolean) => val ? setFullscreen(true) : null}
+                        toggle={false}
+                        value={fullscreen}
+                    />
+                </div>
+
                 <DiagonalSwitchColumn 
                     simulation={simulation}
                     cRef={cRef}
@@ -84,7 +45,6 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
                 <div id="logo-cluster">
                     <img src={gavazn} alt="Gavazn 313" id="gavazn-logo"/>
                     <span id="logo-subtitle">Cellular Automata</span>
-                    <span id="help-button" onClick={handleManualOpen}>?</span>
                 </div>
 
                 <ControlCluster

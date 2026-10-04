@@ -44,3 +44,5 @@ export const PRESETS = [
     ["Highways [5]", PRESET_HIGHWAYS],
     ["Solar Panels [6]", PRESET_SOLAR_PANELS]
 ];
+
+export const FULLSCREEN_INSTRUCTIONS = "Fullscreen Controls:\nESC — Exit Fullscreen\nSPACE — Toggle Playback\nr — Randomize Rule\nm — Mutate Rule\nx — Flash\nc — Toggle CRT";

@@ -19,6 +19,9 @@ export const MANUAL_ONE = (
             <li>...turn the <code>N</code> knob to change the number of states.</li>
         </ul>
 
+        <h2>Mathematical Specifications</h2>
+        <p>The Gavazn runs a customizable cellular automaton. The automaton can have <code>2-21</code> states, which are 1-indexed within the UI. Therefore, state <code>1</code> corresponds to what is conventionally referred to as the <i>dead</i> state, and setting the brush to this state is equivalent to a conventional "erase" function. The geometry of the simulation is a <code>1024x1024</code> square with toroidal wrapping: the left and right edges connect, as do the top and bottom. </p>
+
         <h2>Complete Features</h2>
         <p>The Gavazn is divided into five (5) sections. From left-to-right, they are: the screen with its housing, the rule panel, the draw panel, the colour panel, and a preset selector.</p>
         
@@ -28,6 +31,12 @@ export const MANUAL_ONE = (
                 <b>Screen:</b>
                 <ul className="sublist">
                     <li>Where all the action happens. You may adjust the zoom level of the screen with your mouse wheel, draw on it with left-click, and pan around with shift + left-click.</li>
+                </ul>
+            </li>
+            <li>
+                <b><code>FULLSCREEN</code>:</b>
+                <ul className="sublist">
+                    <li>Switch to fullscreen mode; press <code>ESCAPE</code> to return to the main view.</li>
                 </ul>
             </li>
             <li>
@@ -45,6 +54,7 @@ export const MANUAL_ONE = (
                             <li>Record a video of the screen as a <code>webm</code>. This button toggles, so you decide when the recording stops—though it will stop automatically at thirty seconds.</li>
                         </ul>
                     </li>
+                    <br/>
                     <li>
                         <b>Step (&#8658;)</b>:
                         <ul className="sublist">
@@ -68,16 +78,25 @@ export const MANUAL_ONE = (
                 </ul>
             </li>
             <li>
+                <b><code>RULE VIS</code>:</b>
+                <ul className="sublist">
+                    <li>
+                        Show a visualization of the active rule instead of the simulation. You may draw on the rule texture just as on the simulation. Changes are applied automatically.
+                    </li>
+                </ul>
+            </li>
+            <li>
                 <b><code>CRT</code>:</b>
                 <ul className="sublist">
                     <li>
-                        Toggle a CRT shader designed to make the screen look like an old CRT screen.
+                        Toggle a CRT shader designed to make the screen look like an old CRT display.
                     </li>
                     <li className="small-note">
                         <i>When the shader is on, the simulation is restricted to at least 4x zoom.</i>
                     </li>
                 </ul>
             </li>
+            
         </ul>
 
         <h3>Rule Panel</h3>
@@ -122,6 +141,12 @@ export const MANUAL_ONE = (
                         <b>WARNING:</b> exporting rules for <code>N &gt; 12</code> or so may cause noticable lag. For <code>N &gt; 16</code>, export make take up to a minute and the rule may be multiple megabytes in size.
                     </li>
                 </ul>
+                <b><code>EDIT</code>:</b>
+                <ul>
+                    <li>
+                        Manually edit the entries of any rule. Changes are applied automaticaly.
+                    </li>
+                </ul>
             </li>
             <li>
                 <b><code>N</code>:</b>
@@ -140,7 +165,11 @@ export const MANUAL_ONE = (
                 </ul>
             </li>
         </ul>
+    </div>
+)
 
+export const MANUAL_TWO = (
+    <div id="manual" style={{columnCount: 2, columnGap: "40px", columnFill: "auto", height: "100%"}}>
         <h3>Draw Panel</h3>
         <ul>
             <li>
@@ -184,13 +213,7 @@ export const MANUAL_ONE = (
                 </ul>
             </li>
         </ul>
-
         
-    </div>
-)
-
-export const MANUAL_TWO = (
-    <div id="manual" style={{columnCount: 2, columnGap: "40px", columnFill: "auto", height: "100%"}}>
         <h3>Colour Panel</h3>
         <ul>
             <li>
@@ -243,5 +266,62 @@ export const MANUAL_TWO = (
         <p>
             Select from multiple preset rules that produce interesting behaviour. The number in square brackets indicates the number of states for the rule. After selection, try either flashing the screen or drawing on it to see how the simulation evolves.
         </p>
+
+        <ul>
+            <li>
+                <b>Life [2]:</b>
+                <ul className="sublist">
+                    <li>Conway's Game Of Life.</li>
+                </ul>
+            </li>
+            <li>
+                <b>Life Without Death [2]:</b>
+                <ul className="sublist">
+                    <li>Small groups of live cells tend to grow to fill the simulation.</li>
+                </ul>
+            </li>
+            <li>
+                <b>Day and Night [2]:</b>
+                <ul className="sublist">
+                    <li>Sufficiently large regions of live and dead cells will be stable while undulating.</li>
+                </ul>
+            </li>
+            <li>
+                <b>Satellites [3]:</b>
+                <ul className="sublist">
+                    <li>Flashing will produce replicators that look like small satellites.</li>
+                </ul>
+            </li>
+            <li>
+                <b>Circuitboard [3]:</b>
+                <ul className="sublist">
+                    <li>Noise will resolve into stable vertical and horizontal lines.</li>
+                </ul>
+            </li>
+            <li>
+                <b>Printers [4]:</b>
+                <ul className="sublist">
+                    <li>Small clusters of cells can produce a range of gliders that leave patterns in their wake.</li>
+                </ul>
+            </li>
+            <li>
+                <b>Diagonals [5]:</b>
+                <ul className="sublist">
+                    <li>Produces sharp diagonal replicators that cross-hatch.</li>
+                </ul>
+            </li>
+            <li>
+                <b>Highways [5]:</b>
+                <ul className="sublist">
+                    <li>Like Circuitboards above, but with replicators shaped a little like vehicles.</li>
+                </ul>
+            </li>
+            <li>
+                <b>Solar Panels [6]:</b>
+                <ul className="sublist">
+                    <li>Growing diamond replicators.</li>
+                </ul>
+            </li>
+        </ul>
     </div>
 )

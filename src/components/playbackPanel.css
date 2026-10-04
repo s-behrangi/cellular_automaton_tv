@@ -26,8 +26,8 @@
 
 #logo-cluster {
     position: relative;
-    margin-top: 10px;
-    margin-bottom: -40px;
+    margin-top: -15px;
+    margin-bottom: -30px;
 }
 
 #gavazn-logo {
@@ -57,4 +57,24 @@
     border-width: 2px;
     width: 15px;
     aspect-ratio: 1;
+}
+
+#fullscreen-button {
+    margin-top: -45px;
+    margin-bottom: -25px;
+    margin-left: -20px;
+}
+
+#fullscreen-button span {
+    margin: 0;
+}
+
+
+#fullscreen-button .push-button-wrapper {
+    height: 10px;
+    margin: 0px;
+}
+
+#fullscreen-button button {
+    height: 14px;
 }

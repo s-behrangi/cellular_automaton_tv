@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { useAutomaton } from './hooks/useAutomaton.ts';
 import RulePanel from './components/rulePanel.tsx';
@@ -6,37 +6,160 @@ import DrawPanel from './components/drawPanel.tsx';
 import PlaybackPanel from './components/playbackPanel.tsx';
 import ColourPanel from './components/colourPanel.tsx';
 import PresetPanel from './components/presetPanel.tsx';
+import Modal from '@mui/material/Modal';
+import { Box } from '@mui/material';
+import { MANUAL_ONE, MANUAL_TWO } from './components/manual.tsx';
+import { useAutomatonStore } from './automatonStore.ts';
+import { FULLSCREEN_INSTRUCTIONS } from './constants.ts';
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  
+  const fullscreenInstructionsRef = useRef<ReturnType<typeof setTimeout> | null>(null); 
+
+  const [manualOpen, setManualOpen] = useState<boolean>(false);
+  const [manualFirstPage, setManualFirstPage] = useState<boolean>(true);
+  const [fullScreenInstructionsClass, setFullScreenInstructionsClass] = useState<string>("hidden-fullscreen-instructions");
+  const [canvasFullscreen, setCanvasFullscreen] = useState<string>("");
+
   const automaton = useAutomaton(canvasRef);
+
+  const togglePlaying = useAutomatonStore((s) => s.toggleIsPlaying);
+  const toggleCRT = useAutomatonStore((s) => s.toggleUseCRT);
+
+  const setFullscreen = useAutomatonStore((s) => s.setFullscreen);
+  const toggleFullscreen = useAutomatonStore((s) => s.toggleFullscreen);
+
+  useEffect(() => {
+        const unsubscribe = useAutomatonStore.subscribe(
+            (s) => s.fullscreen,
+            (fullscreen) => {
+                document.body.style.overflowX = fullscreen ? "hidden" : "scroll";
+                if (fullscreen) {
+                  setFullScreenInstructionsClass("visible-fullscreen-instructions");
+                  fullscreenInstructionsRef.current = setTimeout(() => {
+                    setFullScreenInstructionsClass("fading-fullscreen-instructions");
+                  }, 7000);
+                  setCanvasFullscreen("fullscreen-canvas");
+                } else {
+                  if (fullscreenInstructionsRef.current) {
+                    clearTimeout(fullscreenInstructionsRef.current);
+                  }
+                  setFullScreenInstructionsClass("hidden-fullscreen-instructions");
+                  setCanvasFullscreen("");
+                }
+            }
+        );
+
+        return unsubscribe;
+    }, []);
+  
+    useEffect(() => {
+      automaton.simulation.updateCanvasSize();
+    }, [canvasFullscreen])
+
+  const handleManualOpen = () =>{
+      setManualOpen(true);
+  }
+
+  const handleManualClose = () =>{
+      setManualOpen(false);
+      setManualFirstPage(true);
+  }
+
+  const manualStyle = {
+    position: 'absolute',
+    top: '50px',
+    left: '20%',
+    width: 1100,
+    height: 720,
+    bgcolor: 'background.paper',
+    border: 'none',
+    borderRadius: '2px',
+    boxShadow: 24,
+    p: 4,
+    outline: 'none',
+  };
 
   useEffect(() => {
     if (canvasRef.current) {
       automaton.newAutomaton();
+
+      window.addEventListener('resize', () => automaton.simulation.updateCanvasSize());
+      window.addEventListener('keydown', (e) => handleWindowKeydown(e));
+
+      const handleWindowKeydown = (e: KeyboardEvent) => {
+        switch (e.key) {
+          case " ":
+            togglePlaying();
+            break;
+          case "Escape":
+            setFullscreen(false);
+            break;
+          case "r":
+            automaton.simulation.randomizeRule();
+            break;
+          case "m":
+            automaton.simulation.mutateRule();
+            break;
+          case "f":
+            toggleFullscreen();
+            break;
+          case "c":
+            toggleCRT();
+            break;
+          case "x":
+            automaton.simulation.flash();
+            break;
+        }
+      }
     }
   }, []);
 
   return (
     <>
+      <span id="fullscreen-instructions" className={fullScreenInstructionsClass}>
+        {FULLSCREEN_INSTRUCTIONS}
+      </span>
+      <Modal
+          open={manualOpen}
+          onClose={handleManualClose}
+          sx={{overflow:"auto"}}
+      >
+          <Box sx={manualStyle}>
+              {manualFirstPage ? MANUAL_ONE : MANUAL_TWO}
+              <span 
+                  id={`${manualFirstPage ? "to-second-page" : "to-first-page"}`}
+                  onClick={() => setManualFirstPage((prev) => !prev)}
+                  style={{
+                      cursor: "pointer",
+                      color: "black",
+                      fontSize: "24px",
+                      position: "absolute",
+                      top: "95%",
+                  }}
+              >
+                  {manualFirstPage ? "→" : "←"}
+              </span>
+          </Box>
+      </Modal>
+      <div id="user-manual-book" onClick={handleManualOpen}>
+        <span>User Manual</span>
+      </div>
       <div className="machine-recede">
         <div className="machine">
           <div id="machine-lighting" />
           <div className="machine-face">
             <div id="screen-housing">
               <div id="screen-inset">
-                <canvas ref = {canvasRef} />
+                <canvas ref = {canvasRef} id={canvasFullscreen}/>
               </div>
             </div>
-            
             
             <PlaybackPanel
               simulation={automaton.simulation}
               cRef = {canvasRef}
             />
           
-            
             <RulePanel
               simulation={automaton.simulation}
               importRule={automaton.importRule}
