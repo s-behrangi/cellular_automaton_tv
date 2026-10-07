@@ -78,7 +78,7 @@ export class Automaton {
     
     /* CAMERA & DRAWING */
     camera = {x: 0, y: 0, rot: 0, zoom: 1}; //rot doesn't do anything atm
-    private zoomLevels = [1, 2, 4, 8, 16, 32];
+    private zoomLevels = [1, 2, 4, 8, 16, 32, 64, 128, 256];
     private zoomIdx = 0;
     private pan = false;
     private panStartPos = [0, 0];
