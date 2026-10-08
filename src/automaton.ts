@@ -1484,6 +1484,9 @@ export class Automaton {
             this.gl.copyTexImage2D(this.gl.TEXTURE_2D, 0, this.gl.R8UI, 0, 0, RULEWIDTH, RULEWIDTH, 0);
             this.texParams();
 
+            this.gl.activeTexture(this.gl.TEXTURE0);
+            this.gl.bindTexture(this.gl.TEXTURE_2D, temp);
+
             /* set up a temp vao */
             const blankVAO = this.gl.createVertexArray();
             this.gl.bindVertexArray(blankVAO);
