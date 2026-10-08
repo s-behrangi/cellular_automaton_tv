@@ -65,16 +65,18 @@
     margin-left: -20px;
 }
 
-#fullscreen-button span {
-    margin: 0;
+#playback-top-buttons {
+    height: 0px;
+    margin-left: -10px;
+    margin-top: -20px;
+    margin-bottom: -20px;
 }
 
-
-#fullscreen-button .push-button-wrapper {
-    height: 10px;
-    margin: 0px;
-}
-
-#fullscreen-button button {
+#playback-top-buttons button {
     height: 14px;
+    width: 40px;
+}
+
+#playback-top-buttons span {
+    margin: 0;
 }

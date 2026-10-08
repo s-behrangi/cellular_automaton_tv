@@ -11,6 +11,7 @@ import { Box } from '@mui/material';
 import { FIRST_TIME_TEXT } from './components/manual.tsx';
 import { useAutomatonStore } from './automatonStore.ts';
 import { FULLSCREEN_INSTRUCTIONS } from './constants.ts';
+import CompactPanel from './components/compactPanel.tsx';
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -28,6 +29,8 @@ function App() {
 
   const setFullscreen = useAutomatonStore((s) => s.setFullscreen);
   const toggleFullscreen = useAutomatonStore((s) => s.toggleFullscreen);
+
+  const compactMode = useAutomatonStore((s) => s.compactMode);
 
   useEffect(() => {
         const unsubscribe = useAutomatonStore.subscribe(
@@ -139,36 +142,54 @@ function App() {
           </Box>
       </Modal>
 
-      <div className="machine-recede">
-        <div className="machine">
-          <div id="machine-lighting" />
-          <div className="machine-face">
-            <div id="screen-housing">
+      <div className={`machine-recede ${compactMode ? "compact" : ""}`}>
+        <div className={`machine ${compactMode ? "compact" : ""}`}>
+          <div className={`${compactMode ? "compact" : ""}`} id="machine-lighting" />
+          <div className={`machine-face ${compactMode ? "compact" : ""}`}>
+            <div id="screen-housing" className={`${compactMode ? "compact" : ""}`} >
               <div id="screen-inset">
                 <canvas ref = {canvasRef} id={canvasFullscreen}/>
               </div>
+              {
+                compactMode ?
+                <CompactPanel 
+                  simulation={automaton.simulation}
+                  importRule={automaton.importRule}
+                  exportRule={automaton.exportRule}
+                />
+                :
+                <></>
+              }
             </div>
             
-            <PlaybackPanel
-              simulation={automaton.simulation}
-              cRef = {canvasRef}
-            />
-          
-            <RulePanel
-              simulation={automaton.simulation}
-              importRule={automaton.importRule}
-              exportRule={automaton.exportRule}
-            />
-            <div className="control-column" id="rightside-panels">
-              <DrawPanel
-                simulation={automaton.simulation}
-              />
-              <ColourPanel
-              />
-              <PresetPanel
-                setPreset={automaton.setPreset}
-              />
-            </div>
+            {
+              compactMode ?
+              <>
+              </>
+              :
+              <>
+                <PlaybackPanel
+                  simulation={automaton.simulation}
+                  cRef = {canvasRef}
+                />
+              
+                <RulePanel
+                  simulation={automaton.simulation}
+                  importRule={automaton.importRule}
+                  exportRule={automaton.exportRule}
+                />
+                <div className="control-column" id="rightside-panels">
+                  <DrawPanel
+                    simulation={automaton.simulation}
+                  />
+                  <ColourPanel
+                  />
+                  <PresetPanel
+                    setPreset={automaton.setPreset}
+                  />
+                </div>
+              </>
+            }
           </div>
         </div>
       </div>

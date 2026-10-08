@@ -2,29 +2,32 @@ import React from 'react';
 import { useAutomatonStore } from '../automatonStore.ts';
 import './colourSwatch.css';
 
-const DOTS_WIDE = Math.floor(21 * 3);
 const DOTS_HIGH = 6;
 const PSEUDOPIXEL_SIZE = 5;
 const HOUSING_INSET = 5;
 
 interface colourSwatchProps{
     vertical?: boolean,
+    dotRes?: number,
 }
 
 const ColourSwatch: React.FC<colourSwatchProps> = ({
     vertical = false,
+    dotRes = 3,
 }) => {
     const colours = useAutomatonStore((s) => s.colours);
 
-    const rectCoords = Array.from({length: DOTS_WIDE}, (_, idx) => 
-        [idx * (PSEUDOPIXEL_SIZE), 0, Math.floor((idx / DOTS_WIDE) * colours.length)]
+    const dotsWide = 21 * dotRes;
+
+    const rectCoords = Array.from({length: dotsWide}, (_, idx) => 
+        [idx * (PSEUDOPIXEL_SIZE), 0, Math.floor((idx / dotsWide) * colours.length)]
     );
 
     return ( 
     <div className="colour-swatch-housing"
         style={{
-                width: `${(vertical ? DOTS_HIGH : DOTS_WIDE) * PSEUDOPIXEL_SIZE + 17}px`,
-                height: `${(vertical ? DOTS_WIDE : DOTS_HIGH) * PSEUDOPIXEL_SIZE + 17}px`
+                width: `${(vertical ? DOTS_HIGH : dotsWide) * PSEUDOPIXEL_SIZE + 17}px`,
+                height: `${(vertical ? dotsWide : DOTS_HIGH) * PSEUDOPIXEL_SIZE + 17}px`
             }}
     >
         {
@@ -43,8 +46,8 @@ const ColourSwatch: React.FC<colourSwatchProps> = ({
         }
         <div className="colour-swatch"
             style={{
-                width: `${(vertical ? DOTS_HIGH : DOTS_WIDE) * PSEUDOPIXEL_SIZE + 1}px`,
-                height: `${(vertical ? DOTS_WIDE : DOTS_HIGH) * PSEUDOPIXEL_SIZE + 1}px`
+                width: `${(vertical ? DOTS_HIGH : dotsWide) * PSEUDOPIXEL_SIZE + 1}px`,
+                height: `${(vertical ? dotsWide : DOTS_HIGH) * PSEUDOPIXEL_SIZE + 1}px`
             }}
         >
             

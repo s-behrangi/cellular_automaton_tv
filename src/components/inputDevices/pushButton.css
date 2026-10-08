@@ -9,6 +9,9 @@
     box-shadow: inset 2px -2px 2px 0px #0e0e0e, inset -2px 2px 2px 0px #5d5d5d, inset 4px -4px 8px 2px #313131, 0px 0px 1px 3px #040404e3, -2px 4px 4px 2px #000000;
 }
 
+.push-button span {
+    user-select: none;
+}
 
 .push-button.active, .push-button:active {
     background: radial-gradient(circle at 80% 19%, #383838, rgb(46, 46, 46) 70%);

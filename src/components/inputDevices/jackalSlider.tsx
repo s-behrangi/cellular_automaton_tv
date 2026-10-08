@@ -18,9 +18,13 @@ interface jackalSliderProps {
     max: number,
     vertical?: boolean,
     ticks?: boolean,
+    upTicks?: boolean,
+    downTicks?: boolean,
     tickList?: Array<number>,
     size?: number,
     emphasize?: number,
+    thumbWidth?: number,
+    thumbHeight?: number,
 }
 
 const JackalSlider: React.FC<jackalSliderProps> = ({
@@ -30,9 +34,13 @@ const JackalSlider: React.FC<jackalSliderProps> = ({
     max,
     vertical = false,
     ticks = false,
+    upTicks = ticks,
+    downTicks = ticks,
     tickList = [],
     size = 300,
     emphasize = 5,
+    thumbWidth = THUMB_WIDTH,
+    thumbHeight = THUMB_HEIGHT,
 }) => {
     const [width, height] = [vertical ? BASE_WIDTH : size * BASE_LENGTH, vertical ? size * BASE_LENGTH : BASE_WIDTH];
     const [railWidth, railHeight] = [vertical ? RAIL_WIDTH : size * BASE_LENGTH * RAIL_LENGTH, vertical ? size * BASE_LENGTH * RAIL_LENGTH : RAIL_WIDTH];
@@ -48,19 +56,19 @@ const JackalSlider: React.FC<jackalSliderProps> = ({
                             'inset -1px 1px 1px 0px #535151,' + 
                             '-2px 2px 2px 1px #080808';
 
-    const upLeftTicks = tickList.map((tick, idx) => {
+    const upLeftTicks = upTicks ? tickList.map((tick, idx) => {
         const tickOffset = tick * size * BASE_LENGTH * RAIL_LENGTH - TICK_WIDTH;
         const x = (vertical ? 2 + (idx % emphasize != 0 ? TICK_EMPH_DIFF : 0) : 2 + tickOffset);
         const y = (vertical ? tickOffset - 4 : 25);
         return [x, y];
-    });
+    }) : [];
 
-    const downRightTicks = tickList.map((tick) => {
+    const downRightTicks = downTicks ? tickList.map((tick) => {
         const tickOffset = tick * size * BASE_LENGTH * RAIL_LENGTH - TICK_WIDTH;
         const x = (vertical ? 22 : 2 + tickOffset);
         const y = (vertical ? tickOffset + TICK_HEIGHT / 2 + 4 : 27);
         return [x, y];
-    });
+    }) : [];
     
     return (
     <div className="slider"
@@ -109,8 +117,8 @@ const JackalSlider: React.FC<jackalSliderProps> = ({
                         writingMode: `${vertical ? 'vertical-lr' : ""}`,
                         '& .MuiSlider-thumb': {
                             opacity: '1.0',
-                            width: vertical ? THUMB_WIDTH : THUMB_HEIGHT,
-                            height: vertical ? THUMB_HEIGHT : THUMB_WIDTH,
+                            width: vertical ? thumbWidth : thumbHeight,
+                            height: vertical ? thumbHeight : thumbWidth,
 
                             borderRadius: '1px',
                             backgroundColor: 'transparent',

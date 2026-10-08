@@ -1,0 +1,134 @@
+#compact-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-right: 25px;
+    justify-content: space-around;
+    align-items: center;
+    width: 250px;
+    gap: 15px;
+}
+
+#compact-panel .button-row .push-button-wrapper .push-button {
+    width: 50px;
+    height: 20px;
+}
+
+#compact-panel .control-row {
+    justify-content: space-between;
+    margin-top: -8px;
+}
+
+#compact-endpoint-buttons.control-row {
+    position: relative;
+    width: 50px;
+    margin-top: 0px;
+    justify-content: center;
+    left: -10px;
+}
+
+#compact-panel #compact-endpoint-buttons.control-row .push-button-wrapper .push-button {
+    width: 25px;
+    height: 20px;
+}
+
+#compact-panel #compact-colour-mode-row .slider {
+    position: relative;
+    left: -11px;
+    top: 7px;
+}
+
+#compact-colour-mode-row {
+    margin-bottom: 4px;
+}
+
+#compact-hsl-column .slider {
+    margin-top: -10px;
+}
+
+#compact-hsl-column .label {
+    position: relative;
+    margin-top: -7px;
+    margin-left: -15px;
+    left: -5px;
+}
+
+#compact-panel .colour-swatch {
+    left: 7px;
+}
+
+#compact-panel .colour-swatch-rect {
+    margin-left: 3px;
+}
+
+#compact-colour-swatch {
+    margin-top: -15px;
+    margin-left: -15px;
+}
+
+#compact-logo-cluster #gavazn-logo {
+    position: absolute;
+    width: 100px;
+    top: 545px;
+    left: 85px;
+}
+
+#compact-logo-cluster #logo-subtitle {
+    position: absolute;
+    top: 590px;
+    left: 80px;
+}
+
+#compact-logo-cluster #help-button {
+    position: absolute;
+    top: 175px;
+    left: 114px;
+    user-select: none;
+}
+
+.compact-section-header {
+    position: absolute;
+    font-size: 22px;
+    transform: rotate(270deg);
+    left: -50px;
+    letter-spacing: 0.2em;
+}
+
+#rule-header {
+    top: 122px;
+    left: -53px;
+}
+
+#draw-header {
+    top: 275px;
+    left: -53px;
+}
+
+#colour-header {
+    top: 435px;
+    left: -68px;
+}
+
+hr.header-line {
+    position: absolute;
+    left: -7px;
+    border-color: var(--machine-text);
+    background-color: var(--machine-text);
+    width: 0px;
+    opacity: 0.9;
+}
+
+#rule-header-line {
+    height: 139px;
+    top: 58px;
+}
+
+#draw-header-line {
+    height: 90px;
+    top: 236px;
+}
+
+#colour-header-line {
+    height: 150px;
+    top: 364px;
+}

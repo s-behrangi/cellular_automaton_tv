@@ -23,3 +23,24 @@
     box-shadow: inset -9px 9px 12px 4px #040404, inset 7px -8px 11px 4px rgb(45 45 45), -2px 2px 2px 0px #393939, 2px -2px 2px 0px #0c0c0c;
     border-radius: 5px;
 }
+
+.machine-recede.compact {
+    all: unset;
+}
+
+.machine.compact {
+    all: unset;
+}
+
+#machine-lighting.compact {
+    all: unset;
+}
+
+.machine-face.compact {
+    all: unset;
+}
+
+#screen-housing.compact {
+    width: 1170px;
+    justify-content: space-between;
+}

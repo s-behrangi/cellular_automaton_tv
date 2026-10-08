@@ -29,6 +29,9 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
     const fullscreen = useAutomatonStore((s) => s.fullscreen);
     const setFullscreen = useAutomatonStore((s) => s.setFullscreen);
 
+    const compactMode = useAutomatonStore((s) => s.compactMode);
+    const setCompactMode = useAutomatonStore((s) => s.setCompactMode);
+
     const [manualOpen, setManualOpen] = useState<boolean>(false);
     const [manualFirstPage, setManualFirstPage] = useState<boolean>(true);
 
@@ -78,15 +81,25 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
                 </span>
             </Box>
         </Modal>
-                
-                <div key={fullscreen ? 1 : 0} id="fullscreen-button" className='input-with-label'>
-                    <span>FullScreen</span>
-                    <PushButton 
-                        onChange={(val: boolean) => val ? setFullscreen(true) : null}
-                        toggle={false}
-                        value={fullscreen}
-                    />
+                <div className="control-row" id="playback-top-buttons">
+                    <div key={fullscreen ? 1 : 0} className='input-with-label'>
+                        <span>FLLSCRN</span>
+                        <PushButton 
+                            onChange={(val: boolean) => val ? setFullscreen(true) : null}
+                            toggle={false}
+                            value={fullscreen}
+                        />
+                    </div>
+                    <div key={compactMode ? 10 : 20} className='input-with-label'>
+                        <span>Compact</span>
+                        <PushButton 
+                            onChange={setCompactMode}
+                            toggle={true}
+                            value={compactMode}
+                        />
+                    </div>
                 </div>
+                
 
                 <DiagonalSwitchColumn 
                     simulation={simulation}

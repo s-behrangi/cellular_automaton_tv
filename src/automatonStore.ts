@@ -61,6 +61,9 @@ interface AutomatonStore {
     fullscreen: boolean,
     setFullscreen: (val: boolean) => void,
     toggleFullscreen: () => void,
+
+    compactMode: boolean,
+    setCompactMode: (val: boolean) => void,
 }
 
 export const useAutomatonStore = create<AutomatonStore>()(
@@ -147,4 +150,7 @@ export const useAutomatonStore = create<AutomatonStore>()(
     fullscreen: false,
     setFullscreen: (val: boolean) => set({fullscreen: val}),
     toggleFullscreen: () => set((s) => ({fullscreen: !s.fullscreen})),
+
+    compactMode: false,
+    setCompactMode: (val: boolean) => set({compactMode: val}),
 })));

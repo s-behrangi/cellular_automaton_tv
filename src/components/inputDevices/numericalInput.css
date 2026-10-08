@@ -1,0 +1,48 @@
+.numerical-input {
+    display: flex;
+    gap: 7px;
+}
+
+.numerical-input-window {
+    width: var(--display-width);
+    height: 40px;
+    display: flex;
+    justify-content: left;
+    background: radial-gradient(circle at 34% 89%, #fbfbfb17, rgb(14 14 14 / 0%) 93%);
+    border-style: solid;
+    border-color: #333333;
+    border-radius: 3px;
+    box-shadow: inset 2px -2px 2px -1px #252525, inset -2px 2px 4px 0px #000000, -2px 2px 3px -1px #000000;
+    background-color: #0c0c0c;
+    overflow: hidden;
+}
+
+.numerical-input-label {
+  position: relative;
+  opacity: 0.9;
+  display: inline-block;
+  transform: translateY(var(--selected-label-yoffset));
+  margin-left: 5px;
+  line-height: 40px;
+  white-space: pre-line;
+  
+  user-select: none;
+  
+  transition: transform 0.15s linear, clip-path 0.15s linear;
+}
+
+.numerical-input-selector-column {
+  position: relative;
+  top: -6px;
+}
+
+.numerical-input-selector-column .push-button-wrapper .push-button {
+  position: relative;
+  width: var(--button-width);
+  height: 20px;
+  top: unset;
+}
+
+.numerical-input-selector-column .push-button span, .numerical-input-selector-column .push-button.active span {
+  font-size: 11px;
+}
