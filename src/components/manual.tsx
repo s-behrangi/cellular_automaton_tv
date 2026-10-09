@@ -328,9 +328,10 @@ export const MANUAL_TWO = (
 
 export const FIRST_TIME_TEXT = (
     <div id="manual">
+        
         <h1>Quick Start</h1>
 
-        <p>This is a cellular automaton visualizer; you can get it running in just two steps:</p>
+        <p>This is a cellular automaton visualizer. You can get it running in just two steps:</p>
         <ol>
             <li>Hit <code>FLASH</code> in the <code>DRAW</code> controls.</li>
             <li>Flip the &#9199; switch to the upper-right of the main screen.</li>
@@ -343,6 +344,8 @@ export const FIRST_TIME_TEXT = (
             <li>...turn the <code>N</code> knob to change the number of states.</li>
         </ul>
 
-        <p>This window will only appear on your first visit. The Quick Start instructions, as well as more detailed information, can be found by clicking on the circled ? near the center of the app, above the logo. Click anywhere outside this window to dismiss.</p>
+        <p>This window will only appear once. The Quick Start instructions, as well as more detailed information, can be found by clicking on the circled ? near the center of the app, above the logo in non-compact mode. Click anywhere outside this window to dismiss.</p>
+
+        <p><b>PHOTOSENSITIVITY WARNING —</b> Experimenting with this app can very quickly produce intense strobing. The speed of the strobe is capped by the <code>FRAMERATE</code>. Therefore, it can be mitigated by setting <code>FRAMERATE</code> to 1 prior to changing the active rule/N, and manually verifying that there is no strobing before increasing <code>FRAMERATE</code>. Even this method is likely to yield 1Hz strobe effects.</p>
     </div>
 )

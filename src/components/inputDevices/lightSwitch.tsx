@@ -1,6 +1,10 @@
 import React from 'react';
 import "./lightSwitch.css";
+import { useAudio } from '../../audio/audioProvider';
 import { useState, useEffect } from 'react';
+
+const SOUND_ON = "lightswitch.flipdown";
+const SOUND_OFF = "lightswitch.flipup";
 
 interface lightSwitchProps{
     onChange?: (val: boolean) => void,
@@ -14,9 +18,11 @@ const LightSwitch: React.FC<lightSwitchProps> = ({
     toggle = false,
 }) => {
     const [active, setActive] = useState<boolean>(value);
-        
+    const audio = useAudio();
+
     useEffect(() => {
         onChange(active);
+        audio.play(active ? SOUND_ON : SOUND_OFF);
     }, [active])
 
     const handleDown = () => {

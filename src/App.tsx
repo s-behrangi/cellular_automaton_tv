@@ -11,6 +11,7 @@ import { Box } from '@mui/material';
 import { FIRST_TIME_TEXT } from './components/manual.tsx';
 import { useAutomatonStore } from './automatonStore.ts';
 import { FULLSCREEN_INSTRUCTIONS } from './constants.ts';
+import { AudioProvider } from './audio/audioProvider.tsx';
 import CompactPanel from './components/compactPanel.tsx';
 
 function App() {
@@ -66,8 +67,8 @@ function App() {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
-    height: 300,
+    width: 550,
+    height: 320,
     bgcolor: 'background.paper',
     border: 'none',
     borderRadius: '2px',
@@ -141,58 +142,59 @@ function App() {
               {FIRST_TIME_TEXT}
           </Box>
       </Modal>
-
-      <div className={`machine-recede ${compactMode ? "compact" : ""}`}>
-        <div className={`machine ${compactMode ? "compact" : ""}`}>
-          <div className={`${compactMode ? "compact" : ""}`} id="machine-lighting" />
-          <div className={`machine-face ${compactMode ? "compact" : ""}`}>
-            <div id="screen-housing" className={`${compactMode ? "compact" : ""}`} >
-              <div id="screen-inset">
-                <canvas ref = {canvasRef} id={canvasFullscreen}/>
+      <AudioProvider>
+        <div className={`machine-recede ${compactMode ? "compact" : ""}`}>
+          <div className={`machine ${compactMode ? "compact" : ""}`}>
+            <div className={`${compactMode ? "compact" : ""}`} id="machine-lighting" />
+            <div className={`machine-face ${compactMode ? "compact" : ""}`}>
+              <div id="screen-housing" className={`${compactMode ? "compact" : ""}`} >
+                <div id="screen-inset">
+                  <canvas ref = {canvasRef} id={canvasFullscreen}/>
+                </div>
+                {
+                  compactMode ?
+                  <CompactPanel 
+                    simulation={automaton.simulation}
+                    importRule={automaton.importRule}
+                    exportRule={automaton.exportRule}
+                  />
+                  :
+                  <></>
+                }
               </div>
+              
               {
                 compactMode ?
-                <CompactPanel 
-                  simulation={automaton.simulation}
-                  importRule={automaton.importRule}
-                  exportRule={automaton.exportRule}
-                />
+                <>
+                </>
                 :
-                <></>
+                <>
+                  <PlaybackPanel
+                    simulation={automaton.simulation}
+                    cRef = {canvasRef}
+                  />
+                
+                  <RulePanel
+                    simulation={automaton.simulation}
+                    importRule={automaton.importRule}
+                    exportRule={automaton.exportRule}
+                  />
+                  <div className="control-column" id="rightside-panels">
+                    <DrawPanel
+                      simulation={automaton.simulation}
+                    />
+                    <ColourPanel
+                    />
+                    <PresetPanel
+                      setPreset={automaton.setPreset}
+                    />
+                  </div>
+                </>
               }
             </div>
-            
-            {
-              compactMode ?
-              <>
-              </>
-              :
-              <>
-                <PlaybackPanel
-                  simulation={automaton.simulation}
-                  cRef = {canvasRef}
-                />
-              
-                <RulePanel
-                  simulation={automaton.simulation}
-                  importRule={automaton.importRule}
-                  exportRule={automaton.exportRule}
-                />
-                <div className="control-column" id="rightside-panels">
-                  <DrawPanel
-                    simulation={automaton.simulation}
-                  />
-                  <ColourPanel
-                  />
-                  <PresetPanel
-                    setPreset={automaton.setPreset}
-                  />
-                </div>
-              </>
-            }
           </div>
         </div>
-      </div>
+      </AudioProvider>
     </>
   )
 }
