@@ -1,8 +1,10 @@
 import React, { type PointerEvent } from 'react';
 import { useRef, type CSSProperties } from 'react';
+import { useAudio } from '../../audio/audioProvider';
 import "./wingedSelector.css";
 
 const DIAL_SIZE = 0.7;
+const SOUND = 'wingedselector.twist';
 
 interface wingedSelectorProps{
     options: Array<string>,
@@ -26,6 +28,8 @@ const WingedSelector: React.FC<wingedSelectorProps> = ({
     const box = size + padding * 2;
 
     const dialRef = useRef<HTMLDivElement>(null);
+
+    const audio = useAudio();
 
     const indexFromPoint = (clientX: number): number => {
         const dial = dialRef.current;
@@ -52,7 +56,13 @@ const WingedSelector: React.FC<wingedSelectorProps> = ({
             return value;
         }
 
-        onChange(indexFromPoint(e.clientX));
+        const idx = indexFromPoint(e.clientX);
+
+        if (idx == value) return value;
+
+        audio.play(SOUND);
+
+        onChange(idx);
     }
 
     const style = {

@@ -1,6 +1,10 @@
 import React from 'react';
 import "./seesawSwitch.css";
 import { useState, useEffect } from 'react';
+import { useAudio } from '../../audio/audioProvider';
+
+const SOUND_ON = 'seesaw.flipright';
+const SOUND_OFF = 'seesaw.flipleft';
 
 interface seesawSwitchProps{
     onChange?: (val: boolean) => void,
@@ -17,6 +21,8 @@ const SeesawSwitch: React.FC<seesawSwitchProps> = ({
 }) => {
     const [active, setActive] = useState<boolean>(value);
 
+    const audio = useAudio();
+
     useEffect(() => {
         onChange(active);
     }, [active])
@@ -24,14 +30,16 @@ const SeesawSwitch: React.FC<seesawSwitchProps> = ({
     const handleDown = () => {
         if (!toggle) {
             setActive(true);
+            audio.play(SOUND_ON);
         } else {
-            setActive((state) => !state);
+            setActive((state) => {audio.play(state ? SOUND_OFF : SOUND_ON); return !state});
         }
     }
 
     const handleUp = () => {
         if (!toggle) {
             setActive(false);
+            audio.play(SOUND_OFF);
         }
     }
 

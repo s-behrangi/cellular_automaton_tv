@@ -1,8 +1,10 @@
 import React, { useState, type PointerEvent } from 'react';
 import { useEffect, useRef, type CSSProperties } from 'react';
+import { useAudio } from '../../audio/audioProvider';
 import "./knob.css";
 
 const DIAL_SIZE = 1.0;
+const SOUND = 'knob.twist';
 
 interface knobProps{
     options?: Array<string>,
@@ -29,6 +31,8 @@ const Knob: React.FC<knobProps> = ({
     const [value, setValue] = useState<number>(defaultValue);
     const [knobAngle, setKnobAngle] = useState<number>(defaultValue * arcStep);
 
+    const audio = useAudio();
+
     useEffect(() => {
         onChange(value);
     }, [value]);
@@ -48,6 +52,7 @@ const Knob: React.FC<knobProps> = ({
         const left = onLeft(e.clientX);
         setKnobAngle((angle) => (angle + (left ? - arcStep : arcStep)));
         setValue((value) => (value + (left ? -1 : 1) + options.length) % options.length)
+        audio.play(SOUND);
     }
 
     const style = {

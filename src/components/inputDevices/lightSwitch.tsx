@@ -22,20 +22,21 @@ const LightSwitch: React.FC<lightSwitchProps> = ({
 
     useEffect(() => {
         onChange(active);
-        audio.play(active ? SOUND_ON : SOUND_OFF);
     }, [active])
 
     const handleDown = () => {
         if (!toggle) {
             setActive(true);
+            audio.play(SOUND_ON)
         } else {
-            setActive((state) => !state);
+            setActive((state) => {audio.play(state ? SOUND_OFF : SOUND_ON); return !state});
         }
     }
 
     const handleUp = () => {
         if (!toggle) {
             setActive(false);
+            audio.play(SOUND_OFF);
         }
     }
 

@@ -1,7 +1,10 @@
 export type Sound = 
   | 'lightswitch.flipdown'
   | 'lightswitch.flipup'
-  | 'seesawswitch.flip';
+  | 'seesaw.flipleft'
+  | 'seesaw.flipright'
+  | 'knob.twist'
+  | 'wingedselector.twist';
 
 export class AudioBus {
     private context: AudioContext | null = null;
@@ -47,7 +50,7 @@ export class AudioBus {
         source.playbackRate.value = this.randRate();
         
         const gain = this.context.createGain();
-        gain.gain.value = 1;
+        gain.gain.value = 0.6;
 
         source.connect(gain).connect(this.volume);
         source.start();
