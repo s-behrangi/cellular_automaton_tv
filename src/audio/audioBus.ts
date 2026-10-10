@@ -10,6 +10,7 @@ export class AudioBus {
     private context: AudioContext | null = null;
     private volume: GainNode | null = null;
     private buffers =  new Map<Sound, Array<AudioBuffer>>();
+    private muted = false;
 
     async load(sources: Record<string, string>) {
         this.context ??= new AudioContext();
@@ -36,8 +37,12 @@ export class AudioBus {
         return 0.97 + Math.random() * 0.06;
     }
 
+    setMute(val: boolean): void{
+        this.muted = val;
+    }
+
     play(snd: Sound): void {
-        if (!this.context || !this.volume) return;
+        if (this.muted || !this.context || !this.volume) return;
         
         if (this.context.state === "suspended") this.context.resume();
 

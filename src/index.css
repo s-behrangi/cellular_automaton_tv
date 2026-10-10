@@ -461,3 +461,17 @@ span {
 .hidden-fullscreen-instructions {
   opacity: 0.0;
 }
+
+#mute-button {
+  position: absolute;
+  user-select: none;
+  cursor: pointer;
+  color: white;
+  z-index: 2;
+  top: 3px;
+  left: 3px;
+}
+
+.bi {
+  width: 25px;
+}

@@ -43,4 +43,5 @@
 #screen-housing.compact {
     width: 1170px;
     justify-content: space-between;
+    margin: 20px;
 }
