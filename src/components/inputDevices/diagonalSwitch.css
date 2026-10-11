@@ -58,7 +58,7 @@
     background-size: 8px 8px;
     background-position: 0 0, 4px 4px;
     background-color: #272727;
-    box-shadow: inset -2px 2px 1px -2px #000000, inset 0px 0px 0px 0px #d5d5d53b, inset -2px 2px 2px 2px #8383833b, inset 2px -2px 2px 0px #2d2d2d4d, inset 2px -2px 0px 2px #060606, inset -2px 2px 0px 2px #0c0c0c;
+    box-shadow: inset -2px 2px 1px -2px #000000, inset -3px 3px 2px 2px #8383833b, inset 2px -2px 2px 0px #1a1a1a4d, inset 2px -2px 0px 2px #060606, inset -2px 2px 0px 2px #0c0c0c;
 }
 
 .diagonal-switch-flipped-lighting {

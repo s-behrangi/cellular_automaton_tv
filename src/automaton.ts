@@ -189,19 +189,14 @@ export class Automaton {
             if (this.pan) {
                 const rawX = this.panStartCam[0] + (this.panStartPos[0] - simX);
                 const rawY = this.panStartCam[1] + (this.panStartPos[1] - simY);
-                this.camera.x = Math.floor(this.drawingRule ? rawX : fmod(rawX, this.autoWidth));
-                this.camera.y = Math.floor(this.drawingRule ? rawY : fmod(rawY, this.autoHeight));
-
-                // this.camera.x = Math.floor(fmod(this.panStartCam[0] + (this.panStartPos[0] - simX), this.autoWidth));
-                // this.camera.y = Math.floor(fmod(this.panStartCam[1] + (this.panStartPos[1] - simY), this.autoHeight));
-
-                console.log(this.camera.x, this.camera.y, this.camera.zoom);
+                console.log(rawX, rawY);
+                this.camera.x = this.drawingRule ? rawX : fmod(rawX, this.autoWidth);
+                this.camera.y = this.drawingRule ? rawY : fmod(rawY, this.autoHeight);
 
                 this.updateCamera();
                 this.drawToCanvas();
             } else if (this.draw) { //supposing proper functionality this is equivalent to an else
                 this.gl.useProgram(this.programs.autoDraw.prog);
-                console.log(simX, simY);
                 this.gl.uniform4f(this.uniforms.drawMouse.loc, Math.floor(fmod(simX, this.autoWidth)), Math.floor(fmod(simY, this.autoHeight)), this.brushSize, this.brushState);
             
                 this.gl.useProgram(this.programs.ruleToVis.prog);
@@ -783,21 +778,25 @@ export class Automaton {
         this.fadeScreen(); //currently inactive
 
         const panSpeed = 4.0 / this.zoomLevels[this.zoomIdx];
+        let panned = false;
         switch (this.panDir) {
             case 'up':
                 this.camera.y += panSpeed;
+                panned = true;
                 break;
             case 'down':
                 this.camera.y -= panSpeed;
+                panned = true;
                 break;
             case 'left':
                 this.camera.x -= panSpeed;
+                panned = true;
                 break;
             case 'right':
                 this.camera.x += panSpeed;
+                panned = true;
         }
-
-        this.updateCamera();
+        if (panned) this.updateCamera();
 
         if (this.drawingRule) {
             if (this.draw) {
@@ -970,6 +969,7 @@ export class Automaton {
         this.gl.uniform3f(this.uniforms.crtWithBloomCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
         this.gl.useProgram(this.programs.flatQuadrupleProjection.prog);
         this.gl.uniform3f(this.uniforms.flatQuadrupleProjectionCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
+        console.log("updated:", this.camera.x, this.camera.y);    
     }
 
     private handleZoomChange(
@@ -1152,7 +1152,6 @@ export class Automaton {
         if (this.playing) {
             this.animSim(performance.now());
         }
-        console.log("set");
     }
 
     public toggleCPU(): boolean {
@@ -1218,6 +1217,7 @@ export class Automaton {
 
             this.genColourArray();
             this.regenColourTex();
+            this.updateCamera();
         }
         
         return this.states;

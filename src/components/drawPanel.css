@@ -26,13 +26,18 @@
                 inset -2px 2px 18px 0px #1e1e1ec7;
 }
 
+.brush-state-knob .push-button.down {
+    background: radial-gradient(circle at 68% 29%, #161616, rgb(14, 14, 14) 70%);
+    box-shadow: inset 1px -1px 2px 0px #303030c9, inset -1px 0px 2px 2px #0c0c0c;
+}
+
 .brush-state-knob .push-button span {
     position: relative;
     top: -1px;
     left: 1px;
 }
 
-.brush-state-knob .push-button.active span, .brush-state-knob .push-button:active span {
+.brush-state-knob .push-button.active span, .brush-state-knob .push-button:active span, .brush-state-knob .push-button.down span {
     left: 0px;
     top: 0px;
     position: relative;

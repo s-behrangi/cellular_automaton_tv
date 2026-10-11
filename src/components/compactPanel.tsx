@@ -329,7 +329,6 @@ const RulePanel: React.FC<rulePanelProps> = ({
             <div className="input-with-label">
                 <span>PLAY</span>
                 <PushButton 
-                    key={isPlaying ? "a" : "b"}
                         onChange={setIsPlaying}
                         value={isPlaying}
                         toggle={true}

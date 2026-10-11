@@ -4,7 +4,11 @@ export type Sound =
   | 'seesaw.flipleft'
   | 'seesaw.flipright'
   | 'knob.twist'
-  | 'wingedselector.twist';
+  | 'wingedselector.twist'
+  | 'button.down'
+  | 'button.up'
+  | 'diag.down'
+  | 'diag.up';
 
 export class AudioBus {
     private context: AudioContext | null = null;
@@ -34,7 +38,7 @@ export class AudioBus {
     }
 
     randRate(): number {
-        return 0.97 + Math.random() * 0.06;
+        return 1.0; //0.97 + Math.random() * 0.06;
     }
 
     setMute(val: boolean): void{

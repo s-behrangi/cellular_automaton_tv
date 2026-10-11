@@ -1,6 +1,10 @@
 import React from 'react';
 import './diagonalSwitch.css';
+import { useAudio } from '../../audio/audioProvider';
 import { useState, useEffect } from 'react';
+
+const SOUND_DOWN = 'diag.down';
+const SOUND_UP = 'diag.up';
 
 interface diagonalSwitchProps {
     onChange?: (val: boolean) => void,
@@ -14,6 +18,8 @@ const DiagonalSwitch: React.FC<diagonalSwitchProps> = ({
     toggle = true,
 }) => {
     const [active, setActive] = useState<boolean>(defaultValue);
+
+    const audio = useAudio();
     
     useEffect(() => {
         onChange(active);
@@ -21,15 +27,17 @@ const DiagonalSwitch: React.FC<diagonalSwitchProps> = ({
 
     const handleDown = () => {
         if (!toggle) {
+            audio.play(SOUND_DOWN);
             setActive(true);
         } else {
-            setActive((state) => !state);
+            setActive((state) => {audio.play(state ? SOUND_UP : SOUND_DOWN); return !state});
         }
     }
 
     const handleUp = () => {
         if (!toggle) {
             setActive(false);
+            audio.play(SOUND_UP);
         }
     }
 

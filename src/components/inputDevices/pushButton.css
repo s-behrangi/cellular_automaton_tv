@@ -13,7 +13,7 @@
     user-select: none;
 }
 
-.push-button.active, .push-button:active {
+.push-button.active {
     background: radial-gradient(circle at 80% 19%, #383838, rgb(46, 46, 46) 70%);
     box-shadow: inset -2px 2px 2px 0px #000000, 
                 inset 2px -3px 2px -1px #7272722b, 
@@ -22,12 +22,16 @@
                 0px 0px 1px 3px #000000e0;
 }
 
-.push-button.active span, .push-button:active span {
+.push-button.active span {
     left: -1px;
     top: 2px;
     position: relative;
 }
 
+.push-button.down {
+    background: radial-gradient(circle at 80% 19%, #414040, rgb(65 65 65) 70%);
+    box-shadow: inset 1px -1px 2px 0px #020202, inset -2px 2px 2px 0px #393939, inset 4px -4px 8px 2px #2d2d2d, 0px 0px 1px 3px #000000e3;
+}
 
 /* -------- CONTROL CLUSTER -------------- */
 .up-button .push-button {

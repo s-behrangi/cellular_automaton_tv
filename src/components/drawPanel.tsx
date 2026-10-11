@@ -82,7 +82,6 @@ const DrawPanel: React.FC<drawPanelProps> = ({
                             size={80}
                         />
                         <PushButton 
-                            key={brushErase ? -1 : -2}
                             label={"1"}
                             toggle={true}
                             value={brushErase}
