@@ -1152,6 +1152,9 @@ export class Automaton {
             this.centerRule();
         } else {
             this.setSimSize(this.autoWidth, this.autoHeight);
+            this.camera.x = fmod(this.camera.x, this.autoWidth);
+            this.camera.y = fmod(this.camera.y, this.autoHeight);
+            this.updateCamera();
         }
 
         this.gl.useProgram(this.programs.autoColour.prog);
