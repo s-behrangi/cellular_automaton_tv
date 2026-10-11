@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'; //
+//import { viteSingleFile } from "vite-plugin-singlefile"; //uncomment for single file build
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -13,7 +14,8 @@ export default defineConfig({
       globals: {
         process: true,
       },
-    }), 
+    }),
+    //viteSingleFile(), //uncomment for single file
   ],
   base: process.env.GITHUB_REPOSITORY 
     ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}/` 
