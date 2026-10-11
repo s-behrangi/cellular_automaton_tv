@@ -24,14 +24,11 @@ export class AudioBus {
         await Promise.all(
             (Object.entries(sources) as [string, string][]).map(async ([id, path]) => {
                 const snd = id.replace('./samples/', '').replace(/[0-9]*\.\w+$/,'') as Sound;
-                console.log(snd, path);
                 const file = await fetch(path);
                 const buf = await this.context!.decodeAudioData(await file.arrayBuffer());
                 if (!this.buffers.get(snd)) {
-                    console.log("creating", snd);
                     this.buffers.set(snd, []);
                 }
-                console.log("adding", path);
                 this.buffers.get(snd)?.push(buf);
             })
         );

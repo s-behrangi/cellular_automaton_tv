@@ -149,6 +149,8 @@ span {
   font: bold 11px ui-monospace, monospace; 
   letter-spacing: .06em;
   text-transform: uppercase;
+  user-select: none;
+  cursor: unset;
 }
 
 .input-with-label {
@@ -437,6 +439,7 @@ span {
 }
 
 #fullscreen-instructions {
+  pointer-events: none;
   position: fixed;
   z-index: 100;
   top: 5%;

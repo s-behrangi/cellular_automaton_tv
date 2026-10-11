@@ -1,4 +1,4 @@
-import { createProgramFromSource } from './utils/webglUtils';
+import { createProgramFromSource, barrelDistort } from './utils/webglUtils';
 import { binomialArray, chooseWithRep, hslToRGB, stringifyRule, packRule, unpackRule, rulifyString, fmod, importRuleDirect, exportRuleDirect } from './utils/mathUtils';
 import { DEFAULT_CPU_RULE_CONTROL, DEFAULT_COLOUR, DEFAULT_COLOURING_STYLE, DEFAULT_DISTINGUISH_MAX, DEFAULT_DISTINGUISH_ZERO, MAX_N, MIN_N, DEFAULT_CRT, DEFAULT_BRUSH_SIZE, DEFAULT_SIM_FRAMERATE_IDX, FRAMERATES, COLOURING_STYLES, DEFAULT_COLOURING_STYLE_VARIABLE, PRESETS, DEFAULT_RULE_DRAW } from './constants';
 
@@ -189,18 +189,14 @@ export class Automaton {
             if (this.pan) {
                 const rawX = this.panStartCam[0] + (this.panStartPos[0] - simX);
                 const rawY = this.panStartCam[1] + (this.panStartPos[1] - simY);
-                console.log(rawX, rawY);
+
                 this.camera.x = this.drawingRule ? rawX : fmod(rawX, this.autoWidth);
                 this.camera.y = this.drawingRule ? rawY : fmod(rawY, this.autoHeight);
 
                 this.updateCamera();
                 this.drawToCanvas();
             } else if (this.draw) { //supposing proper functionality this is equivalent to an else
-                this.gl.useProgram(this.programs.autoDraw.prog);
-                this.gl.uniform4f(this.uniforms.drawMouse.loc, Math.floor(fmod(simX, this.autoWidth)), Math.floor(fmod(simY, this.autoHeight)), this.brushSize, this.brushState);
-            
-                this.gl.useProgram(this.programs.ruleToVis.prog);
-                this.gl.uniform4f(this.uniforms.ruleToVisMouse.loc, Math.floor(simX), Math.floor(simY), this.brushSize, this.brushState);
+                this.updateDrawMouse(e);
             }
         };
 
@@ -239,11 +235,7 @@ export class Automaton {
             this.panStartCam = [this.camera.x, this.camera.y];
             this.draw = ! this.pan;
             if (this.draw) {
-                this.gl.useProgram(this.programs.autoDraw.prog);
-                this.gl.uniform4f(this.uniforms.drawMouse.loc, Math.floor(fmod(simX, this.autoWidth)), Math.floor(fmod(simY, this.autoHeight)), this.brushSize, this.brushState);
-            
-                this.gl.useProgram(this.programs.ruleToVis.prog);
-                this.gl.uniform4f(this.uniforms.ruleToVisMouse.loc, Math.floor(simX), Math.floor(simY), this.brushSize, this.brushState);
+                this.updateDrawMouse(e);
             }
         });
     }
@@ -959,17 +951,52 @@ export class Automaton {
         return [simX, simY];
     }
 
+    private snapCameraPosition(): void {
+        /* technically written for CRT mode but should be mode-agnostic —
+           snaps camera position to the nearest screen pixel because 
+           otherwise the CRT pseudopixels will be misaligned            */
+        console.log("before:", this.camera.x, this.camera.y);
+        const pixelSize = this.camera.zoom / (this.useCRT ? 4.0 : 1.0);
+        this.camera.x = Math.floor(this.camera.x * pixelSize) / pixelSize;
+        this.camera.y = Math.floor(this.camera.y * pixelSize) / pixelSize;
+        console.log("after:", this.camera.x, this.camera.y);
+    }
+
     private updateCamera(): void {
         if (this.drawingRule) {
             this.clampCamera();
         }
+
+        this.snapCameraPosition();
+
         this.gl.useProgram(this.programs.autoColour.prog);
         this.gl.uniform3f(this.uniforms.colourCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
         this.gl.useProgram(this.programs.crtWithBloom.prog);
         this.gl.uniform3f(this.uniforms.crtWithBloomCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
         this.gl.useProgram(this.programs.flatQuadrupleProjection.prog);
         this.gl.uniform3f(this.uniforms.flatQuadrupleProjectionCamera.loc, this.camera.x, this.camera.y, this.camera.zoom);
-        console.log("updated:", this.camera.x, this.camera.y);    
+    }
+
+    private updateDrawMouse(e: MouseEvent): void {
+        console.log("Here");
+        const rect = this.canvas.getBoundingClientRect();
+        let rawX = (e.clientX - rect.left) / rect.width;
+        let rawY = -1 * (e.clientY - rect.bottom) / rect.height;
+        if (this.useCRT) {
+            [rawX, rawY] = barrelDistort(rawX, rawY);
+        }
+        [rawX, rawY] = [rawX * rect.width / this.camera.zoom, rawY * rect.height / this.camera.zoom];
+        
+        console.log("normalized", rawX, rawY);
+        
+        const simX = rawX + (this.pan ? this.panStartCam[0] : this.camera.x);
+        const simY = rawY + (this.pan ? this.panStartCam[1] : this.camera.y);
+
+        this.gl.useProgram(this.programs.autoDraw.prog);
+        this.gl.uniform4f(this.uniforms.drawMouse.loc, Math.floor(simX), Math.floor(simY), this.brushSize, this.brushState);
+
+        this.gl.useProgram(this.programs.ruleToVis.prog);
+        this.gl.uniform4f(this.uniforms.ruleToVisMouse.loc, Math.floor(simX), Math.floor(simY), this.brushSize, this.brushState);
     }
 
     private handleZoomChange(
@@ -1020,8 +1047,6 @@ export class Automaton {
         if (this.canvas.width == this.screenWidth && this.canvas.height == this.screenHeight) { return }
         
         [this.screenWidth, this.screenHeight] = [this.canvas.width, this.canvas.height];
-
-        console.log(this.canvas.width, this.canvas.height);
 
         this.gl.useProgram(this.programs.autoColour.prog);
         this.gl.uniform2f(this.uniforms.colourScreenSize.loc, this.canvas.width, this.canvas.height);
@@ -1575,7 +1600,6 @@ export class Automaton {
             }
             
             n = lengths.indexOf(decompressed.length);
-            console.log(decompressed.length);
 
             if (n < 4) {
                 /* invalid */

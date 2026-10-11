@@ -23,7 +23,7 @@ export const MANUAL_ONE = (
         <p>The Gavazn runs a customizable cellular automaton. The automaton can have <code>2-21</code> states, which are 1-indexed within the UI. Therefore, state <code>1</code> corresponds to what is conventionally referred to as the <i>dead</i> state, and setting the brush to this state is equivalent to a conventional "erase" function. The geometry of the simulation is a <code>1024x1024</code> square with toroidal wrapping: the left and right edges connect, as do the top and bottom. </p>
 
         <h2>Complete Features</h2>
-        <p>The Gavazn is divided into five (5) sections. From left-to-right, they are: the screen with its housing, the rule panel, the draw panel, the colour panel, and a preset selector.</p>
+        <p>The Gavazn is divided into five (5) sections. From left-to-right, they are: the screen with its housing, the rule panel, the draw panel, the colour panel, and a preset selector. There is also a volume-control button at the top-left of the screen, which can be used to mute and unmute the app's sound effects.</p>
         
         <h3>Screen & Housing</h3>
         <ul>
@@ -34,9 +34,15 @@ export const MANUAL_ONE = (
                 </ul>
             </li>
             <li>
-                <b><code>FULLSCREEN</code>:</b>
+                <b><code>FLLSCRN</code>:</b>
                 <ul className="sublist">
                     <li>Switch to fullscreen mode; press <code>ESCAPE</code> to return to the main view.</li>
+                </ul>
+            </li>
+            <li>
+                <b><code>COMPACT</code>:</b>
+                <ul className="sublist">
+                    <li>Switch to a visually compact UI. All functionality is still available, except: saving screenshots & videos, the control cluster, the binary colour mode, and presets.</li>
                 </ul>
             </li>
             <li>
@@ -54,7 +60,6 @@ export const MANUAL_ONE = (
                             <li>Record a video of the screen as a <code>webm</code>. This button toggles, so you decide when the recording stops—though it will stop automatically at thirty seconds.</li>
                         </ul>
                     </li>
-                    <br/>
                     <li>
                         <b>Step (&#8658;)</b>:
                         <ul className="sublist">
@@ -156,6 +161,13 @@ export const MANUAL_ONE = (
                     </li>
                 </ul>
             </li>
+        </ul>
+    </div>
+)
+
+export const MANUAL_TWO = (
+    <div id="manual" style={{columnCount: 2, columnGap: "40px", columnFill: "auto", height: "100%"}}>
+        <ul>
             <li>
                 <b><code>FRAMERATE</code>:</b>
                 <ul>
@@ -165,11 +177,6 @@ export const MANUAL_ONE = (
                 </ul>
             </li>
         </ul>
-    </div>
-)
-
-export const MANUAL_TWO = (
-    <div id="manual" style={{columnCount: 2, columnGap: "40px", columnFill: "auto", height: "100%"}}>
         <h3>Draw Panel</h3>
         <ul>
             <li>

@@ -20,7 +20,7 @@ const PushButton: React.FC<pushButtonProps> = ({
     value = false,
 }) => {
     const [active, setActive] = useState<boolean>(value);
-    const [pressState, setPressState] = useState<string>("");
+    const [pressState, setPressState] = useState<string>(value ? "down" : "");
 
     const audio = useAudio();
     

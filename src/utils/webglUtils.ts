@@ -56,3 +56,26 @@ export function setRectangle(gl: WebGL2RenderingContext, x: number, y: number, w
 export function randomInt(range: number) {
     return Math.floor(Math.random() * range);
 }
+
+export function barrelDistort(u: number, v: number): number[] {
+    console.log("raw:", u, v);
+    const curvature = 0.23;
+    let [curveU, curveV] = [
+        u * 2.0 - 1.0,
+        v * 2.0 - 1.0,
+    ];
+    const [offsetU, offsetV] = [
+        curveV * curvature,
+        curveU * curvature
+    ];
+    [curveU, curveV] = [
+        curveU + curveU * offsetU * offsetU,
+        curveV + curveV * offsetV * offsetV
+    ];
+    [curveU, curveV] = [
+        curveU / 2.0 + 0.5,
+        curveV / 2.0 + 0.5
+    ];
+    console.log("curved:", curveU, curveV);
+    return [curveU, curveV];
+}

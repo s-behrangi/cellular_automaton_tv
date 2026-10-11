@@ -1,77 +1,22 @@
-# React + TypeScript + Vite
+# Gavazn: A Cellular Automaton Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An in-browser app for experimenting with [cellular automata](https://en.wikipedia.org/wiki/Cellular_automaton), with a design inspired by various classic machines like the [Sony Jackal FX-300](https://swling.com/blog/2021/03/the-sony-fx-300-jackal-a-holy-grail-technological-marvel-of-the-late-70s/), a combination CRT television and radio from the 70s.
 
-Currently, two official plugins are available:
+You can play with it [here](https://s-behrangi.github.io/cellular_automaton_tv/).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Specifications
 
-## React Compiler
+The "machine" runs a 1024 x 1024 simulation of a cellular automaton. By default, it will run [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway's_Game_of_Life), but it comes with numerous presets and also allows you to randomize the active rule or edit it yourself. Features include:
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+* An 800-600 screen that, by default, runs a shader imitating a CRT screen
+* Support for n-state automata up to `N = 21`
+* Flexible colour customization, making even high-state automata aesthetically pleasing
+* The ability to draw on the simulation
+* Rule exporting and importing
+* Rule visualization, which depicts the active rule as a texture on screen
 
-Note: This will impact Vite dev & build performances.
+You may refer to the in-app manual for detailed functionality.
 
-## Expanding the ESLint configuration
+## Credits
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+This was my first time working with WebGL. In addition to the [WebGL2 Fundamentals](https://webgl2fundamentals.org/) website and [Andrew Adamson's incredibly clear YouTube tutorials](https://youtube.com/playlist?list=PLPbmjY2NVO_X1U1JzLxLDdRn4NmtxyQQo), I learnt a lot by example from [Benjamin Mastripolito's visualizer](https://github.com/benpm/cellarium/tree/master), in particular a clean technique for calculating combinadic order within GLSL itself.
