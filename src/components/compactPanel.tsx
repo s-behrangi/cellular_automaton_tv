@@ -97,13 +97,18 @@ const RulePanel: React.FC<rulePanelProps> = ({
     const [manualOpen, setManualOpen] = useState<boolean>(false);
     const [manualFirstPage, setManualFirstPage] = useState<boolean>(true);
 
+    const setModalOpen = useAutomatonStore((s) => s.setModalOpen);
+
+
     const handleManualOpen = () =>{
         setManualOpen(true);
+        setModalOpen(true);
     }
 
     const handleManualClose = () =>{
         setManualOpen(false);
         setManualFirstPage(true);
+        setModalOpen(false);
     }
 
     const manualStyle = {
@@ -188,6 +193,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
             setEditModalPage(0);
         }
         setEditModalOpen(val);
+        setModalOpen(val);
         setEditButtonDepressed(val);
     }
 
@@ -214,6 +220,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
     const handleImport = () => {
         setImportModalOpen(true);
         setImportButtonDepressed(true);
+        setModalOpen(true);
     }
 
     const handleCloseImportModal = () => {
@@ -221,6 +228,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
         setImportString("");
         setImportModalOpen(false);
         setImportButtonDepressed(false);
+        setModalOpen(false);
     }
 
     const importModalStyle = {

@@ -13,6 +13,7 @@ import { useAutomatonStore } from './automatonStore.ts';
 import { FULLSCREEN_INSTRUCTIONS } from './constants.ts';
 import { useAudio } from './audio/audioProvider.tsx';
 import CompactPanel from './components/compactPanel.tsx';
+import { useArrowKeys } from './hooks/useArrowKeys.ts';
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -26,12 +27,20 @@ function App() {
   const [canvasFullscreen, setCanvasFullscreen] = useState<string>("");
 
   const automaton = useAutomaton(canvasRef);
+  const arrowKeys = useArrowKeys(automaton.simulation);
 
   const togglePlaying = useAutomatonStore((s) => s.toggleIsPlaying);
   const toggleCRT = useAutomatonStore((s) => s.toggleUseCRT);
 
   const setFullscreen = useAutomatonStore((s) => s.setFullscreen);
   const toggleFullscreen = useAutomatonStore((s) => s.toggleFullscreen);
+
+  const modalOpen = useAutomatonStore((s) => s.modalOpen);
+  const setModalOpen = useAutomatonStore((s) => s.setModalOpen);
+  const ignoreKeyRef = useRef(modalOpen);
+  useEffect(() => {
+    ignoreKeyRef.current = modalOpen;
+  }, [modalOpen]);
 
   const compactMode = useAutomatonStore((s) => s.compactMode);
 
@@ -76,7 +85,7 @@ function App() {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 550,
-    height: 320,
+    height: 350,
     bgcolor: 'background.paper',
     border: 'none',
     borderRadius: '2px',
@@ -90,6 +99,7 @@ function App() {
 
     if (!hasVisited) {
       setFirstTimeModalOpen(true);
+      setModalOpen(true);
 
       localStorage.setItem('hasVisitedBefore', 'true');
     }
@@ -98,6 +108,8 @@ function App() {
       automaton.newAutomaton();
 
       const handleWindowKeydown = (e: KeyboardEvent) => {
+        if (ignoreKeyRef.current) return;
+
         switch (e.key) {
           case " ":
             togglePlaying();
@@ -115,10 +127,44 @@ function App() {
             toggleFullscreen();
             break;
           case "c":
-            toggleCRT();
+            automaton.simulation.clear();
             break;
           case "x":
             automaton.simulation.flash();
+            break;
+          case "t":
+            toggleCRT();
+            break;
+          case "ArrowDown":
+            arrowKeys.instruct("down", true);
+            break;
+          case "ArrowUp":
+            arrowKeys.instruct("up", true);
+            break;
+          case "ArrowLeft":
+            arrowKeys.instruct("left", true);
+            break;
+          case "ArrowRight":
+            arrowKeys.instruct("right", true);
+            break;
+        }
+      }
+
+      const handleWindowKeyUp = (e: KeyboardEvent) => {
+        if (ignoreKeyRef.current) return;
+
+        switch (e.key) {
+          case "ArrowDown":
+            arrowKeys.instruct("down", false);
+            break;
+          case "ArrowUp":
+            arrowKeys.instruct("up", false);
+            break;
+          case "ArrowLeft":
+            arrowKeys.instruct("left", false);
+            break;
+          case "ArrowRight":
+            arrowKeys.instruct("right", false);
             break;
         }
       }
@@ -127,9 +173,11 @@ function App() {
 
       window.addEventListener('resize', handleResize);
       window.addEventListener('keydown', handleWindowKeydown);
+      window.addEventListener('keyup', handleWindowKeyUp);
 
       return () => {
         window.removeEventListener('keydown', handleWindowKeydown);
+        window.removeEventListener('keyup', handleWindowKeyUp);
         window.removeEventListener('resize', handleResize);
       }
     }
@@ -157,7 +205,7 @@ function App() {
 
        <Modal
           open={firstTimeModalOpen}
-          onClose={() => setFirstTimeModalOpen(false)}
+          onClose={() => {setFirstTimeModalOpen(false); setModalOpen(false)}}
           sx={{overflow:"auto"}}
       >
           <Box sx={firstTimeModalStyle}>

@@ -350,9 +350,12 @@ export const FIRST_TIME_TEXT = (
             <li>...randomize the active rule with the <code>RND</code> switch.</li>
             <li>...turn the <code>N</code> knob to change the number of states.</li>
         </ul>
+        <p>
+            You can zoom in and out of the simulation with the scroll wheel, pan with shift + left-click, and draw with left-click.
+        </p>
 
         <p>This window will only appear once. The Quick Start instructions, as well as more detailed information, can be found by clicking on the circled ? near the center of the app, above the logo in non-compact mode. Click anywhere outside this window to dismiss.</p>
 
-        <p><b>PHOTOSENSITIVITY WARNING —</b> Experimenting with this app can very quickly produce intense strobing. The speed of the strobe is capped by the <code>FRAMERATE</code>. Therefore, it can be mitigated by setting <code>FRAMERATE</code> to 1 prior to changing the active rule/N, and manually verifying that there is no strobing before increasing <code>FRAMERATE</code>. Even this method is likely to yield 1Hz strobe effects.</p>
+        <p><b>PHOTOSENSITIVITY WARNING —</b> Experimenting with this app can very quickly produce intense strobing. The speed of the strobe is capped by the <code>FRAMERATE</code>. Therefore, it can be mitigated by setting <code>FRAMERATE</code> to 1 or 2 prior to changing the active rule/N, and manually verifying that there is no strobing before increasing <code>FRAMERATE</code>.</p>
     </div>
 )

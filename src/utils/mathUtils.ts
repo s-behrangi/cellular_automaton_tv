@@ -345,7 +345,6 @@ export function stringifyRule(rule: Uint8Array): string {
         binary += String.fromCharCode(compressed[i]);
     }
         
-    console.log("bytelength:", binary.length)
     const stringified = btoa(binary);
     console.log("Length:", stringified.length);
     return stringified;

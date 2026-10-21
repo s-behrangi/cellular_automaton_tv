@@ -38,6 +38,8 @@ const RulePanel: React.FC<rulePanelProps> = ({
 
     const cpuRuleControl = useAutomatonStore((s) => s.cpuRuleControl);
     const setCpuRuleControl = useAutomatonStore((s) => s.setCpuRuleControl);
+
+    const setModalOpen = useAutomatonStore((s) => s.setModalOpen);
     
     const [importString, setImportString] = useState<string>("");
 
@@ -112,6 +114,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
             setEditModalPage(0);
         }
         setEditModalOpen(val);
+        setModalOpen(val);
         setEditButtonDepressed(val);
     }
 
@@ -137,6 +140,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
 
     const handleImport = () => {
         setImportModalOpen(true);
+        setModalOpen(true);
         setImportButtonDepressed(true);
     }
 
@@ -145,6 +149,7 @@ const RulePanel: React.FC<rulePanelProps> = ({
         setImportString("");
         setImportModalOpen(false);
         setImportButtonDepressed(false);
+        setModalOpen(false);
     }
 
     const importModalStyle = {

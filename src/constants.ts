@@ -45,4 +45,4 @@ export const PRESETS = [
     ["Solar Panels [6]", PRESET_SOLAR_PANELS]
 ];
 
-export const FULLSCREEN_INSTRUCTIONS = "Fullscreen Controls:\nESC — Exit Fullscreen\nSPACE — Toggle Playback\nr — Randomize Rule\nm — Mutate Rule\nx — Flash\nc — Toggle CRT";
+export const FULLSCREEN_INSTRUCTIONS = "Fullscreen Controls:\nESC — Exit Fullscreen\nSPACE — Toggle Playback\nr — Randomize Rule\nm — Mutate Rule\nx — Flash\nc — Clear\nt — Toggle CRT";

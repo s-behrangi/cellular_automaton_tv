@@ -212,19 +212,6 @@ vec3 apertureGrille(vec2 uv, float intensity) {
     return mix(vec3(1.0), vec3(r, g, b), intensity);
 }
 
-// vec3 apertureGrille(float xPixels, float intensity) {
-//     float phase = fract(xPixels / 4.0);
-//     float d = fwidth(phase);
-
-//     // Three windows centered at 1/6, 3/6, 5/6 of the period
-//     vec3 mask;
-//     mask.r = smoothstep(1.0/3.0 + d, 1.0/3.0 - d, abs(phase - 1.0/6.0) * 2.0);
-//     mask.g = smoothstep(1.0/3.0 + d, 1.0/3.0 - d, abs(phase - 3.0/6.0) * 2.0);
-//     mask.b = smoothstep(1.0/3.0 + d, 1.0/3.0 - d, abs(phase - 5.0/6.0) * 2.0);
-
-//     return mix(vec3(1.0), mask, intensity);
-// }
-
 vec3 shadowMask(vec2 uv, float intensity) {
     float yPhase = fract(uv.y / 2.0);
     float xOffset = abs(yPhase - 1.0);
@@ -315,7 +302,7 @@ vec4 bilinear(vec2 uv) {
 
     vec4 top = mix(c00, c10, xFrac );
     vec4 bot = mix(c01, c11, xFrac);
-
+    
     return mix(top, bot, yFrac);
 }
 
@@ -368,8 +355,6 @@ void main() {
     // Correct gamma (if needed)
     //colour.rgb = pow(colour.rgb, vec3(1.0 / 1.6	));
 
-    
-
 
     /* VIGNETTING & ROUNDED CORNERS*/
     float dist = length(vTexCoord - 0.5);
@@ -377,18 +362,6 @@ void main() {
     colour = vec4(colour.rgb * vignetteFactor, colour.a);  
 
     colour = max(colour, vec4(bgGrey, bgGrey, bgGrey, 255.0) / 255.0);
-
-    // /* checks for ruledraw case only */
-    // vec2 simCoord = (camera.xy + barrelledCoord * (uScreenSize / camera.z)) / uSimSize;
-
-    // if (uRuleDraw && (
-    //     simCoord.x < 0.0 ||
-    //     simCoord.y < 0.0 ||
-    //     simCoord.x > 1.0 ||
-    //     simCoord.y > 1.0
-    // )) {
-    //     colour = vec4(bgGrey, bgGrey, bgGrey, 255.0) / 255.0;
-    // }
 
     float cornerDist = sdRoundedBox(barrelledPos);
     float blackCornerFactor = 1.0 - smoothstep(0.0, 10.0, cornerDist);

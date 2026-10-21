@@ -64,6 +64,9 @@ interface AutomatonStore {
 
     compactMode: boolean,
     setCompactMode: (val: boolean) => void,
+
+    modalOpen: boolean,
+    setModalOpen: (val: boolean) => void,
 }
 
 export const useAutomatonStore = create<AutomatonStore>()(
@@ -153,4 +156,7 @@ export const useAutomatonStore = create<AutomatonStore>()(
 
     compactMode: false,
     setCompactMode: (val: boolean) => set({compactMode: val}),
+
+    modalOpen: false,
+    setModalOpen: (val: boolean) => set({modalOpen: val}),
 })));

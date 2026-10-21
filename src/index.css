@@ -478,3 +478,7 @@ span {
 .bi {
   width: 25px;
 }
+
+button {
+  user-select: none;
+}

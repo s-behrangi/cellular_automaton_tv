@@ -58,8 +58,8 @@ export function randomInt(range: number) {
 }
 
 export function barrelDistort(u: number, v: number): number[] {
-    console.log("raw:", u, v);
     const curvature = 0.23;
+    
     let [curveU, curveV] = [
         u * 2.0 - 1.0,
         v * 2.0 - 1.0,
@@ -76,6 +76,6 @@ export function barrelDistort(u: number, v: number): number[] {
         curveU / 2.0 + 0.5,
         curveV / 2.0 + 0.5
     ];
-    console.log("curved:", curveU, curveV);
+
     return [curveU, curveV];
 }

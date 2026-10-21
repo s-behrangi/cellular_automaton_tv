@@ -34,14 +34,18 @@ const PlaybackPanel: React.FC<playbackPanelProps> = ({
 
     const [manualOpen, setManualOpen] = useState<boolean>(false);
     const [manualFirstPage, setManualFirstPage] = useState<boolean>(true);
+    const setModalOpen = useAutomatonStore((s) => s.setModalOpen);
+
 
     const handleManualOpen = () =>{
         setManualOpen(true);
+        setModalOpen(true);
     }
 
     const handleManualClose = () =>{
         setManualOpen(false);
         setManualFirstPage(true);
+        setModalOpen(false);
     }
 
     const manualStyle = {

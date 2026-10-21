@@ -955,11 +955,9 @@ export class Automaton {
         /* technically written for CRT mode but should be mode-agnostic —
            snaps camera position to the nearest screen pixel because 
            otherwise the CRT pseudopixels will be misaligned            */
-        console.log("before:", this.camera.x, this.camera.y);
         const pixelSize = this.camera.zoom / (this.useCRT ? 4.0 : 1.0);
         this.camera.x = Math.floor(this.camera.x * pixelSize) / pixelSize;
         this.camera.y = Math.floor(this.camera.y * pixelSize) / pixelSize;
-        console.log("after:", this.camera.x, this.camera.y);
     }
 
     private updateCamera(): void {
@@ -978,7 +976,6 @@ export class Automaton {
     }
 
     private updateDrawMouse(e: MouseEvent): void {
-        console.log("Here");
         const rect = this.canvas.getBoundingClientRect();
         let rawX = (e.clientX - rect.left) / rect.width;
         let rawY = -1 * (e.clientY - rect.bottom) / rect.height;
@@ -986,8 +983,6 @@ export class Automaton {
             [rawX, rawY] = barrelDistort(rawX, rawY);
         }
         [rawX, rawY] = [rawX * rect.width / this.camera.zoom, rawY * rect.height / this.camera.zoom];
-        
-        console.log("normalized", rawX, rawY);
         
         const simX = rawX + (this.pan ? this.panStartCam[0] : this.camera.x);
         const simY = rawY + (this.pan ? this.panStartCam[1] : this.camera.y);
@@ -1225,6 +1220,7 @@ export class Automaton {
             this.zoomIdx = this.zoomLevels.findIndex(level => level == 4.0);
             this.handleZoomChange();
         }
+        this.updateCamera();
     }
 
     public setN(n: number): number {
